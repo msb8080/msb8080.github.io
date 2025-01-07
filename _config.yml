@@ -7,7 +7,7 @@ title: 闵帅博的个人博客
 subtitle: ''
 description: ''
 keywords:
-author: John Doe
+author: minshuaibo
 language: en
 timezone: ''
 
@@ -96,7 +96,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: stun
+theme: fluid
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
