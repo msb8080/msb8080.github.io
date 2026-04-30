@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>AI Composer 技术猿</title>
+  
+  <subtitle>AI 后端学习、面试总结、投资理财与副业研究</subtitle>
+  <link href="https://msb8080.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://msb8080.github.io/"/>
+  <updated>2026-04-30T09:20:00.000Z</updated>
+  <id>https://msb8080.github.io/</id>
+  
+  <author>
+    <name>minshuaibo</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>我的博客搭建复盘：AI Composer 技术猿的 Hexo 实践与长期写作规划（2026-04-30）</title>
+    <link href="https://msb8080.github.io/2026/04/30/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E5%A4%8D%E7%9B%98-ai-composer%E6%8A%80%E6%9C%AF%E7%8C%BF%E7%9A%84hexo%E5%AE%9E%E8%B7%B5%E4%B8%8E%E9%95%BF%E6%9C%9F%E5%86%99%E4%BD%9C%E8%A7%84%E5%88%92-2026-04-30/"/>
+    <id>https://msb8080.github.io/2026/04/30/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E5%A4%8D%E7%9B%98-ai-composer%E6%8A%80%E6%9C%AF%E7%8C%BF%E7%9A%84hexo%E5%AE%9E%E8%B7%B5%E4%B8%8E%E9%95%BF%E6%9C%9F%E5%86%99%E4%BD%9C%E8%A7%84%E5%88%92-2026-04-30/</id>
+    <published>2026-04-30T09:20:00.000Z</published>
+    <updated>2026-04-30T09:20:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>这篇文章主要是给未来的我自己看，目标很明确：以后重装系统、换电脑、或者半年没更新博客再回来时，能在 10 分钟内找回全部流程。</p><p>另外也想把定位写清楚：这个博客后续会持续写三类内容，<code>后端</code>、<code>AI</code>、<code>投资理财</code>。我给自己的身份定义是“<code>AI Composer 技术猿</code>”，希望把技术实践、思考框架和可执行清单都沉淀下来，而不是只发零散笔记。</p><h2 id="一、我为什么要搭这个博客"><a href="#一、我为什么要搭这个博客" class="headerlink" title="一、我为什么要搭这个博客"></a>一、我为什么要搭这个博客</h2><p>我之前踩过的坑很典型：</p><ul><li>写作和发布流程靠记忆，隔一段时间就会忘命令。</li><li>配置分散在多个文件里，出问题时不知道先查哪里。</li><li>同类文章越写越多，但结构不统一，后续维护越来越累。</li></ul><p>所以这次我把目标设成三件事：</p><ol><li>流程可复用：写作、预览、发布尽量一条龙。</li><li>结构可维护：文档和模板统一，减少重复。</li><li>内容可迭代：为后续长期写作（后端&#x2F;AI&#x2F;理财）留出稳定框架。</li></ol><h2 id="二、框架和托管平台怎么选"><a href="#二、框架和托管平台怎么选" class="headerlink" title="二、框架和托管平台怎么选"></a>二、框架和托管平台怎么选</h2><h3 id="1）框架：Hugo-vs-Hexo"><a href="#1）框架：Hugo-vs-Hexo" class="headerlink" title="1）框架：Hugo vs Hexo"></a>1）框架：Hugo vs Hexo</h3><p>我最后选 <code>Hexo</code>，原因不是它“理论最好”，而是它对我当前最顺手：</p><ul><li>Node 生态我熟，写作到部署的心理成本低。</li><li>中文资料和主题生态丰富，排障效率高。</li><li>对个人技术博客来说，性能已经足够。</li></ul><p>如果你追求极致构建速度、或者大规模多语言内容站，Hugo 也很强；但对我当前阶段，<code>Hexo 的综合效率更高</code>。</p><h3 id="2）托管平台：我的结论"><a href="#2）托管平台：我的结论" class="headerlink" title="2）托管平台：我的结论"></a>2）托管平台：我的结论</h3><ul><li>稳健方案：<code>GitHub Pages + Hexo</code></li><li>体验升级：<code>Cloudflare Pages + Hexo</code></li><li>工程化备选：<code>Vercel + Hexo</code></li></ul><p>我的建议是：</p><ol><li>先用 GitHub Pages 跑通整套链路。</li><li>需要更好的全球访问体验时，再切 Cloudflare Pages。</li><li>如果你团队日常用 Vercel 预览流程，再考虑把博客并入 Vercel。</li></ol><h2 id="三、我现在的发布流程（已经固化）"><a href="#三、我现在的发布流程（已经固化）" class="headerlink" title="三、我现在的发布流程（已经固化）"></a>三、我现在的发布流程（已经固化）</h2><p>我把命令收敛成一个脚本：<code>bin/blog-flow.sh</code>。</p><p>日常只记三步：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">./bin/blog-flow.sh check<br>./bin/blog-flow.sh preview<br>./bin/blog-flow.sh release<br></code></pre></td></tr></table></figure><p>它分别对应：</p><ul><li><code>check</code>：检查依赖 + Front Matter 必填字段 + clean&#x2F;build。</li><li><code>preview</code>：本地预览（默认 <code>http://localhost:4000</code>）。</li><li><code>release</code>：执行 <code>clean -&gt; build -&gt; deploy</code>。</li></ul><p>这样做的好处是，命令稳定、认知负担低，半年后回来也不容易手滑漏步骤。</p><h2 id="四、从写作到上线：给未来自己的最短路径"><a href="#四、从写作到上线：给未来自己的最短路径" class="headerlink" title="四、从写作到上线：给未来自己的最短路径"></a>四、从写作到上线：给未来自己的最短路径</h2><h3 id="1）新建文章"><a href="#1）新建文章" class="headerlink" title="1）新建文章"></a>1）新建文章</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npx hexo new post <span class="hljs-string">&quot;文章标题&quot;</span><br></code></pre></td></tr></table></figure><h3 id="2）按模板写作"><a href="#2）按模板写作" class="headerlink" title="2）按模板写作"></a>2）按模板写作</h3><p>我现在固定用模板，核心字段必须完整：</p><ul><li><code>title</code></li><li><code>date</code></li><li><code>updated</code></li><li><code>tags</code></li><li><code>categories</code></li></ul><h3 id="3）本地验证与发布"><a href="#3）本地验证与发布" class="headerlink" title="3）本地验证与发布"></a>3）本地验证与发布</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">./bin/blog-flow.sh check<br>./bin/blog-flow.sh preview<br>./bin/blog-flow.sh release<br></code></pre></td></tr></table></figure><h2 id="五、我遇到过的坑（和处理方式）"><a href="#五、我遇到过的坑（和处理方式）" class="headerlink" title="五、我遇到过的坑（和处理方式）"></a>五、我遇到过的坑（和处理方式）</h2><h3 id="1）构建权限错误（EACCES-Operation-not-permitted）"><a href="#1）构建权限错误（EACCES-Operation-not-permitted）" class="headerlink" title="1）构建权限错误（EACCES &#x2F; Operation not permitted）"></a>1）构建权限错误（EACCES &#x2F; Operation not permitted）</h3><p>现象：<code>npm run build</code> 写 <code>public/</code> 或 <code>db.json</code> 失败。</p><p>处理：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chown</span> -R $(<span class="hljs-built_in">whoami</span>):staff public db.json docs <span class="hljs-built_in">source</span>/_posts<br></code></pre></td></tr></table></figure><h3 id="2）发布成功但线上没更新"><a href="#2）发布成功但线上没更新" class="headerlink" title="2）发布成功但线上没更新"></a>2）发布成功但线上没更新</h3><p>我会按这个顺序排查：</p><ol><li><code>release</code> 日志是否真的成功。</li><li>部署仓库和分支是否配置正确。</li><li>托管平台（GitHub&#x2F;Cloudflare&#x2F;Vercel）构建日志是否报错。</li></ol><h3 id="3）文章时间显示不对"><a href="#3）文章时间显示不对" class="headerlink" title="3）文章时间显示不对"></a>3）文章时间显示不对</h3><p>优先检查 Front Matter 的 <code>date/updated</code> 是否按本地时区填写。</p><h2 id="六、我的内容定位与栏目规划"><a href="#六、我的内容定位与栏目规划" class="headerlink" title="六、我的内容定位与栏目规划"></a>六、我的内容定位与栏目规划</h2><p>后续我会围绕三条线长期更新。</p><h3 id="1）后端"><a href="#1）后端" class="headerlink" title="1）后端"></a>1）后端</h3><p>会写：</p><ul><li>服务设计与重构复盘</li><li>接口性能优化（慢查询、缓存、并发）</li><li>工程实践（CI&#x2F;CD、监控、可观测性）</li></ul><h3 id="2）AI"><a href="#2）AI" class="headerlink" title="2）AI"></a>2）AI</h3><p>会写：</p><ul><li>AI 工作流搭建（从 Prompt 到自动化）</li><li>模型接入实践与成本优化</li><li>AI 工具在研发流程中的落地复盘</li></ul><h3 id="3）投资理财"><a href="#3）投资理财" class="headerlink" title="3）投资理财"></a>3）投资理财</h3><p>会写：</p><ul><li>个人资产配置思路（方法论层面）</li><li>风险管理与仓位纪律</li><li>从技术视角看策略执行和复盘框架</li></ul><p>说明：这部分以“个人研究记录”为主，不构成投资建议。</p><h2 id="七、为了长期维护，我做的结构化改造"><a href="#七、为了长期维护，我做的结构化改造" class="headerlink" title="七、为了长期维护，我做的结构化改造"></a>七、为了长期维护，我做的结构化改造</h2><ul><li>写作模板：<code>docs/BLOG_WRITING_TEMPLATE.md</code></li><li>流程清单：<code>docs/BLOG_WORKFLOW.md</code></li><li>工具手册：<code>docs/BLOG_TOOLS_USAGE.md</code></li><li>季度复盘模板：<code>docs/QUARTERLY_BLOG_REVIEW_TEMPLATE.md</code></li><li>本地 Skill：<code>skills/blog-ops-fastlane/SKILL.md</code></li></ul><p>目标只有一个：减少重复劳动，让博客输出变成长期可持续系统。</p><h2 id="八、给自己的发布前检查清单"><a href="#八、给自己的发布前检查清单" class="headerlink" title="八、给自己的发布前检查清单"></a>八、给自己的发布前检查清单</h2><p>每次发文前，我只看这 7 条：</p><ol><li>标题是否清晰，是否有检索关键词。</li><li>Front Matter 是否完整。</li><li>命令能否直接复制执行。</li><li>本地预览是否正常（移动端也看一眼）。</li><li>文章是否有明确结论和可执行步骤。</li><li>外链是否可访问。</li><li><code>updated</code> 是否已更新。</li></ol><h2 id="九、最后：一条命令提醒自己"><a href="#九、最后：一条命令提醒自己" class="headerlink" title="九、最后：一条命令提醒自己"></a>九、最后：一条命令提醒自己</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npx hexo new post <span class="hljs-string">&quot;标题&quot;</span> &amp;&amp; ./bin/blog-flow.sh check &amp;&amp; ./bin/blog-flow.sh preview &amp;&amp; ./bin/blog-flow.sh release<br></code></pre></td></tr></table></figure><p>如果以后我忘了流程，就回来打开这篇。它不是“教程炫技”，就是我自己的可执行回顾手册。</p>]]></content>
+    
+    
+    <summary type="html">这是一篇写给未来自己的博客搭建复盘：为什么选 Hexo，怎么稳定发布，遇到问题怎么排查，以及后续后端、AI、投资理财内容怎么长期更新。</summary>
+    
+    
+    
+    <category term="使用指南" scheme="https://msb8080.github.io/categories/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"/>
+    
+    <category term="个人复盘" scheme="https://msb8080.github.io/categories/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/%E4%B8%AA%E4%BA%BA%E5%A4%8D%E7%9B%98/"/>
+    
+    
+    <category term="Hexo" scheme="https://msb8080.github.io/tags/Hexo/"/>
+    
+    <category term="博客搭建" scheme="https://msb8080.github.io/tags/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/"/>
+    
+    <category term="自动化发布" scheme="https://msb8080.github.io/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E5%8F%91%E5%B8%83/"/>
+    
+    <category term="AI Composer" scheme="https://msb8080.github.io/tags/AI-Composer/"/>
+    
+    <category term="后端" scheme="https://msb8080.github.io/tags/%E5%90%8E%E7%AB%AF/"/>
+    
+    <category term="投资理财" scheme="https://msb8080.github.io/tags/%E6%8A%95%E8%B5%84%E7%90%86%E8%B4%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>首页引流入口：AI Composer 技术猿内容导航</title>
+    <link href="https://msb8080.github.io/2026/04/30/%E9%A6%96%E9%A1%B5%E5%BC%95%E6%B5%81%E5%85%A5%E5%8F%A3-%E5%8D%9A%E5%AE%A2%E5%BF%AB%E9%80%9F%E5%AF%BC%E8%88%AA/"/>
+    <id>https://msb8080.github.io/2026/04/30/%E9%A6%96%E9%A1%B5%E5%BC%95%E6%B5%81%E5%85%A5%E5%8F%A3-%E5%8D%9A%E5%AE%A2%E5%BF%AB%E9%80%9F%E5%AF%BC%E8%88%AA/</id>
+    <published>2026-04-30T08:45:00.000Z</published>
+    <updated>2026-04-30T08:45:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="新访客推荐阅读顺序"><a href="#新访客推荐阅读顺序" class="headerlink" title="新访客推荐阅读顺序"></a>新访客推荐阅读顺序</h2><ol><li><p>博客搭建复盘（先理解整个系统）<br><code>/2026/04/30/我的博客搭建复盘-ai-composer技术猿的hexo实践与长期写作规划-2026-04-30/</code></p></li><li><p>AI 后端学习（持续更新）<br>后续会发布服务设计、性能优化、工程化实践内容。</p></li><li><p>面试总结（持续更新）<br>后续会发布面试题复盘、知识盲点修补与系统化笔记。</p></li><li><p>投资理财学习总结（持续更新）<br>后续会发布个人学习记录、风险管理框架与复盘方法。</p></li><li><p>副业探索与研究分析（持续更新）<br>后续会发布可执行路径、案例分析与阶段性复盘。</p></li></ol><h2 id="一句话执行清单"><a href="#一句话执行清单" class="headerlink" title="一句话执行清单"></a>一句话执行清单</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npx hexo new post <span class="hljs-string">&quot;标题&quot;</span> &amp;&amp; ./bin/blog-flow.sh check &amp;&amp; ./bin/blog-flow.sh preview &amp;&amp; ./bin/blog-flow.sh release<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <summary type="html">新访客快速导航：先看博客搭建复盘，再看后续 AI 后端、面试总结、投资理财与副业研究方向。</summary>
+    
+    
+    
+    <category term="使用指南" scheme="https://msb8080.github.io/categories/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"/>
+    
+    
+    <category term="导航" scheme="https://msb8080.github.io/tags/%E5%AF%BC%E8%88%AA/"/>
+    
+    <category term="快速开始" scheme="https://msb8080.github.io/tags/%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B/"/>
+    
+  </entry>
+  
+</feed>
