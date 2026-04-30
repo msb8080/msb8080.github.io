@@ -1,36 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>闵帅博的个人博客</title>
   
   
+  <link href="https://msb8080.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://msb8080.github.io/"/>
+  <updated>2026-04-30T06:05:47.591Z</updated>
+  <id>https://msb8080.github.io/</id>
+  
+  <author>
+    <name>minshuaibo</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
     <title>博客使用流程：写博客、发布博客、部署上线（2026-04-30）</title>
-    <link href="/2026/04/30/%E5%8D%9A%E5%AE%A2%E4%BD%BF%E7%94%A8%E6%B5%81%E7%A8%8B-%E5%86%99%E4%BD%9C%E5%8F%91%E5%B8%83%E9%83%A8%E7%BD%B2-2026-04-30/"/>
-    <url>/2026/04/30/%E5%8D%9A%E5%AE%A2%E4%BD%BF%E7%94%A8%E6%B5%81%E7%A8%8B-%E5%86%99%E4%BD%9C%E5%8F%91%E5%B8%83%E9%83%A8%E7%BD%B2-2026-04-30/</url>
+    <link href="https://msb8080.github.io/2026/04/30/%E5%8D%9A%E5%AE%A2%E4%BD%BF%E7%94%A8%E6%B5%81%E7%A8%8B-%E5%86%99%E4%BD%9C%E5%8F%91%E5%B8%83%E9%83%A8%E7%BD%B2-2026-04-30/"/>
+    <id>https://msb8080.github.io/2026/04/30/%E5%8D%9A%E5%AE%A2%E4%BD%BF%E7%94%A8%E6%B5%81%E7%A8%8B-%E5%86%99%E4%BD%9C%E5%8F%91%E5%B8%83%E9%83%A8%E7%BD%B2-2026-04-30/</id>
+    <published>2026-04-30T06:00:00.000Z</published>
+    <updated>2026-04-30T06:05:47.591Z</updated>
     
     <content type="html"><![CDATA[<p>这篇文章给博客用户一个可直接执行的流程：从写文章，到本地预览，再到上线发布。</p><h2 id="一、准备环境"><a href="#一、准备环境" class="headerlink" title="一、准备环境"></a>一、准备环境</h2><p>先确认本机已经安装：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">node -v<br>npm -v<br></code></pre></td></tr></table></figure><p>进入博客项目根目录后，安装依赖：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm install<br></code></pre></td></tr></table></figure><h2 id="二、写博客"><a href="#二、写博客" class="headerlink" title="二、写博客"></a>二、写博客</h2><h3 id="1）创建新文章"><a href="#1）创建新文章" class="headerlink" title="1）创建新文章"></a>1）创建新文章</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npx hexo new post <span class="hljs-string">&quot;我的第一篇正式博客&quot;</span><br></code></pre></td></tr></table></figure><p>执行后会在 <code>source/_posts/</code> 下生成一个新的 Markdown 文件。</p><h3 id="2）编辑文章内容"><a href="#2）编辑文章内容" class="headerlink" title="2）编辑文章内容"></a>2）编辑文章内容</h3><p>打开新文件，使用以下结构：</p><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs markdown">---<br>title: 我的第一篇正式博客<br>date: 2026-04-30 14:00:00<br>tags:<br><span class="hljs-bullet">  -</span> 技术<br><span class="hljs-bullet">  -</span> 经验<br>categories:<br><span class="hljs-section">  - 学习笔记</span><br><span class="hljs-section">---</span><br><br>这里写正文。<br></code></pre></td></tr></table></figure><p>建议：</p><ul><li>标题明确，不要过长。</li><li><code>tags</code> 用于关键词检索。</li><li><code>categories</code> 用于栏目归档。</li></ul><h2 id="三、发布博客（生成站点）"><a href="#三、发布博客（生成站点）" class="headerlink" title="三、发布博客（生成站点）"></a>三、发布博客（生成站点）</h2><p>每次发布前，先清理再生成：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm run clean<br>npm run build<br></code></pre></td></tr></table></figure><p>执行后会更新 <code>public/</code> 目录，里面就是最终静态页面。</p><h2 id="四、本地预览（上线前检查）"><a href="#四、本地预览（上线前检查）" class="headerlink" title="四、本地预览（上线前检查）"></a>四、本地预览（上线前检查）</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm run server<br></code></pre></td></tr></table></figure><p>浏览器访问：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">http://localhost:4000<br></code></pre></td></tr></table></figure><p>重点检查：</p><ul><li>新文章是否出现在首页。</li><li>文章链接是否可访问。</li><li>图片、代码高亮、目录是否正常。</li></ul><h2 id="五、部署上线"><a href="#五、部署上线" class="headerlink" title="五、部署上线"></a>五、部署上线</h2><p>确认内容无误后执行：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm run deploy<br></code></pre></td></tr></table></figure><p>该命令会把 <code>public/</code> 推送到配置的 GitHub Pages 仓库分支。</p><h2 id="六、上线后验证"><a href="#六、上线后验证" class="headerlink" title="六、上线后验证"></a>六、上线后验证</h2><p>部署完成后请检查：</p><ul><li>线上首页是否出现新文章。</li><li>文章详情页链接是否正确。</li><li>手机端页面是否可正常访问。</li></ul><h2 id="七、常见问题"><a href="#七、常见问题" class="headerlink" title="七、常见问题"></a>七、常见问题</h2><h3 id="1）npm-run-build-失败"><a href="#1）npm-run-build-失败" class="headerlink" title="1）npm run build 失败"></a>1）<code>npm run build</code> 失败</h3><p>优先检查：</p><ul><li>依赖是否安装完整（重新执行 <code>npm install</code>）。</li><li>主题目录是否完整（当前项目配置为 <code>fluid</code>）。</li></ul><h3 id="2）部署成功但线上没更新"><a href="#2）部署成功但线上没更新" class="headerlink" title="2）部署成功但线上没更新"></a>2）部署成功但线上没更新</h3><p>优先检查：</p><ul><li>是否推送到了正确仓库与分支。</li><li>GitHub Pages 是否已完成构建（通常有几分钟延迟）。</li></ul><h3 id="3）文章时间不对"><a href="#3）文章时间不对" class="headerlink" title="3）文章时间不对"></a>3）文章时间不对</h3><p>优先检查：</p><ul><li>Front Matter 中 <code>date</code> 是否按本地时区填写。</li></ul><h2 id="八、推荐日常流程（最简版）"><a href="#八、推荐日常流程（最简版）" class="headerlink" title="八、推荐日常流程（最简版）"></a>八、推荐日常流程（最简版）</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 写作</span><br>npx hexo new post <span class="hljs-string">&quot;文章标题&quot;</span><br><br><span class="hljs-comment"># 2. 本地检查</span><br>npm run clean<br>npm run server<br><br><span class="hljs-comment"># 3. 发布上线</span><br>npm run build<br>npm run deploy<br></code></pre></td></tr></table></figure><p>按这个流程执行，可以稳定完成“写作 -&gt; 预览 -&gt; 上线”的完整闭环。</p>]]></content>
     
     
-    <categories>
       
-      <category>使用指南</category>
       
-    </categories>
+    <summary type="html">&lt;p&gt;这篇文章给博客用户一个可直接执行的流程：从写文章，到本地预览，再到上线发布。&lt;/p&gt;
+&lt;h2 id=&quot;一、准备环境&quot;&gt;&lt;a href=&quot;#一、准备环境&quot; class=&quot;headerlink&quot; title=&quot;一、准备环境&quot;&gt;&lt;/a&gt;一、准备环境&lt;/h2&gt;&lt;p&gt;先确认本机已经安</summary>
+      
     
     
-    <tags>
-      
-      <tag>Hexo</tag>
-      
-      <tag>博客</tag>
-      
-      <tag>部署</tag>
-      
-    </tags>
+    
+    <category term="使用指南" scheme="https://msb8080.github.io/categories/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"/>
+    
+    
+    <category term="Hexo" scheme="https://msb8080.github.io/tags/Hexo/"/>
+    
+    <category term="博客" scheme="https://msb8080.github.io/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+    <category term="部署" scheme="https://msb8080.github.io/tags/%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
-  
-  
-  
-</search>
+</feed>
