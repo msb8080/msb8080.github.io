@@ -102,5 +102,5 @@ theme: fluid
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: 'git'
-  repository: https://github.com/msb8080/msb8080.github.io
+  repository: git@github.com:msb8080/msb8080.github.io.git
   branch: master
