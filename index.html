@@ -483,7 +483,7 @@
         .span-12 { grid-column: span 12; }
         .row-2 { grid-row: span 2; }
 
-        /* 3D 卡片系统 */
+        /* 3D 卡片系统 — 统一紫色风格 */
         .card-wrapper {
             position: relative;
             width: 100%; height: 100%;
@@ -491,53 +491,15 @@
             cursor: pointer;
         }
 
-        .card-wrapper::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: 1.5rem;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 42%);
-            opacity: 0;
-            transition: opacity 0.35s ease;
-            pointer-events: none;
-        }
-
-        .card-wrapper:hover::before {
-            opacity: 1;
-        }
-
         .card-anchor {
             position: relative;
             width: 100%; height: 100%;
             transform-style: preserve-3d;
             border-radius: 1.5rem;
-            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             will-change: transform;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            box-shadow:
-                0 8px 32px rgba(31, 38, 135, 0.25),
-                inset 0 1px 0 rgba(255, 255, 255, 0.10);
-        }
-
-        .card-anchor::after {
-            content: "";
-            position: absolute; inset: 0;
-            border-radius: inherit;
-            background: rgba(255,255,255,0);
-            transition: background 0.3s ease;
-            pointer-events: none;
-            z-index: 15;
-        }
-
-        .card-wrapper:hover .card-anchor {
-            border-color: rgba(255, 255, 255, 0.28);
-            box-shadow:
-                0 12px 40px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
-        }
-
-        .card-wrapper:hover .card-anchor::after {
-            background: rgba(255,255,255,0.06);
+            border: none;
+            box-shadow: 0 4px 15px rgba(126, 90, 220, 0.3);
         }
 
         .card-layer {
@@ -548,85 +510,77 @@
         }
 
         .card-base {
-            background: linear-gradient(160deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.07) 100%);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.25);
+            background: #7e5adc;
+            border: none;
+            box-shadow: 0 4px 15px rgba(126, 90, 220, 0.3);
             transform: translateZ(0);
             overflow: hidden;
             position: relative;
         }
 
-        .card-base::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at top right, rgba(255, 255, 255, 0.12), transparent 40%);
-            opacity: 0.9;
-        }
-
-        .card-base::after {
-            content: "";
-            position: absolute;
-            inset: auto 0 0 0;
-            height: 50%;
-            background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.15));
-        }
-
         .card-glass {
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             transform: translateZ(20px);
             opacity: 0;
             pointer-events: none;
+            transition: opacity 0.6s, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .card-content {
-            padding: 1.5rem;
+            padding: 2rem;
             display: flex; flex-direction: column;
-            justify-content: space-between;
             transform: translateZ(10px);
+            pointer-events: none;
             height: 100%;
             position: relative;
             z-index: 10;
         }
 
         /* 悬停效果 */
+        .card-wrapper:hover .card-anchor {
+            box-shadow: 0 30px 60px rgba(126, 90, 220, 0.4), 0 0 0 1px rgba(126, 90, 220, 0.6);
+        }
+
         .card-wrapper:hover .card-base {
             transform: translateZ(-30px);
+            background: #6d28d9 !important;
+            box-shadow: 0 30px 60px rgba(126, 90, 220, 0.4), 0 0 0 1px rgba(126, 90, 220, 0.6);
         }
 
         .card-wrapper:hover .card-glass {
-            opacity: 1; transform: translateZ(0);
+            opacity: 1;
+            transform: translateZ(0px);
         }
 
         .card-wrapper:hover .card-content {
-            transform: translateZ(60px) scale(1.03);
+            transform: translateZ(60px) scale(1.05);
         }
 
-        /* 卡片图标 */
+        /* 卡片图标 — 白底紫字 */
         .card-icon {
+            display: inline-flex;
+            align-items: center; justify-content: center;
             width: 3.5rem; height: 3.5rem;
-            background: rgba(255, 255, 255, 0.15) !important;
-            backdrop-filter: blur(10px);
-            color: #fff !important;
-            border-radius: 1rem;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255,255,255,0.2);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: #fff !important;
+            color: #7e5adc !important;
+            border: none; border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: 0.4s;
         }
 
         .card-wrapper:hover .card-icon {
-            transform: scale(1.1) rotate(-5deg);
+            background: #fff !important;
+            color: #6d28d9 !important;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            transform: scale(1.1) rotate(-5deg);
         }
 
         .card-icon .material-symbols-outlined { font-size: 28px; }
 
-        /* 卡片标题 */
+        /* 卡片文字 */
         .card-title {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 1.45rem; font-weight: 700;
@@ -636,7 +590,7 @@
         }
 
         .card-desc {
-            color: rgba(255, 255, 255, 0.7) !important;
+            color: rgba(255, 255, 255, 0.8) !important;
             font-size: 0.85rem;
             line-height: 1.5;
         }
@@ -653,22 +607,6 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
-
-        /* 卡片变体颜色 — 轻透彩色玻璃 */
-        .card-variant-blog .card-base { background: linear-gradient(160deg, rgba(126,90,220,0.20) 0%, rgba(91,33,182,0.10) 100%); }
-        .card-variant-ai .card-base { background: linear-gradient(160deg, rgba(59,130,246,0.18) 0%, rgba(29,78,216,0.08) 100%); }
-        .card-variant-portfolio .card-base { background: linear-gradient(160deg, rgba(16,185,129,0.18) 0%, rgba(5,150,105,0.08) 100%); }
-        .card-variant-github .card-base { background: linear-gradient(160deg, rgba(100,116,139,0.18) 0%, rgba(30,41,59,0.10) 100%); }
-        .card-variant-drama .card-base { background: linear-gradient(160deg, rgba(245,158,11,0.18) 0%, rgba(217,119,6,0.08) 100%); }
-        .card-variant-agent .card-base { background: linear-gradient(160deg, rgba(139,92,246,0.20) 0%, rgba(124,58,237,0.10) 100%); }
-
-        /* 变体 hover 彩色辉光 */
-        .card-variant-blog:hover .card-anchor { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(126,90,220,0.2), 0 0 0 1px rgba(126,90,220,0.35); border-color: rgba(126,90,220,0.4) !important; }
-        .card-variant-ai:hover .card-anchor { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(59,130,246,0.2), 0 0 0 1px rgba(59,130,246,0.35); border-color: rgba(59,130,246,0.4) !important; }
-        .card-variant-portfolio:hover .card-anchor { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(16,185,129,0.2), 0 0 0 1px rgba(16,185,129,0.35); border-color: rgba(16,185,129,0.4) !important; }
-        .card-variant-github:hover .card-anchor { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(100,116,139,0.2), 0 0 0 1px rgba(100,116,139,0.35); border-color: rgba(100,116,139,0.4) !important; }
-        .card-variant-drama:hover .card-anchor { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(245,158,11,0.2), 0 0 0 1px rgba(245,158,11,0.35); border-color: rgba(245,158,11,0.4) !important; }
-        .card-variant-agent:hover .card-anchor { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(139,92,246,0.2), 0 0 0 1px rgba(139,92,246,0.35); border-color: rgba(139,92,246,0.4) !important; }
 
         .card-kicker {
             display: inline-flex;
@@ -762,17 +700,6 @@
         @keyframes orb2 { 0%,100%{transform:translate(0,0) scale(1)} 25%{transform:translate(-50px,-30px) scale(.92)} 50%{transform:translate(-80px,20px) scale(1.1)} 75%{transform:translate(-30px,-60px) scale(.98)} }
         @keyframes orb3 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(70px,-40px) scale(1.12)} 66%{transform:translate(-30px,-70px) scale(.9)} }
         @keyframes orb4 { 0%,100%{transform:translate(0,0) scale(1);opacity:.6} 50%{transform:translate(-60px,-40px) scale(1.15);opacity:1} }
-
-        /* ========== 卡片光标光晕跟随 ========== */
-        .card-wrapper { overflow: hidden; }
-        .card-glow {
-            position: absolute; width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.04) 40%, transparent 70%);
-            border-radius: 50%; transform: translate(-50%,-50%);
-            pointer-events: none; z-index: 20; opacity: 0;
-            transition: opacity 0.35s ease; filter: blur(20px);
-        }
-        .card-wrapper:hover .card-glow { opacity: 1; }
 
         /* 响应式 */
         @media (max-width: 768px) {
@@ -920,10 +847,10 @@
         <div class="bento-grid">
 
             <!-- 博客 (大卡片) -->
-            <a href="/blog/" class="gsap-reveal span-6 row-2 card-variant-blog" style="text-decoration: none;">
+            <a href="/blog/" class="gsap-reveal span-6 row-2" style="text-decoration: none;">
                 <div class="card-wrapper">
                     <div class="card-anchor">
-                        <div class="card-layer card-base"></div>
+                        <div class="card-layer card-base" style="background: #0f0f15;"></div>
                         <div class="card-layer card-glass"></div>
                         <div class="card-layer card-content">
                             <div class="card-kicker">Featured / Blog</div>
@@ -940,10 +867,10 @@
             </a>
 
             <!-- OmniAgent (大卡片) -->
-            <a href="/codelens-ai/" class="gsap-reveal span-6 row-2 card-variant-agent" style="text-decoration: none;">
+            <a href="/codelens-ai/" class="gsap-reveal span-6 row-2" style="text-decoration: none;">
                 <div class="card-wrapper">
                     <div class="card-anchor">
-                        <div class="card-layer card-base"></div>
+                        <div class="card-layer card-base" style="background: #f5f0eb;"></div>
                         <div class="card-layer card-glass"></div>
                         <div class="card-layer card-content">
                             <div class="card-kicker">Project / Agent</div>
@@ -960,10 +887,10 @@
             </a>
 
             <!-- 个人作品集 (大卡片) -->
-            <a href="https://minshuaibo-person.onrender.com" target="_blank" class="gsap-reveal span-6 row-2 card-variant-portfolio" style="text-decoration: none;">
+            <a href="https://minshuaibo-person.onrender.com" target="_blank" class="gsap-reveal span-6 row-2" style="text-decoration: none;">
                 <div class="card-wrapper">
                     <div class="card-anchor">
-                        <div class="card-layer card-base"></div>
+                        <div class="card-layer card-base" style="background: #faf9f6;"></div>
                         <div class="card-layer card-glass"></div>
                         <div class="card-layer card-content">
                             <div class="card-kicker">Portfolio / Web</div>
@@ -980,10 +907,10 @@
             </a>
 
             <!-- GitHub (小卡片) -->
-            <a href="https://github.com/msb8080" target="_blank" class="gsap-reveal span-4 card-variant-github" style="text-decoration: none;">
+            <a href="https://github.com/msb8080" target="_blank" class="gsap-reveal span-4" style="text-decoration: none;">
                 <div class="card-wrapper">
                     <div class="card-anchor">
-                        <div class="card-layer card-base"></div>
+                        <div class="card-layer card-base" style="background: #111827;"></div>
                         <div class="card-layer card-glass"></div>
                         <div class="card-layer card-content">
                             <div class="flex items-center gap-4">
@@ -1002,10 +929,10 @@
             </a>
 
             <!-- 玄鉴仙族 AI短剧 (小卡片) -->
-            <a href="#" class="gsap-reveal span-4 card-variant-drama" style="text-decoration: none; opacity: 0.6; pointer-events: none;">
+            <a href="#" class="gsap-reveal span-4" style="text-decoration: none; opacity: 0.6; pointer-events: none;">
                 <div class="card-wrapper">
                     <div class="card-anchor">
-                        <div class="card-layer card-base"></div>
+                        <div class="card-layer card-base" style="background: #0a0a0a;"></div>
                         <div class="card-layer card-glass"></div>
                         <div class="card-layer card-content">
                             <div class="flex items-center gap-4">
@@ -1023,10 +950,10 @@
                 </div>
             </a>
 
-            <a href="/blog/categories/" class="gsap-reveal span-4 card-variant-ai" style="text-decoration: none;">
+            <a href="/blog/categories/" class="gsap-reveal span-4" style="text-decoration: none;">
                 <div class="card-wrapper">
                     <div class="card-anchor">
-                        <div class="card-layer card-base"></div>
+                        <div class="card-layer card-base" style="background: #110e20;"></div>
                         <div class="card-layer card-glass"></div>
                         <div class="card-layer card-content">
                             <div class="flex items-center gap-4">
@@ -1064,25 +991,14 @@
     </main>
 
     <script>
-        // ========== 卡片光晕跟随 ==========
-        document.querySelectorAll('.card-wrapper').forEach(wrap => {
-            const glow = document.createElement('div');
-            glow.className = 'card-glow';
-            wrap.appendChild(glow);
-            wrap.addEventListener('mousemove', e => {
-                const r = wrap.getBoundingClientRect();
-                glow.style.left = (e.clientX - r.left) + 'px';
-                glow.style.top = (e.clientY - r.top) + 'px';
-            });
-        });
-
-        // ========== 3D Tilt ==========
+        // ========== 3D Tilt (统一紫色风格) ==========
         document.querySelectorAll('.card-wrapper').forEach(wrap => {
             const anchor = wrap.querySelector('.card-anchor');
+            if (!anchor) return;
             wrap.addEventListener('mousemove', e => {
                 const r = wrap.getBoundingClientRect();
-                const rx = ((e.clientY - r.top) / r.height - 0.5) * -12;
-                const ry = ((e.clientX - r.left) / r.width - 0.5) * 12;
+                const rx = ((e.clientY - r.top) / r.height - 0.5) * -15;
+                const ry = ((e.clientX - r.left) / r.width - 0.5) * 15;
                 anchor.style.transition = 'none';
                 anchor.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
             });
