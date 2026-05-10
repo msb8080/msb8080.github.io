@@ -29,7 +29,7 @@
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/2026/05/09/llm-fine-tuning-guide/</loc>
+    <loc>https://msb8080.github.io/blog/2026/05/09/llm-agent-development/</loc>
     
     <lastmod>2026-05-09</lastmod>
     
@@ -38,7 +38,7 @@
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/2026/05/09/llm-agent-development/</loc>
+    <loc>https://msb8080.github.io/blog/2026/05/09/llm-fine-tuning-guide/</loc>
     
     <lastmod>2026-05-09</lastmod>
     
@@ -56,7 +56,7 @@
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/2026/05/09/llm-inference-deployment/</loc>
+    <loc>https://msb8080.github.io/blog/2026/05/09/rag-retrieval-augmented-generation/</loc>
     
     <lastmod>2026-05-09</lastmod>
     
@@ -74,7 +74,7 @@
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/2026/05/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF%E6%B8%85%E5%8D%95/</loc>
+    <loc>https://msb8080.github.io/blog/2026/05/09/llm-inference-deployment/</loc>
     
     <lastmod>2026-05-09</lastmod>
     
@@ -83,7 +83,7 @@
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/2026/05/09/rag-retrieval-augmented-generation/</loc>
+    <loc>https://msb8080.github.io/blog/2026/05/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF%E6%B8%85%E5%8D%95/</loc>
     
     <lastmod>2026-05-09</lastmod>
     
@@ -207,6 +207,41 @@
   </url>
   
   <url>
+    <loc>https://msb8080.github.io/blog/tags/Agent/</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://msb8080.github.io/blog/tags/Function-Calling/</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://msb8080.github.io/blog/tags/ReAct/</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://msb8080.github.io/blog/tags/Multi-Agent/</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://msb8080.github.io/blog/tags/LangGraph/</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://msb8080.github.io/blog/tags/%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
@@ -270,41 +305,6 @@
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/tags/Agent/</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://msb8080.github.io/blog/tags/Function-Calling/</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://msb8080.github.io/blog/tags/ReAct/</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://msb8080.github.io/blog/tags/Multi-Agent/</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://msb8080.github.io/blog/tags/LangGraph/</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://msb8080.github.io/blog/tags/Transformer/</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
@@ -333,28 +333,42 @@
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/tags/vLLM/</loc>
+    <loc>https://msb8080.github.io/blog/tags/RAG/</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/tags/SGLang/</loc>
+    <loc>https://msb8080.github.io/blog/tags/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/tags/%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/</loc>
+    <loc>https://msb8080.github.io/blog/tags/Embedding/</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/tags/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/</loc>
+    <loc>https://msb8080.github.io/blog/tags/%E7%9F%A5%E8%AF%86%E9%97%AE%E7%AD%94/</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://msb8080.github.io/blog/tags/Prompt-Engineering/</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://msb8080.github.io/blog/tags/CoT/</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -396,35 +410,28 @@
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/tags/Prompt-Engineering/</loc>
+    <loc>https://msb8080.github.io/blog/tags/vLLM/</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/tags/CoT/</loc>
+    <loc>https://msb8080.github.io/blog/tags/SGLang/</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/tags/RAG/</loc>
+    <loc>https://msb8080.github.io/blog/tags/%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/tags/%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF/</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://msb8080.github.io/blog/tags/AI-%E5%B7%A5%E7%A8%8B%E5%8C%96/</loc>
+    <loc>https://msb8080.github.io/blog/tags/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -473,27 +480,6 @@
   </url>
   
   <url>
-    <loc>https://msb8080.github.io/blog/tags/%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://msb8080.github.io/blog/tags/Embedding/</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://msb8080.github.io/blog/tags/%E7%9F%A5%E8%AF%86%E9%97%AE%E7%AD%94/</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://msb8080.github.io/blog/tags/%E5%AF%BC%E8%88%AA/</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
@@ -502,6 +488,20 @@
   
   <url>
     <loc>https://msb8080.github.io/blog/tags/%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B/</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://msb8080.github.io/blog/tags/%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF/</loc>
+    <lastmod>2026-05-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://msb8080.github.io/blog/tags/AI-%E5%B7%A5%E7%A8%8B%E5%8C%96/</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
