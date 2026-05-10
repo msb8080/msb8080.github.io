@@ -4,14 +4,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portfolio | 个人作品集</title>
-    <meta name="description" content="个人作品集 - 高效工具集合平台" />
-    <link rel="icon" href="assets/favicon.png" type="image/png">
+    <title>minshuaibo | 个人主页</title>
+    <meta name="description" content="minshuaibo 的个人主页 - AI 后端开发者 | 同花顺" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
 
-    <!-- 字体预连接 -->
+    <!-- 字体 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Space+Grotesk:wght@500;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@300,1&display=swap" rel="stylesheet" />
 
     <!-- Tailwind CSS -->
@@ -32,268 +32,1076 @@
                             200: '#e5e0f5',
                             400: '#a894df',
                             500: '#7e5adc',
+                            600: '#6d28d9',
                             900: '#2b1b54',
-                        },
-                        neon: '#6d28d9'
+                        }
                     }
                 }
             }
         }
     </script>
 
-    <!-- 自定义样式 -->
-    <link rel="stylesheet" href="css/style.css" />
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #312052;
+            --brand: #7e5adc;
+            --brand-light: #a894df;
+            --brand-dark: #6d28d9;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body, html {
+            background:
+                radial-gradient(circle at top left, rgba(126, 90, 220, 0.22), transparent 34%),
+                radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.14), transparent 26%),
+                linear-gradient(180deg, #25163f 0%, var(--bg-dark) 48%, #1f1534 100%);
+            color: #e0e0e0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+
+        ::selection {
+            background: var(--brand);
+            color: white;
+        }
+
+        /* 背景装饰 */
+        .ambient-mesh {
+            position: fixed; inset: 0;
+            z-index: -5; pointer-events: none;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(126, 90, 220, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(109, 40, 217, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(168, 148, 223, 0.05) 0%, transparent 50%);
+        }
+
+        .dot-matrix {
+            position: fixed; inset: 0;
+            z-index: -4; pointer-events: none;
+            background-image: radial-gradient(rgba(126, 90, 220, 0.12) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .aurora {
+            position: fixed;
+            inset: -10% -5% auto;
+            height: 42vh;
+            z-index: -3;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 35%, rgba(168, 148, 223, 0.32), transparent 32%),
+                radial-gradient(circle at 72% 20%, rgba(109, 40, 217, 0.18), transparent 28%),
+                radial-gradient(circle at 55% 60%, rgba(59, 130, 246, 0.12), transparent 24%);
+            filter: blur(24px);
+            opacity: 0.9;
+        }
+
+        /* 导航 */
+        .cyber-nav {
+            position: fixed; top: 1.5rem; left: 50%;
+            transform: translateX(-50%);
+            display: flex; align-items: center; gap: 1rem;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            padding: 0.6rem 1.2rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(126, 90, 220, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        .nav-brand {
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+
+        .nav-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(126, 90, 220, 0.4);
+        }
+
+        .nav-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700; color: #fff; font-size: 1.1rem;
+        }
+
+        .nav-title span { color: var(--brand-light); }
+
+        .nav-links {
+            display: flex; gap: 1.5rem;
+            padding-left: 1.5rem;
+            border-left: 1px solid rgba(126, 90, 220, 0.2);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover { color: #fff; }
+
+        /* 主容器 */
+        .main-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 132px 1.5rem 80px;
+            min-height: 100vh;
+        }
+
+        /* Hero */
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+            gap: 1.5rem;
+            align-items: stretch;
+            margin-bottom: 1.75rem;
+        }
+
+        .hero-card, .hero-panel {
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04)),
+                rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before, .hero-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(126, 90, 220, 0.14), transparent 35%, rgba(59, 130, 246, 0.08));
+            pointer-events: none;
+        }
+
+        .hero-card {
+            padding: 2.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 380px;
+        }
+
+        .hero-panel {
+            padding: 1.6rem;
+            display: grid;
+            gap: 1rem;
+            align-content: start;
+        }
+
+        .hero-topline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: fit-content;
+            padding: 0.35rem 0.8rem;
+            border-radius: 9999px;
+            background: rgba(126, 90, 220, 0.14);
+            color: #fff;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .hero-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+        }
+
+        .hero-action.primary {
+            color: #120d22;
+            background: linear-gradient(135deg, #f8f5ff 0%, #d9ccff 100%);
+            box-shadow: 0 12px 30px rgba(126, 90, 220, 0.24);
+        }
+
+        .hero-action.secondary {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-action:hover {
+            transform: translateY(-2px);
+        }
+
+        .hero-avatar {
+            width: 96px; height: 96px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+            margin-bottom: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 10px 40px rgba(126, 90, 220, 0.4);
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            animation: avatarPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { box-shadow: 0 10px 40px rgba(126, 90, 220, 0.4); }
+            50% { box-shadow: 0 10px 60px rgba(126, 90, 220, 0.6), 0 0 0 10px rgba(126, 90, 220, 0.1); }
+        }
+
+        .hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            line-height: 1.02;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff 0%, var(--brand-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.65rem;
+        }
+
+        .hero p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.02rem;
+            max-width: 540px;
+            line-height: 1.7;
+        }
+
+        .hero-tags {
+            display: flex; gap: 0.75rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-tag {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(126, 90, 220, 0.15);
+            border-radius: 9999px;
+            padding: 0.4rem 1rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'Space Mono', monospace;
+            transition: all 0.3s;
+        }
+
+        .hero-tag:hover {
+            background: rgba(126, 90, 220, 0.2);
+            border-color: var(--brand);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .panel-title {
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .panel-text {
+            color: rgba(255, 255, 255, 0.56);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .showcase-window {
+            margin-top: 0.25rem;
+            border-radius: 1.4rem;
+            overflow: hidden;
+            background: rgba(10, 10, 18, 0.32);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .window-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .window-body {
+            padding: 1rem;
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .work-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            padding: 0.85rem;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .work-index {
+            width: 30px;
+            height: 30px;
+            border-radius: 0.8rem;
+            background: rgba(126, 90, 220, 0.18);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.76rem;
+            flex: 0 0 auto;
+        }
+
+        .work-title {
+            color: #fff;
+            font-weight: 700;
+            margin-bottom: 0.15rem;
+        }
+
+        .work-desc {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.84rem;
+            line-height: 1.45;
+        }
+
+        .panel-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        .stat-card {
+            padding: 0.9rem;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.055);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .stat-value {
+            display: block;
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.72rem;
+            font-family: 'Space Mono', monospace;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        /* Bento 网格 */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 1.25rem;
+            grid-auto-rows: minmax(140px, auto);
+            grid-auto-flow: dense;
+            margin-top: 2rem;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-kicker {
+            color: var(--brand-light);
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 0.72rem;
+        }
+
+        .section-title {
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            color: rgba(255, 255, 255, 0.48);
+            font-size: 0.9rem;
+        }
+
+        .span-6 { grid-column: span 6; }
+        .span-3 { grid-column: span 3; }
+        .span-4 { grid-column: span 4; }
+        .span-12 { grid-column: span 12; }
+        .row-2 { grid-row: span 2; }
+
+        /* 3D 卡片系统 */
+        .card-wrapper {
+            position: relative;
+            width: 100%; height: 100%;
+            perspective: 2000px;
+            cursor: pointer;
+        }
+
+        .card-wrapper::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 1.5rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 42%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            pointer-events: none;
+        }
+
+        .card-wrapper:hover::before {
+            opacity: 1;
+        }
+
+        .card-anchor {
+            position: relative;
+            width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            border-radius: 1.5rem;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow:
+                0 8px 32px rgba(31, 38, 135, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.10);
+        }
+
+        .card-anchor::after {
+            content: "";
+            position: absolute; inset: 0;
+            border-radius: inherit;
+            background: rgba(255,255,255,0);
+            transition: background 0.3s ease;
+            pointer-events: none;
+            z-index: 15;
+        }
+
+        .card-wrapper:hover .card-anchor {
+            border-color: rgba(255, 255, 255, 0.28);
+            box-shadow:
+                0 12px 40px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .card-wrapper:hover .card-anchor::after {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .card-layer {
+            position: absolute; inset: 0;
+            border-radius: inherit;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .card-base {
+            background: linear-gradient(160deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.07) 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.25);
+            transform: translateZ(0);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-base::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at top right, rgba(255, 255, 255, 0.12), transparent 40%);
+            opacity: 0.9;
+        }
+
+        .card-base::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0 0;
+            height: 50%;
+            background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.15));
+        }
+
+        .card-glass {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transform: translateZ(20px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            display: flex; flex-direction: column;
+            justify-content: space-between;
+            transform: translateZ(10px);
+            height: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 悬停效果 */
+        .card-wrapper:hover .card-base {
+            transform: translateZ(-30px);
+        }
+
+        .card-wrapper:hover .card-glass {
+            opacity: 1; transform: translateZ(0);
+        }
+
+        .card-wrapper:hover .card-content {
+            transform: translateZ(60px) scale(1.03);
+        }
+
+        /* 卡片图标 */
+        .card-icon {
+            width: 3.5rem; height: 3.5rem;
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(10px);
+            color: #fff !important;
+            border-radius: 1rem;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: 0.4s;
+        }
+
+        .card-wrapper:hover .card-icon {
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-icon .material-symbols-outlined { font-size: 28px; }
+
+        /* 卡片标题 */
+        .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.45rem; font-weight: 700;
+            color: #fff !important;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-desc {
+            color: rgba(255, 255, 255, 0.7) !important;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .card-tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.8);
+            font-family: 'Space Mono', monospace;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* 卡片变体颜色 — 轻透彩色玻璃 */
+        .card-variant-blog .card-base { background: linear-gradient(160deg, rgba(126,90,220,0.20) 0%, rgba(91,33,182,0.10) 100%); }
+        .card-variant-ai .card-base { background: linear-gradient(160deg, rgba(59,130,246,0.18) 0%, rgba(29,78,216,0.08) 100%); }
+        .card-variant-portfolio .card-base { background: linear-gradient(160deg, rgba(16,185,129,0.18) 0%, rgba(5,150,105,0.08) 100%); }
+        .card-variant-github .card-base { background: linear-gradient(160deg, rgba(100,116,139,0.18) 0%, rgba(30,41,59,0.10) 100%); }
+        .card-variant-drama .card-base { background: linear-gradient(160deg, rgba(245,158,11,0.18) 0%, rgba(217,119,6,0.08) 100%); }
+        .card-variant-agent .card-base { background: linear-gradient(160deg, rgba(139,92,246,0.20) 0%, rgba(124,58,237,0.10) 100%); }
+
+        /* 变体 hover 彩色辉光 */
+        .card-variant-blog:hover .card-anchor { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(126,90,220,0.2), 0 0 0 1px rgba(126,90,220,0.35); border-color: rgba(126,90,220,0.4) !important; }
+        .card-variant-ai:hover .card-anchor { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(59,130,246,0.2), 0 0 0 1px rgba(59,130,246,0.35); border-color: rgba(59,130,246,0.4) !important; }
+        .card-variant-portfolio:hover .card-anchor { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(16,185,129,0.2), 0 0 0 1px rgba(16,185,129,0.35); border-color: rgba(16,185,129,0.4) !important; }
+        .card-variant-github:hover .card-anchor { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(100,116,139,0.2), 0 0 0 1px rgba(100,116,139,0.35); border-color: rgba(100,116,139,0.4) !important; }
+        .card-variant-drama:hover .card-anchor { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(245,158,11,0.2), 0 0 0 1px rgba(245,158,11,0.35); border-color: rgba(245,158,11,0.4) !important; }
+        .card-variant-agent:hover .card-anchor { box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(139,92,246,0.2), 0 0 0 1px rgba(139,92,246,0.35); border-color: rgba(139,92,246,0.4) !important; }
+
+        .card-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            width: fit-content;
+            margin-bottom: 0.6rem;
+            padding: 0.26rem 0.55rem;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.84);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.64rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* 社交链接 */
+        .social-links {
+            display: flex; justify-content: center; gap: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        .social-link {
+            width: 48px; height: 48px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(126, 90, 220, 0.15);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s;
+        }
+
+        .social-link:hover {
+            background: rgba(126, 90, 220, 0.2);
+            border-color: var(--brand);
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        .social-link svg { width: 22px; height: 22px; }
+        .social-link .material-symbols-outlined { font-size: 22px; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 0.75rem;
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* GSAP 初始状态 */
+        .gsap-reveal { opacity: 0; visibility: hidden; }
+
+        /* ========== 浮动发光 Orb (lishenghua.com 风格) ========== */
+        .ambient-orbs {
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: -2;
+            overflow: hidden;
+        }
+        .ambient-orbs .orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(80px); will-change: transform;
+        }
+        .ambient-orbs .orb-1 {
+            width: 520px; height: 520px;
+            background: radial-gradient(circle, rgba(126,90,220,0.28) 0%, rgba(109,40,217,0.12) 40%, transparent 70%);
+            top: -12%; left: -6%;
+            animation: orb1 18s ease-in-out infinite;
+        }
+        .ambient-orbs .orb-2 {
+            width: 420px; height: 420px;
+            background: radial-gradient(circle, rgba(59,130,246,0.18) 0%, rgba(126,90,220,0.08) 40%, transparent 70%);
+            top: 28%; right: -10%;
+            animation: orb2 22s ease-in-out infinite;
+        }
+        .ambient-orbs .orb-3 {
+            width: 320px; height: 320px;
+            background: radial-gradient(circle, rgba(109,40,217,0.22) 0%, rgba(126,90,220,0.06) 40%, transparent 70%);
+            bottom: 8%; left: 18%;
+            animation: orb3 15s ease-in-out infinite;
+        }
+        .ambient-orbs .orb-4 {
+            width: 240px; height: 240px;
+            background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);
+            top: 55%; left: 55%;
+            animation: orb4 20s ease-in-out infinite;
+        }
+        @keyframes orb1 { 0%,100%{transform:translate(0,0) scale(1)} 25%{transform:translate(60px,40px) scale(1.08)} 50%{transform:translate(20px,80px) scale(.95)} 75%{transform:translate(-40px,30px) scale(1.05)} }
+        @keyframes orb2 { 0%,100%{transform:translate(0,0) scale(1)} 25%{transform:translate(-50px,-30px) scale(.92)} 50%{transform:translate(-80px,20px) scale(1.1)} 75%{transform:translate(-30px,-60px) scale(.98)} }
+        @keyframes orb3 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(70px,-40px) scale(1.12)} 66%{transform:translate(-30px,-70px) scale(.9)} }
+        @keyframes orb4 { 0%,100%{transform:translate(0,0) scale(1);opacity:.6} 50%{transform:translate(-60px,-40px) scale(1.15);opacity:1} }
+
+        /* ========== 卡片光标光晕跟随 ========== */
+        .card-wrapper { overflow: hidden; }
+        .card-glow {
+            position: absolute; width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.04) 40%, transparent 70%);
+            border-radius: 50%; transform: translate(-50%,-50%);
+            pointer-events: none; z-index: 20; opacity: 0;
+            transition: opacity 0.35s ease; filter: blur(20px);
+        }
+        .card-wrapper:hover .card-glow { opacity: 1; }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .cyber-nav { padding: 0.5rem 1rem; gap: 0.75rem; }
+            .nav-links { display: none; }
+            .hero { grid-template-columns: 1fr; }
+            .hero-card, .hero-panel { padding: 1.25rem; }
+            .hero-avatar { width: 84px; height: 84px; font-size: 34px; }
+            .hero p { font-size: 0.94rem; }
+            .hero-banner { position: static; text-align: left; margin-top: 1rem; }
+            .panel-stats { grid-template-columns: 1fr; }
+            .bento-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+            .span-6, .span-4, .span-3, .span-12 { grid-column: span 2; }
+            .main-container { padding: 96px 1rem 60px; }
+            .card-title { font-size: 1.18rem; }
+            .card-desc { font-size: 0.75rem; }
+        }
+
+        @media (max-width: 480px) {
+            .bento-grid { grid-template-columns: 1fr; }
+            .span-6, .span-4, .span-3, .span-12 { grid-column: span 1; }
+            .section-heading { align-items: start; flex-direction: column; }
+        }
+    
+        /* ========== V-Card 系统（小卡片区域用） ========== */
+        .v-card-wrapper {
+            position: relative; width: 100%; height: 100%;
+            perspective: 2000px; cursor: pointer;
+        }
+        .v-card-anchor {
+            position: relative; width: 100%; height: 100%;
+            transform-style: preserve-3d; border-radius: 1.5rem;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            will-change: transform;
+        }
+        .v-layer {
+            position: absolute; inset: 0; border-radius: inherit;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.6s;
+            transform-style: preserve-3d;
+        }
+        .v-base {
+            background: #7e5adc; border: none;
+            box-shadow: 0 4px 15px rgba(126, 90, 220, 0.3);
+            transform: translateZ(0);
+        }
+        .v-glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transform: translateZ(20px); pointer-events: none; opacity: 0;
+            transition: opacity 0.6s, transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .v-content {
+            padding: 2rem; display: flex; flex-direction: column;
+            transform: translateZ(10px); pointer-events: none;
+        }
+        .v-content h2, .v-content h3 { color: #ffffff !important; }
+        .v-content p { color: rgba(255, 255, 255, 0.8) !important; }
+        .v-content .tracking-widest {
+            color: #f3e8ff !important; font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .v-card-wrapper:hover .v-base {
+            transform: translateZ(-30px);
+            box-shadow: 0 30px 60px rgba(126, 90, 220, 0.4), 0 0 0 1px rgba(126, 90, 220, 0.6);
+            background: #6d28d9;
+        }
+        .v-card-wrapper:hover .v-glass { opacity: 1; transform: translateZ(0px); }
+        .v-card-wrapper:hover .v-content { transform: translateZ(60px) scale(1.05); }
+        .v-icon {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 3.5rem; height: 3.5rem;
+            background: #fff !important; color: #7e5adc !important;
+            border: none; border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); transition: 0.4s;
+        }
+        .v-card-wrapper:hover .v-icon {
+            background: #fff !important; color: #6d28d9 !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            transform: scale(1.1) rotate(-5deg);
+        }
+</style>
 </head>
 
 <body>
-    <!-- 背景装饰 -->
-    <div class="ambient-mesh"></div>
-    <div class="dot-matrix"></div>
-
-    <!-- ========== 顶部导航 ========== -->
-    <nav class="cyber-nav">
-        <!-- 品牌标识 -->
-        <div class="hidden sm:flex items-center gap-2 mr-2">
-            <div class="w-8 h-8 rounded-full border-2 border-brand-200 overflow-hidden shadow-sm">
-                <img src="assets/favicon.png" alt="Logo" class="w-full h-full object-cover">
-            </div>
-            <div class="font-display font-black text-brand-900 px-2 tracking-wider uppercase">Portfolio<span class="text-brand-500">.</span></div>
-        </div>
-
-        <!-- 导航链接 -->
-        <div class="hidden md:flex gap-6 border-r border-brand-200 pr-6 mr-3 font-mono text-xs font-bold tracking-widest text-gray-500">
-            <a href="#" class="hover:text-brand-900 transition-colors" data-i18n-key="nav_home">主页</a>
-            <a href="#" class="hover:text-brand-900 transition-colors" data-i18n-key="nav_blog">博客</a>
-            <a href="#" class="hover:text-brand-900 transition-colors" data-i18n-key="nav_auth">关于我</a>
-        </div>
-
-        <!-- 语言切换 -->
-        <div class="lang-toggle" id="lang-switch-btn" title="Toggle Locale">
-            <div class="lang-slider"></div>
-            <div class="lang-label font-sans">中</div>
-            <div class="lang-label font-sans">EN</div>
-        </div>
-
-        <!-- 移动端菜单按钮 -->
-        <button id="mobile-trigger" class="md:hidden flex items-center justify-center w-10 h-10 ml-2 rounded-full bg-white border border-brand-200 shadow-sm text-brand-500">
-            <span class="material-symbols-outlined">menu</span>
-        </button>
-    </nav>
-
-    <!-- ========== 移动端抽屉菜单 ========== -->
-    <div id="mobile-backdrop"></div>
-    <div id="mobile-drawer">
-        <div class="flex justify-between items-center mb-8 pb-4 border-b border-brand-200">
-            <div class="font-display font-black text-brand-900 tracking-wider uppercase text-xl">Menu<span class="text-brand-500">.</span></div>
-            <button id="mobile-close" class="w-10 h-10 flex items-center justify-center rounded-full bg-brand-50 text-brand-900 shadow hover:bg-brand-500 hover:text-white transition-colors">
-                <span class="material-symbols-outlined text-xl">close</span>
-            </button>
-        </div>
-        <div class="flex flex-col mt-2">
-            <div class="menu-item" data-i18n-key="nav_home">主页</div>
-            <a href="#" class="menu-item" data-i18n-key="nav_blog">博客</a>
-            <a href="#" class="menu-item" data-i18n-key="nav_auth">关于我</a>
-        </div>
+    <!-- 浮动发光 Orb 背景 (lishenghua.com 风格) -->
+    <div class="ambient-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
     </div>
 
-    <!-- ========== 3D 解构 Bento 网格布局 ========== -->
-    <main class="pt-36 max-w-7xl mx-auto px-6 pb-40 relative">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 auto-rows-[280px]" id="bento-grid">
+    <div class="ambient-mesh"></div>
+    <div class="dot-matrix"></div>
+    <div class="aurora"></div>
 
-            <!-- 卡片 1: 视频聚合平台（大卡片） -->
-            <a href="#" class="gsap-reveal col-span-1 md:col-span-2 row-span-2 block cursor-pointer group">
-                <div class="v-card-wrapper" data-tilt>
-                    <div class="v-card-anchor relative overflow-hidden">
-                        <div class="v-layer v-base" style="background: #0f0f15; box-shadow: none; overflow: hidden;">
-                            <div class="screenshot-scroll-container">
-                                <img class="scroll-cover" src="assets/videopage.png" alt="视频平台封面">
-                                <img class="scroll-long" src="assets/benmaovideo.png" alt="视频平台预览" loading="lazy">
+    <!-- 导航 -->
+    <nav class="cyber-nav gsap-reveal">
+        <div class="nav-brand">
+            <div class="nav-icon">🚀</div>
+            <div class="nav-title">minshuaibo<span>.</span></div>
+        </div>
+        <div class="nav-links">
+            <a href="https://github.com/msb8080" target="_blank">GitHub</a>
+            <a href="/blog/">Blog</a>
+        </div>
+    </nav>
+
+    <!-- 主内容 -->
+    <main class="main-container">
+        <!-- Hero -->
+        <section class="hero gsap-reveal">
+            <div class="hero-card">
+                <div class="hero-topline">AI Backend Developer · Shanghai</div>
+                <div class="hero-avatar">👨‍💻</div>
+                <h1>minshuaibo</h1>
+                <p>AI 后端开发者 · 同花顺 · Spring Boot / AI Agent / RAG。当前主页聚合博客、项目和作品入口，方便快速分发到最核心的内容。</p>
+                <div class="hero-meta">
+                    <span>Spring Boot</span>
+                    <span>Spring AI</span>
+                    <span>Agent Systems</span>
+                </div>
+                <div class="hero-actions">
+                    <a href="/blog/" class="hero-action primary">进入博客</a>
+                    <a href="https://github.com/msb8080" target="_blank" class="hero-action secondary">查看 GitHub</a>
+                </div>
+                <div class="hero-tags">
+                    <span class="hero-tag">Java</span>
+                    <span class="hero-tag">Spring AI</span>
+                    <span class="hero-tag">RAG</span>
+                    <span class="hero-tag">Agent</span>
+                    <span class="hero-tag">LLM</span>
+                </div>
+            </div>
+
+            <aside class="hero-panel">
+                <div>
+                    <div class="panel-title">Selected Works</div>
+                    <div class="panel-text">把博客、项目和近期方向做成一个更像作品集的首屏摘要。</div>
+                </div>
+                <div class="showcase-window">
+                    <div class="window-bar">
+                        <span class="window-dot"></span>
+                        <span class="window-dot"></span>
+                        <span class="window-dot"></span>
+                    </div>
+                    <div class="window-body">
+                        <div class="work-item">
+                            <div class="work-index">01</div>
+                            <div>
+                                <div class="work-title">技术博客</div>
+                                <div class="work-desc">AI 后端、面试复盘、投资理财与个人成长内容。</div>
                             </div>
-                            <div class="absolute inset-0 z-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent transition-opacity duration-500 opacity-90 group-hover:opacity-50 pointer-events-none"></div>
                         </div>
-                        <div class="v-layer v-glass !border-none hidden"></div>
-                        <div class="v-layer v-content z-10 flex flex-col justify-between">
-                            <div class="v-icon mb-10 overflow-hidden shadow-none transition-transform duration-700 group-hover:translate-x-3 group-hover:-translate-y-3" style="background: transparent !important; color: white !important;">
-                                <span class="material-symbols-outlined text-4xl text-white drop-shadow-md">video_library</span>
+                        <div class="work-item">
+                            <div class="work-index">02</div>
+                            <div>
+                                <div class="work-title">OmniAgent</div>
+                                <div class="work-desc">多 Agent + MCP + Skills 的智能体平台实践。</div>
                             </div>
-                            <div class="mt-auto drop-shadow-xl text-white z-20 relative">
-                                <h2 class="font-display text-3xl md:text-4xl font-black mb-1" style="text-shadow: 0 4px 20px rgba(0,0,0,1);" data-i18n-key="c1_tit">视频聚合平台</h2>
+                        </div>
+                        <div class="work-item">
+                            <div class="work-index">03</div>
+                            <div>
+                                <div class="work-title">个人作品集</div>
+                                <div class="work-desc">3D Bento 卡片式展示页，偏品牌感和表达感。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-stats">
+                    <div class="stat-card">
+                        <span class="stat-value">2+</span>
+                        <span class="stat-label">主站入口</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value">3</span>
+                        <span class="stat-label">内容方向</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value">24/7</span>
+                        <span class="stat-label">在线访问</span>
+                    </div>
+                </div>
+                <div class="hero-tags" style="margin-top: 0.25rem;">
+                    <span class="hero-tag">Blog</span>
+                    <span class="hero-tag">Projects</span>
+                    <span class="hero-tag">Contact</span>
+                </div>
+            </aside>
+        </section>
+
+        <div class="section-heading gsap-reveal">
+            <div>
+                <div class="section-kicker">Featured Links</div>
+                <div class="section-title">重点入口</div>
+            </div>
+            <div class="section-subtitle">更清晰的层级，更稳的响应式占位。</div>
+        </div>
+
+        <!-- Bento 网格 -->
+        <div class="bento-grid">
+
+            <!-- 博客 (大卡片) -->
+            <a href="/blog/" class="gsap-reveal span-6 row-2 card-variant-blog" style="text-decoration: none;">
+                <div class="card-wrapper">
+                    <div class="card-anchor">
+                        <div class="card-layer card-base"></div>
+                        <div class="card-layer card-glass"></div>
+                        <div class="card-layer card-content">
+                            <div class="card-kicker">Featured / Blog</div>
+                            <div class="card-icon">
+                                <span class="material-symbols-outlined">edit_note</span>
+                            </div>
+                            <div>
+                                <div class="card-title">AI Composer 技术猿</div>
+                                <div class="card-desc">AI 后端学习、面试总结、投资理财与副业研究</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </a>
 
-            <!-- 卡片 2: 电商网站（大卡片） -->
-            <a href="#" class="gsap-reveal col-span-1 md:col-span-2 row-span-2 block cursor-pointer group">
-                <div class="v-card-wrapper" data-tilt>
-                    <div class="v-card-anchor relative overflow-hidden">
-                        <div class="v-layer v-base" style="background: #f5f0eb; box-shadow: none; overflow: hidden;">
-                            <div class="screenshot-scroll-container">
-                                <img class="scroll-cover" src="assets/catingking.png" alt="电商封面" style="object-position: top;">
-                                <img class="scroll-long" src="assets/catingking.png" alt="电商预览" loading="lazy">
+            <!-- OmniAgent (大卡片) -->
+            <a href="/codelens-ai/" class="gsap-reveal span-6 row-2 card-variant-agent" style="text-decoration: none;">
+                <div class="card-wrapper">
+                    <div class="card-anchor">
+                        <div class="card-layer card-base"></div>
+                        <div class="card-layer card-glass"></div>
+                        <div class="card-layer card-content">
+                            <div class="card-kicker">Project / Agent</div>
+                            <div class="card-icon">
+                                <span class="material-symbols-outlined">psychology</span>
                             </div>
-                            <div class="absolute inset-0 z-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-500 opacity-70 group-hover:opacity-40 pointer-events-none"></div>
-                        </div>
-                        <div class="v-layer v-glass !border-none hidden"></div>
-                        <div class="v-layer v-content z-10 flex flex-col justify-between">
-                            <div class="v-icon mb-10 overflow-hidden shadow-none transition-transform duration-700 group-hover:translate-x-3 group-hover:-translate-y-3" style="background: transparent !important; color: white !important;">
-                                <span class="material-symbols-outlined text-4xl text-white drop-shadow-md">storefront</span>
-                            </div>
-                            <div class="mt-auto drop-shadow-xl text-white z-20 relative">
-                                <h2 class="font-display text-3xl md:text-4xl font-black mb-1" style="text-shadow: 0 4px 20px rgba(0,0,0,1);" data-i18n-key="c22_tit">有机科技商城</h2>
+                            <div>
+                                <div class="card-title">OmniAgent</div>
+                                <div class="card-desc">全能智能体平台 · 多 Agent + MCP + Skills<br>Spring Boot 3 + Spring AI</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </a>
 
-            <!-- 卡片 Blog: 个人博客 -->
-            <a href="#" class="gsap-reveal col-span-1 md:col-span-2 row-span-2 block cursor-pointer group">
-                <div class="v-card-wrapper" data-tilt>
-                    <div class="v-card-anchor relative overflow-hidden">
-                        <div class="v-layer v-base" style="background: #faf9f6; box-shadow: none; overflow: hidden;">
-                            <div class="screenshot-scroll-container">
-                                <img class="scroll-cover" src="assets/personal_blog.png" alt="博客封面" style="object-position: top;">
-                                <img class="scroll-long" src="assets/personal_blog.png" alt="博客预览" loading="lazy">
+            <!-- 个人作品集 (大卡片) -->
+            <a href="https://minshuaibo-person.onrender.com" target="_blank" class="gsap-reveal span-6 row-2 card-variant-portfolio" style="text-decoration: none;">
+                <div class="card-wrapper">
+                    <div class="card-anchor">
+                        <div class="card-layer card-base"></div>
+                        <div class="card-layer card-glass"></div>
+                        <div class="card-layer card-content">
+                            <div class="card-kicker">Portfolio / Web</div>
+                            <div class="card-icon">
+                                <span class="material-symbols-outlined">person</span>
                             </div>
-                            <div class="absolute inset-0 z-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-500 opacity-70 group-hover:opacity-40 pointer-events-none"></div>
-                        </div>
-                        <div class="v-layer v-glass !border-none hidden"></div>
-                        <div class="v-layer v-content z-10 flex flex-col justify-between">
-                            <div class="v-icon mb-10 overflow-hidden shadow-none transition-transform duration-700 group-hover:translate-x-3 group-hover:-translate-y-3" style="background: transparent !important; color: white !important;">
-                                <span class="material-symbols-outlined text-4xl text-amber-300 drop-shadow-md">edit_note</span>
-                            </div>
-                            <div class="mt-auto drop-shadow-xl text-white z-20 relative">
-                                <h2 class="font-display text-3xl md:text-4xl font-black mb-1" style="text-shadow: 0 4px 20px rgba(0,0,0,1);" data-i18n-key="c_blog_tit">宁静生活随笔</h2>
+                            <div>
+                                <div class="card-title">作品集</div>
+                                <div class="card-desc">3D Bento 卡片风格个人展示页<br>深紫色设计系统</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </a>
 
-            <!-- 卡片 3: 视频下载（GIF 悬停播放） -->
-            <a href="#" class="gsap-reveal col-span-1 md:col-span-2 row-span-2 block cursor-pointer group">
-                <div class="v-card-wrapper" data-tilt>
-                    <div class="v-card-anchor relative overflow-hidden">
-                        <div class="v-layer v-base" style="background: #111827; box-shadow: none;">
-                            <div class="gif-preview-container">
-                                <img class="gif-static" src="assets/download.png" alt="视频下载静态预览">
-                                <img class="gif-animated" src="assets/download_video.gif" alt="视频下载操作演示" loading="lazy">
-                            </div>
-                        </div>
-                        <div class="absolute inset-0 z-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent transition-opacity duration-500 opacity-80 group-hover:opacity-40 pointer-events-none"></div>
-                        <div class="v-layer v-glass !border-none hidden"></div>
-                        <div class="v-layer v-content z-10 flex flex-col justify-between">
-                            <div class="v-icon mb-10 overflow-hidden shadow-none transition-transform duration-700 group-hover:translate-x-3 group-hover:-translate-y-3" style="background: transparent !important; color: white !important;">
-                                <span class="material-symbols-outlined text-4xl text-white drop-shadow-md">cloud_download</span>
-                            </div>
-                            <div class="mt-auto drop-shadow-xl text-white z-20 relative">
-                                <h2 class="font-display text-3xl md:text-4xl font-black mb-1" style="text-shadow: 0 4px 20px rgba(0,0,0,1);" data-i18n-key="c2_tit">视频下载</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-
-            <!-- 卡片 4: AI 发丝渲染 -->
-            <a href="#" class="gsap-reveal col-span-1 md:col-span-2 row-span-2 block cursor-pointer group">
-                <div class="v-card-wrapper" data-tilt>
-                    <div class="v-card-anchor relative overflow-hidden">
-                        <div class="v-layer v-base" style="background: #0a0a0a; box-shadow: none; overflow: hidden;">
-                            <div class="w-full h-full transform transition-transform duration-700 group-hover:scale-105">
-                                <img class="w-full h-full object-cover object-center" src="assets/prism_hair.png" alt="AI渲染预览" loading="lazy">
-                            </div>
-                            <div class="absolute inset-0 z-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent transition-opacity duration-500 opacity-90 group-hover:opacity-60 pointer-events-none"></div>
-                        </div>
-                        <div class="v-layer v-glass !border-none hidden"></div>
-                        <div class="v-layer v-content z-10 flex flex-col justify-between">
-                            <div class="v-icon mb-10 overflow-hidden shadow-none transition-transform duration-700 group-hover:translate-x-3 group-hover:-translate-y-3" style="background: transparent !important; color: white !important;">
-                                <span class="material-symbols-outlined text-4xl text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.8)]">palette</span>
-                            </div>
-                            <div class="mt-auto drop-shadow-xl text-white z-20 relative">
-                                <h2 class="font-display text-3xl md:text-4xl font-black mb-1" style="text-shadow: 0 4px 20px rgba(0,0,0,1);" data-i18n-key="c23_tit">实时AI渲染</h2>
+            <!-- GitHub (小卡片) -->
+            <a href="https://github.com/msb8080" target="_blank" class="gsap-reveal span-4 card-variant-github" style="text-decoration: none;">
+                <div class="card-wrapper">
+                    <div class="card-anchor">
+                        <div class="card-layer card-base"></div>
+                        <div class="card-layer card-glass"></div>
+                        <div class="card-layer card-content">
+                            <div class="flex items-center gap-4">
+                                <div class="card-icon">
+                                    <span class="material-symbols-outlined">code</span>
+                                </div>
+                                <div>
+                                    <div class="card-kicker">Open Source</div>
+                                    <div class="card-title" style="font-size: 1.1rem;">GitHub</div>
+                                    <div class="card-desc">@msb8080</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </a>
 
-            <!-- 卡片 5: Soul Prism（CSS 动画卡片） -->
-            <a href="#" class="gsap-reveal col-span-1 md:col-span-2 row-span-2 block cursor-pointer group">
-                <div class="v-card-wrapper" data-tilt>
-                    <div class="v-card-anchor relative overflow-hidden">
-                        <div class="v-layer v-base" style="background: #110e20; box-shadow: none; overflow: hidden;">
-                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity duration-500 scale-150">
-                                <div class="absolute w-32 h-32 rounded-full border-[10px] border-brand-500/20 blur-md animate-[spin_10s_linear_infinite]"></div>
-                                <div class="absolute w-24 h-24 rounded-full border border-white/30 animate-[spin_7s_linear_infinite_reverse]"></div>
-                                <div class="absolute w-16 h-16 rounded-full bg-brand-500/40 blur-xl"></div>
-                                <div class="absolute w-2 h-2 rounded-full bg-white shadow-[0_0_20px_rgb(255,255,255)]"></div>
-                            </div>
-                            <div class="absolute inset-0 z-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent transition-opacity duration-500 opacity-90 group-hover:opacity-60 pointer-events-none"></div>
-                        </div>
-                        <div class="v-layer v-glass !border-none hidden"></div>
-                        <div class="v-layer v-content z-10 flex flex-col justify-between">
-                            <div class="v-icon mb-10 overflow-hidden shadow-none transition-transform duration-700 group-hover:translate-x-3 group-hover:-translate-y-3" style="background: transparent !important; color: white !important;">
-                                <span class="material-symbols-outlined text-4xl text-brand-400 drop-shadow-[0_0_10px_rgba(126,90,220,0.8)]">psychology</span>
-                            </div>
-                            <div class="mt-auto drop-shadow-xl text-white z-20 relative">
-                                <h2 class="font-display text-3xl md:text-3xl lg:text-4xl font-black mb-1 text-transparent bg-clip-text bg-gradient-to-r from-white to-brand-300" style="text-shadow: 0 4px 20px rgba(0,0,0,1);" data-i18n-key="c25_tit">灵魂棱镜</h2>
+            <!-- 玄鉴仙族 AI短剧 (小卡片) -->
+            <a href="#" class="gsap-reveal span-4 card-variant-drama" style="text-decoration: none; opacity: 0.6; pointer-events: none;">
+                <div class="card-wrapper">
+                    <div class="card-anchor">
+                        <div class="card-layer card-base"></div>
+                        <div class="card-layer card-glass"></div>
+                        <div class="card-layer card-content">
+                            <div class="flex items-center gap-4">
+                                <div class="card-icon">
+                                    <span class="material-symbols-outlined">movie</span>
+                                </div>
+                                <div>
+                                    <div class="card-kicker">In Progress</div>
+                                    <div class="card-title" style="font-size: 1.1rem;">玄鉴仙族 AI短剧</div>
+                                    <div class="card-desc">开发中...</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </a>
 
-            <!-- 卡片 6: 去水印工具（长截图滚动） -->
-            <a href="#" class="gsap-reveal col-span-1 md:col-span-2 row-span-2 block cursor-pointer group">
-                <div class="v-card-wrapper" data-tilt>
-                    <div class="v-card-anchor relative overflow-hidden">
-                        <div class="v-layer v-base" style="background: #f0fdf4; box-shadow: none; overflow: hidden;">
-                            <div class="screenshot-scroll-container">
-                                <img class="scroll-cover" src="assets/watermark_remover.png" alt="去水印封面" style="object-position: top;">
-                                <img class="scroll-long" src="assets/watermark_remover.png" alt="去水印预览" loading="lazy">
-                            </div>
-                            <div class="absolute inset-0 z-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent transition-opacity duration-500 opacity-75 group-hover:opacity-45 pointer-events-none"></div>
-                        </div>
-                        <div class="v-layer v-glass !border-none hidden"></div>
-                        <div class="v-layer v-content z-10 flex flex-col justify-between">
-                            <div class="v-icon mb-10 overflow-hidden shadow-none transition-transform duration-700 group-hover:translate-x-3 group-hover:-translate-y-3" style="background: transparent !important; color: white !important;">
-                                <span class="material-symbols-outlined text-4xl text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]">auto_fix_high</span>
-                            </div>
-                            <div class="mt-auto drop-shadow-xl text-white z-20 relative">
-                                <h2 class="font-display text-3xl md:text-4xl font-black mb-1" style="text-shadow: 0 4px 20px rgba(0,0,0,1);" data-i18n-key="c26_tit">AI 去水印</h2>
+            <a href="/blog/categories/" class="gsap-reveal span-4 card-variant-ai" style="text-decoration: none;">
+                <div class="card-wrapper">
+                    <div class="card-anchor">
+                        <div class="card-layer card-base"></div>
+                        <div class="card-layer card-glass"></div>
+                        <div class="card-layer card-content">
+                            <div class="flex items-center gap-4">
+                                <div class="card-icon">
+                                    <span class="material-symbols-outlined">category</span>
+                                </div>
+                                <div>
+                                    <div class="card-kicker">Explore</div>
+                                    <div class="card-title" style="font-size: 1.1rem;">博客分类</div>
+                                    <div class="card-desc">按主题浏览内容</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </a>
-
-            <!-- 卡片 7: 抖音下载（GIF 悬停） -->
-            <a href="#" class="gsap-reveal col-span-1 md:col-span-2 row-span-2 block cursor-pointer group">
-                <div class="v-card-wrapper" data-tilt>
-                    <div class="v-card-anchor relative overflow-hidden">
-                        <div class="v-layer v-base" style="background: #010101; box-shadow: none;">
-                            <div class="gif-preview-container">
-                                <img class="gif-static" src="assets/douyin_page.png" alt="抖音下载静态预览">
-                                <img class="gif-animated" src="assets/douyin.gif" alt="抖音下载操作演示" loading="lazy">
-                            </div>
-                        </div>
-                        <div class="absolute inset-0 z-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-500 opacity-80 group-hover:opacity-40 pointer-events-none"></div>
-                        <div class="v-layer v-glass !border-none hidden"></div>
-                        <div class="v-layer v-content z-10 flex flex-col justify-between">
-                            <div class="v-icon mb-10 overflow-hidden shadow-none transition-transform duration-700 group-hover:translate-x-3 group-hover:-translate-y-3" style="background: transparent !important; color: white !important;">
-                                <span class="material-symbols-outlined text-5xl text-[#fe2c55] drop-shadow-md">file_download</span>
-                            </div>
-                            <div class="mt-auto drop-shadow-xl text-white z-20 relative">
-                                <h2 class="font-display text-3xl md:text-4xl font-black mb-1" style="text-shadow: 0 4px 20px rgba(0,0,0,1);" data-i18n-key="c24_tit">无水印下载</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-
-            <!-- ===== 小卡片区域 ===== -->
+<!-- ===== 小卡片区域 ===== -->
 
             <!-- 卡片 8: 流媒体协议（1x1） -->
             <div class="gsap-reveal col-span-1 row-span-1">
@@ -586,14 +1394,96 @@
                 </div>
             </div>
 
+</div>
+
+        <!-- 社交链接 -->
+        <div class="social-links gsap-reveal">
+            <a href="https://github.com/msb8080" target="_blank" class="social-link" title="GitHub">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+            </a>
+            <a href="mailto:msb8080@163.com" class="social-link" title="邮箱">
+                <span class="material-symbols-outlined">mail</span>
+            </a>
         </div>
+
+        <footer class="gsap-reveal">
+            <p>© 2026 minshuaibo · Built with ❤️</p>
+        </footer>
     </main>
 
-    <!-- ========== 外部脚本 ========== -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/i18n.js"></script>
+    <script>
+        // ========== 卡片光晕跟随 ==========
+        document.querySelectorAll('.card-wrapper').forEach(wrap => {
+            const glow = document.createElement('div');
+            glow.className = 'card-glow';
+            wrap.appendChild(glow);
+            wrap.addEventListener('mousemove', e => {
+                const r = wrap.getBoundingClientRect();
+                glow.style.left = (e.clientX - r.left) + 'px';
+                glow.style.top = (e.clientY - r.top) + 'px';
+            });
+        });
+
+        // ========== 3D Tilt ==========
+        document.querySelectorAll('.card-wrapper').forEach(wrap => {
+            const anchor = wrap.querySelector('.card-anchor');
+            wrap.addEventListener('mousemove', e => {
+                const r = wrap.getBoundingClientRect();
+                const rx = ((e.clientY - r.top) / r.height - 0.5) * -12;
+                const ry = ((e.clientX - r.left) / r.width - 0.5) * 12;
+                anchor.style.transition = 'none';
+                anchor.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+            });
+            wrap.addEventListener('mouseleave', () => {
+                anchor.style.transition = 'transform 0.4s cubic-bezier(0.23,1,0.32,1)';
+                anchor.style.transform = '';
+            });
+        });
+
+        // ========== GSAP 3D 翻转入场 (lishenghua.com 风格) ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            // 导航 & Hero 先入场
+            gsap.set('.gsap-reveal', { y: 40, rotateX: 8, transformPerspective: 1000 });
+            gsap.to('.gsap-reveal', {
+                opacity: 1, visibility: 'visible', y: 0, rotateX: 0,
+                stagger: 0.1, duration: 0.9,
+                ease: 'power3.out', delay: 0.15
+            });
+
+            // Bento 卡片用 ScrollTrigger 延迟入场
+            if (typeof ScrollTrigger !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
+                document.querySelectorAll('.bento-grid .gsap-reveal').forEach((card, i) => {
+                    gsap.set(card, { y: 60, rotateX: 12, scale: 0.92, opacity: 0, transformPerspective: 1200 });
+                    gsap.to(card, {
+                        scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none none' },
+                        opacity: 1, visibility: 'visible', y: 0, rotateX: 0, scale: 1,
+                        duration: 0.85, delay: i * 0.06,
+                        ease: 'power3.out'
+                    });
+                });
+            }
+        });
+    
+        // ========== V-Card 3D Tilt (小卡片区域) ==========
+        document.querySelectorAll('.v-card-wrapper').forEach(wrap => {
+            const anchor = wrap.querySelector('.v-card-anchor');
+            if (!anchor) return;
+            wrap.addEventListener('mousemove', e => {
+                const r = wrap.getBoundingClientRect();
+                const rx = ((e.clientY - r.top) / r.height - 0.5) * -15;
+                const ry = ((e.clientX - r.left) / r.width - 0.5) * 15;
+                anchor.style.transition = 'none';
+                anchor.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+            });
+            wrap.addEventListener('mouseleave', () => {
+                anchor.style.transition = 'transform 0.4s cubic-bezier(0.23,1,0.32,1)';
+                anchor.style.transform = '';
+            });
+        });
+</script>
 </body>
 
 </html>
