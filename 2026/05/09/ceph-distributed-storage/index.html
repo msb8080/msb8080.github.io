@@ -1,0 +1,1440 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/fluid.png">
+  <link rel="icon" href="/blog/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="rgba(43, 27, 84, 0.85)">
+  <meta name="author" content="minshuaibo">
+  <meta name="keywords" content="Ceph,分布式存储,对象存储,块存储,文件系统,存储架构">
+  
+    <meta name="description" content="深入解析 Ceph 分布式存储系统的核心架构、部署实践、使用场景，以及与 MinIO、GlusterFS、HDFS 等竞品的对比分析。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ceph 分布式存储系统：架构、实践与竞品分析">
+<meta property="og:url" content="https://msb8080.github.io/blog/2026/05/09/ceph-distributed-storage/index.html">
+<meta property="og:site_name" content="AI Composer 技术猿">
+<meta property="og:description" content="深入解析 Ceph 分布式存储系统的核心架构、部署实践、使用场景，以及与 MinIO、GlusterFS、HDFS 等竞品的对比分析。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-09T06:00:00.000Z">
+<meta property="article:modified_time" content="2026-05-09T06:00:00.000Z">
+<meta property="article:author" content="minshuaibo">
+<meta property="article:tag" content="Ceph">
+<meta property="article:tag" content="分布式存储">
+<meta property="article:tag" content="对象存储">
+<meta property="article:tag" content="块存储">
+<meta property="article:tag" content="云原生">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Ceph 分布式存储系统：架构、实践与竞品分析 - AI Composer 技术猿</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/blog/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/blog/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/blog/css/purple-theme.css?v=4.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"msb8080.github.io","root":"/blog/","version":"1.9.9","typing":{"enable":true,"typeSpeed":45,"cursorChar":"|","loop":true,"scope":["home"]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#7e5adc","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/blog/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/blog/js/utils.js" ></script>
+  <script  src="/blog/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/blog/atom.xml" title="AI Composer 技术猿" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/blog/">
+      <strong>AI Composer 技术猿</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/2026/04/30/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E5%A4%8D%E7%9B%98-ai-composer%E6%8A%80%E6%9C%AF%E7%8C%BF%E7%9A%84hexo%E5%AE%9E%E8%B7%B5%E4%B8%8E%E9%95%BF%E6%9C%9F%E5%86%99%E4%BD%9C%E8%A7%84%E5%88%92-2026-04-30/" target="_self">
+                <i class="iconfont icon-code-fill"></i>
+                <span>搭建复盘</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/2026/04/30/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E5%A4%8D%E7%9B%98-ai-composer%E6%8A%80%E6%9C%AF%E7%8C%BF%E7%9A%84hexo%E5%AE%9E%E8%B7%B5%E4%B8%8E%E9%95%BF%E6%9C%9F%E5%86%99%E4%BD%9C%E8%A7%84%E5%88%92-2026-04-30/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-code-fill"></i>
+                  <span>搭建复盘</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/blog/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Ceph 分布式存储系统：架构、实践与竞品分析</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-05-09 14:00" pubdate>
+          2026年5月9日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          23k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          192 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Ceph 分布式存储系统：架构、实践与竞品分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在分布式系统中，存储是一个核心问题。当数据量从 GB 级增长到 TB、PB 级，单机存储已经无法满足需求，我们需要一个<strong>高可用、高扩展、高性能</strong>的分布式存储方案。</p>
+<p>Ceph 是目前最流行的开源分布式存储系统之一，被 Red Hat、Canonical 等公司广泛采用，也是 OpenStack、Kubernetes 等云平台的首选存储后端。</p>
+<p>本文将从<strong>问题背景、架构设计、部署实践、竞品对比</strong>四个维度，深入解析 Ceph。</p>
+<hr>
+<h2 id="一、Ceph-解决了什么问题？"><a href="#一、Ceph-解决了什么问题？" class="headerlink" title="一、Ceph 解决了什么问题？"></a>一、Ceph 解决了什么问题？</h2><h3 id="1-1-传统存储的痛点"><a href="#1-1-传统存储的痛点" class="headerlink" title="1.1 传统存储的痛点"></a>1.1 传统存储的痛点</h3><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>单点故障</strong></td>
+<td>传统 NAS&#x2F;SAN 存储，控制器故障导致服务不可用</td>
+</tr>
+<tr>
+<td><strong>扩展性差</strong></td>
+<td>存储容量受限于单机硬件，扩容需要停机迁移</td>
+</tr>
+<tr>
+<td><strong>成本高昂</strong></td>
+<td>商业存储设备价格昂贵，license 费用持续支出</td>
+</tr>
+<tr>
+<td><strong>数据孤岛</strong></td>
+<td>不同业务使用不同存储系统，数据无法互通</td>
+</tr>
+<tr>
+<td><strong>运维复杂</strong></td>
+<td>存储管理需要专业团队，故障恢复依赖厂商支持</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-Ceph-的核心价值"><a href="#1-2-Ceph-的核心价值" class="headerlink" title="1.2 Ceph 的核心价值"></a>1.2 Ceph 的核心价值</h3><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">Ceph</span> = 统一存储 + 无中心架构 + 自动愈合 + 弹性扩展<br></code></pre></td></tr></table></figure>
+
+<p><strong>Ceph 提供三种存储接口：</strong></p>
+<table>
+<thead>
+<tr>
+<th>存储类型</th>
+<th>接口</th>
+<th>典型场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>对象存储 (RADOS Gateway)</strong></td>
+<td>S3&#x2F;Swift 兼容 API</td>
+<td>图片、视频、日志、备份</td>
+</tr>
+<tr>
+<td><strong>块存储 (RBD)</strong></td>
+<td>内核模块 &#x2F; QEMU</td>
+<td>虚拟机磁盘、数据库存储</td>
+</tr>
+<tr>
+<td><strong>文件系统 (CephFS)</strong></td>
+<td>POSIX 兼容</td>
+<td>共享文件系统、HPC</td>
+</tr>
+</tbody></table>
+<p><strong>核心优势：</strong></p>
+<ul>
+<li>✅ <strong>无单点故障</strong>：去中心化架构，任意节点故障不影响服务</li>
+<li>✅ <strong>线性扩展</strong>：添加节点即可扩展容量和性能</li>
+<li>✅ <strong>自动愈合</strong>：数据副本自动修复，无需人工干预</li>
+<li>✅ <strong>统一存储</strong>：一套系统支持对象、块、文件三种接口</li>
+<li>✅ <strong>开源免费</strong>：社区活跃，无 license 费用</li>
+</ul>
+<hr>
+<h2 id="二、Ceph-怎么解决这些问题？"><a href="#二、Ceph-怎么解决这些问题？" class="headerlink" title="二、Ceph 怎么解决这些问题？"></a>二、Ceph 怎么解决这些问题？</h2><h3 id="2-1-核心架构"><a href="#2-1-核心架构" class="headerlink" title="2.1 核心架构"></a>2.1 核心架构</h3><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs scss">┌─────────────────────────────────────────────────────────────┐<br>│                        Client Layer                         │<br>│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │<br>│  │   RBD       │  │   CephFS    │  │   RGW       │         │<br>│  │ (块存储)    │  │ (文件系统)  │  │ (对象存储)  │         │<br>│  └─────────────┘  └─────────────┘  └─────────────┘         │<br>└─────────────────────────────────────────────────────────────┘<br>                              │<br>                              ▼<br>┌─────────────────────────────────────────────────────────────┐<br>│                      RADOS Layer                            │<br>│              (Reliable Autonomic Distributed Object Store)  │<br>│                                                             │<br>│  ┌─────────────────────────────────────────────────────┐   │<br>│  │                    CRUSH 算法                        │   │<br>│  │         (数据分布、故障域、副本放置)                 │   │<br>│  └─────────────────────────────────────────────────────┘   │<br>│                                                             │<br>│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐       │<br>│  │   OSD   │  │   OSD   │  │   OSD   │  │   OSD   │       │<br>│  │ (磁盘)  │  │ (磁盘)  │  │ (磁盘)  │  │ (磁盘)  │       │<br>│  └─────────┘  └─────────┘  └─────────┘  └─────────┘       │<br>└─────────────────────────────────────────────────────────────┘<br>                              │<br>                              ▼<br>┌─────────────────────────────────────────────────────────────┐<br>│                     Monitor Layer                           │<br>│  ┌─────────┐  ┌─────────┐  ┌─────────┐                     │<br>│  │  MON-<span class="hljs-number">1</span>  │  │  MON-<span class="hljs-number">2</span>  │  │  MON-<span class="hljs-number">3</span>  │                     │<br>│  │ (仲裁)  │  │ (仲裁)  │  │ (仲裁)  │                     │<br>│  └─────────┘  └─────────┘  └─────────┘                     │<br>└─────────────────────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-核心组件"><a href="#2-2-核心组件" class="headerlink" title="2.2 核心组件"></a>2.2 核心组件</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>说明</th>
+<th>部署建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>OSD (Object Storage Daemon)</strong></td>
+<td>管理单块磁盘，处理数据读写、复制、恢复</td>
+<td>每块磁盘一个 OSD，建议 SSD + HDD 混合</td>
+</tr>
+<tr>
+<td><strong>MON (Monitor)</strong></td>
+<td>维护集群状态、OSD Map、PG Map</td>
+<td>3-5 个节点，奇数个，独立部署</td>
+</tr>
+<tr>
+<td><strong>MDS (Metadata Server)</strong></td>
+<td>管理 CephFS 元数据</td>
+<td>2+ 个节点，Active&#x2F;Standby 模式</td>
+</tr>
+<tr>
+<td><strong>RGW (RADOS Gateway)</strong></td>
+<td>提供 S3&#x2F;Swift 兼容 API</td>
+<td>2+ 个节点，负载均衡</td>
+</tr>
+<tr>
+<td><strong>MGR (Manager)</strong></td>
+<td>提供集群监控、管理接口</td>
+<td>2 个节点，Active&#x2F;Standby 模式</td>
+</tr>
+</tbody></table>
+<h3 id="2-3-CRUSH-算法：数据分布的核心"><a href="#2-3-CRUSH-算法：数据分布的核心" class="headerlink" title="2.3 CRUSH 算法：数据分布的核心"></a>2.3 CRUSH 算法：数据分布的核心</h3><p><strong>CRUSH (Controlled Replication Under Scalable Hashing)</strong> 是 Ceph 的核心算法，解决数据如何分布在集群中。</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">Object</span> → HASH → PG (Placement <span class="hljs-keyword">Group</span>) → CRUSH → OSD<br></code></pre></td></tr></table></figure>
+
+<p><strong>CRUSH 的核心优势：</strong></p>
+<ol>
+<li><strong>去中心化</strong>：不需要中心化的元数据服务器</li>
+<li><strong>确定性</strong>：相同输入总是映射到相同位置</li>
+<li><strong>可配置</strong>：支持故障域（机架、机房、数据中心）</li>
+<li><strong>动态调整</strong>：添加&#x2F;删除节点时，只迁移部分数据</li>
+</ol>
+<p><strong>故障域示例：</strong></p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs excel">Datacenter → Room → <span class="hljs-built_in">Row</span> → Rack → Host → OSD<br></code></pre></td></tr></table></figure>
+
+<p>当配置了机架级故障域时，数据副本会分布在不同机架，即使整个机架故障，数据仍然可用。</p>
+<h3 id="2-4-数据一致性：Peering-机制"><a href="#2-4-数据一致性：Peering-机制" class="headerlink" title="2.4 数据一致性：Peering 机制"></a>2.4 数据一致性：Peering 机制</h3><p>Ceph 使用 <strong>Peering</strong> 机制保证数据一致性：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">Primary</span> OSD ←→ <span class="hljs-keyword">Replica</span> OSDs<br>     │<br>     ├── <span class="hljs-number">1.</span> 选举 <span class="hljs-keyword">Primary</span> OSD<br>     ├── <span class="hljs-number">2.</span> 比较 OSD 日志<br>     ├── <span class="hljs-number">3.</span> 发现差异对象<br>     ├── <span class="hljs-number">4.</span> 修复不一致数据<br>     └── <span class="hljs-number">5.</span> 标记 PG 为 active<br></code></pre></td></tr></table></figure>
+
+<p><strong>PG 状态：</strong></p>
+<ul>
+<li><code>creating</code>：PG 正在创建</li>
+<li><code>active</code>：PG 可用，可以处理读写</li>
+<li><code>clean</code>：所有副本一致</li>
+<li><code>degraded</code>：部分副本缺失，正在恢复</li>
+<li><code>recovering</code>：正在恢复数据</li>
+<li><code>backfill</code>：正在后台迁移数据</li>
+</ul>
+<hr>
+<h2 id="三、Ceph-怎么使用？"><a href="#三、Ceph-怎么使用？" class="headerlink" title="三、Ceph 怎么使用？"></a>三、Ceph 怎么使用？</h2><h3 id="3-1-部署架构"><a href="#3-1-部署架构" class="headerlink" title="3.1 部署架构"></a>3.1 部署架构</h3><p><strong>推荐的最小生产环境：</strong></p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">┌─────────────────────────────────────────────────────────┐<br>│                    Ceph Cluster                         │<br>│                                                         │<br>│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │<br>│  │   <span class="hljs-keyword">Node</span><span class="hljs-title">-1</span>    │  │   <span class="hljs-keyword">Node</span><span class="hljs-title">-2</span>    │  │   <span class="hljs-keyword">Node</span><span class="hljs-title">-3</span>    │     │<br>│  │             │  │             │  │             │     │<br>│  │  MON + MGR  │  │  MON + MGR  │  │  MON + MGR  │     │<br>│  │  OSD x3     │  │  OSD x3     │  │  OSD x3     │     │<br>│  │  MDS        │  │  MDS        │  │  MDS        │     │<br>│  │  RGW        │  │  RGW        │  │  RGW        │     │<br>│  └─────────────┘  └─────────────┘  └─────────────┘     │<br>│                                                         │<br>│  总计：<span class="hljs-number">3</span> MON, <span class="hljs-number">3</span> MGR, <span class="hljs-number">9</span> OSD, <span class="hljs-number">3</span> MDS, <span class="hljs-number">3</span> RGW               │<br>└─────────────────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<p><strong>硬件配置建议：</strong></p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>CPU</th>
+<th>内存</th>
+<th>磁盘</th>
+<th>网络</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>MON&#x2F;MGR</strong></td>
+<td>4 核</td>
+<td>8GB</td>
+<td>100GB SSD</td>
+<td>1GbE</td>
+</tr>
+<tr>
+<td><strong>OSD</strong></td>
+<td>4 核&#x2F;每块磁盘</td>
+<td>4GB&#x2F;每块磁盘</td>
+<td>数据盘 HDD + WAL SSD</td>
+<td>10GbE</td>
+</tr>
+<tr>
+<td><strong>MDS</strong></td>
+<td>8 核</td>
+<td>16GB</td>
+<td>200GB SSD</td>
+<td>10GbE</td>
+</tr>
+<tr>
+<td><strong>RGW</strong></td>
+<td>8 核</td>
+<td>16GB</td>
+<td>100GB SSD</td>
+<td>10GbE</td>
+</tr>
+</tbody></table>
+<h3 id="3-2-使用-cephadm-部署（推荐）"><a href="#3-2-使用-cephadm-部署（推荐）" class="headerlink" title="3.2 使用 cephadm 部署（推荐）"></a>3.2 使用 cephadm 部署（推荐）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 安装 cephadm</span><br>curl --silent --remote-name --location https://github.com/ceph/ceph/raw/quincy/src/cephadm/cephadm<br><span class="hljs-built_in">chmod</span> +x cephadm<br><span class="hljs-built_in">sudo</span> ./cephadm install<br><br><span class="hljs-comment"># 2. 引导第一个节点</span><br><span class="hljs-built_in">sudo</span> cephadm bootstrap --mon-ip 192.168.1.10 --cluster-network 192.168.2.0/24<br><br><span class="hljs-comment"># 3. 添加其他节点</span><br><span class="hljs-built_in">sudo</span> ceph orch host add node2 192.168.1.11<br><span class="hljs-built_in">sudo</span> ceph orch host add node3 192.168.1.12<br><br><span class="hljs-comment"># 4. 添加 OSD（自动发现磁盘）</span><br><span class="hljs-built_in">sudo</span> ceph orch apply osd --all-available-devices<br><br><span class="hljs-comment"># 5. 查看集群状态</span><br><span class="hljs-built_in">sudo</span> ceph -s<br><span class="hljs-built_in">sudo</span> ceph osd tree<br><span class="hljs-built_in">sudo</span> ceph pg <span class="hljs-built_in">stat</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3-使用-RBD-块存储"><a href="#3-3-使用-RBD-块存储" class="headerlink" title="3.3 使用 RBD 块存储"></a>3.3 使用 RBD 块存储</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建存储池</span><br><span class="hljs-built_in">sudo</span> ceph osd pool create rbd-pool 128<br><br><span class="hljs-comment"># 启用 RBD</span><br><span class="hljs-built_in">sudo</span> rbd pool init rbd-pool<br><br><span class="hljs-comment"># 创建 RBD 镜像</span><br><span class="hljs-built_in">sudo</span> rbd create rbd-pool/vm-disk --size 102400  <span class="hljs-comment"># 100GB</span><br><br><span class="hljs-comment"># 映射到本地</span><br><span class="hljs-built_in">sudo</span> rbd map rbd-pool/vm-disk<br><br><span class="hljs-comment"># 格式化并挂载</span><br><span class="hljs-built_in">sudo</span> mkfs.ext4 /dev/rbd0<br><span class="hljs-built_in">sudo</span> mount /dev/rbd0 /mnt/rbd<br><br><span class="hljs-comment"># 查看 RBD 镜像</span><br><span class="hljs-built_in">sudo</span> rbd <span class="hljs-built_in">ls</span> rbd-pool<br><span class="hljs-built_in">sudo</span> rbd info rbd-pool/vm-disk<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-4-使用-RADOS-Gateway-S3"><a href="#3-4-使用-RADOS-Gateway-S3" class="headerlink" title="3.4 使用 RADOS Gateway (S3)"></a>3.4 使用 RADOS Gateway (S3)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建 RGW 用户</span><br><span class="hljs-built_in">sudo</span> radosgw-admin user create --uid=<span class="hljs-string">&quot;testuser&quot;</span> --display-name=<span class="hljs-string">&quot;Test User&quot;</span><br><br><span class="hljs-comment"># 输出包含 access_key 和 secret_key</span><br>&#123;<br>    <span class="hljs-string">&quot;user_id&quot;</span>: <span class="hljs-string">&quot;testuser&quot;</span>,<br>    <span class="hljs-string">&quot;display_name&quot;</span>: <span class="hljs-string">&quot;Test User&quot;</span>,<br>    <span class="hljs-string">&quot;keys&quot;</span>: [<br>        &#123;<br>            <span class="hljs-string">&quot;user&quot;</span>: <span class="hljs-string">&quot;testuser&quot;</span>,<br>            <span class="hljs-string">&quot;access_key&quot;</span>: <span class="hljs-string">&quot;XXXXXXXXXXXXXXXXXXXX&quot;</span>,<br>            <span class="hljs-string">&quot;secret_key&quot;</span>: <span class="hljs-string">&quot;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&quot;</span><br>        &#125;<br>    ]<br>&#125;<br><br><span class="hljs-comment"># 使用 AWS CLI 访问</span><br>aws configure <span class="hljs-built_in">set</span> aws_access_key_id <span class="hljs-string">&quot;XXXXXXXXXXXXXXXXXXXX&quot;</span><br>aws configure <span class="hljs-built_in">set</span> aws_secret_access_key <span class="hljs-string">&quot;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&quot;</span><br>aws configure <span class="hljs-built_in">set</span> default.region <span class="hljs-string">&quot;default&quot;</span><br><br><span class="hljs-comment"># 创建 bucket</span><br>aws --endpoint-url http://rgw-node:8080 s3 mb s3://my-bucket<br><br><span class="hljs-comment"># 上传文件</span><br>aws --endpoint-url http://rgw-node:8080 s3 <span class="hljs-built_in">cp</span> file.txt s3://my-bucket/<br><br><span class="hljs-comment"># 列出文件</span><br>aws --endpoint-url http://rgw-node:8080 s3 <span class="hljs-built_in">ls</span> s3://my-bucket/<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-5-使用-CephFS-文件系统"><a href="#3-5-使用-CephFS-文件系统" class="headerlink" title="3.5 使用 CephFS 文件系统"></a>3.5 使用 CephFS 文件系统</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建 CephFS 数据池和元数据池</span><br><span class="hljs-built_in">sudo</span> ceph osd pool create cephfs-data 128<br><span class="hljs-built_in">sudo</span> ceph osd pool create cephfs-metadata 128<br><br><span class="hljs-comment"># 创建 CephFS</span><br><span class="hljs-built_in">sudo</span> ceph fs new cephfs cephfs-metadata cephfs-data<br><br><span class="hljs-comment"># 安装 CephFS 客户端</span><br><span class="hljs-built_in">sudo</span> apt install ceph-fuse<br><br><span class="hljs-comment"># 挂载 CephFS</span><br><span class="hljs-built_in">sudo</span> ceph-fuse -m 192.168.1.10:6789 /mnt/cephfs<br><br><span class="hljs-comment"># 或者使用内核挂载</span><br><span class="hljs-built_in">sudo</span> mount -t ceph 192.168.1.10:6789:/ /mnt/cephfs -o name=admin,secretfile=/etc/ceph/admin.secret<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-6-Kubernetes-集成"><a href="#3-6-Kubernetes-集成" class="headerlink" title="3.6 Kubernetes 集成"></a>3.6 Kubernetes 集成</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># StorageClass for RBD</span><br><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">storage.k8s.io/v1</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">StorageClass</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">ceph-rbd</span><br><span class="hljs-attr">provisioner:</span> <span class="hljs-string">rbd.csi.ceph.com</span><br><span class="hljs-attr">parameters:</span><br>  <span class="hljs-attr">clusterID:</span> <span class="hljs-string">&lt;cluster-id&gt;</span><br>  <span class="hljs-attr">pool:</span> <span class="hljs-string">rbd-pool</span><br>  <span class="hljs-attr">imageFeatures:</span> <span class="hljs-string">layering</span><br>  <span class="hljs-attr">csi.storage.k8s.io/provisioner-secret-name:</span> <span class="hljs-string">csi-rbd-secret</span><br>  <span class="hljs-attr">csi.storage.k8s.io/provisioner-secret-namespace:</span> <span class="hljs-string">ceph-csi</span><br>  <span class="hljs-attr">csi.storage.k8s.io/node-stage-secret-name:</span> <span class="hljs-string">csi-rbd-secret</span><br>  <span class="hljs-attr">csi.storage.k8s.io/node-stage-secret-namespace:</span> <span class="hljs-string">ceph-csi</span><br><span class="hljs-attr">reclaimPolicy:</span> <span class="hljs-string">Delete</span><br><span class="hljs-attr">allowVolumeExpansion:</span> <span class="hljs-literal">true</span><br><span class="hljs-attr">mountOptions:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">discard</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># PVC 使用 Ceph RBD</span><br><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">PersistentVolumeClaim</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">ceph-rbd-pvc</span><br><span class="hljs-attr">spec:</span><br>  <span class="hljs-attr">accessModes:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">ReadWriteOnce</span><br>  <span class="hljs-attr">resources:</span><br>    <span class="hljs-attr">requests:</span><br>      <span class="hljs-attr">storage:</span> <span class="hljs-string">10Gi</span><br>  <span class="hljs-attr">storageClassName:</span> <span class="hljs-string">ceph-rbd</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、竞品分析"><a href="#四、竞品分析" class="headerlink" title="四、竞品分析"></a>四、竞品分析</h2><h3 id="4-1-分布式存储系统对比"><a href="#4-1-分布式存储系统对比" class="headerlink" title="4.1 分布式存储系统对比"></a>4.1 分布式存储系统对比</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>Ceph</th>
+<th>MinIO</th>
+<th>GlusterFS</th>
+<th>HDFS</th>
+<th>SeaweedFS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>存储类型</strong></td>
+<td>对象&#x2F;块&#x2F;文件</td>
+<td>对象</td>
+<td>文件</td>
+<td>文件</td>
+<td>对象</td>
+</tr>
+<tr>
+<td><strong>协议</strong></td>
+<td>S3&#x2F;Swift&#x2F;RBD&#x2F;CephFS</td>
+<td>S3</td>
+<td>NFS&#x2F;Gluster</td>
+<td>HDFS API</td>
+<td>HTTP API</td>
+</tr>
+<tr>
+<td><strong>元数据</strong></td>
+<td>去中心化 (CRUSH)</td>
+<td>去中心化</td>
+<td>去中心化</td>
+<td>中心化 (NameNode)</td>
+<td>中心化 (Master)</td>
+</tr>
+<tr>
+<td><strong>数据一致性</strong></td>
+<td>强一致</td>
+<td>强一致</td>
+<td>最终一致</td>
+<td>强一致</td>
+<td>最终一致</td>
+</tr>
+<tr>
+<td><strong>小文件优化</strong></td>
+<td>⭐⭐</td>
+<td>⭐⭐⭐</td>
+<td>⭐⭐</td>
+<td>⭐</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>大文件优化</strong></td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>部署复杂度</strong></td>
+<td>高</td>
+<td>低</td>
+<td>中</td>
+<td>高</td>
+<td>低</td>
+</tr>
+<tr>
+<td><strong>运维复杂度</strong></td>
+<td>高</td>
+<td>低</td>
+<td>中</td>
+<td>高</td>
+<td>低</td>
+</tr>
+<tr>
+<td><strong>社区活跃度</strong></td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐⭐</td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td><strong>生产案例</strong></td>
+<td>Red Hat, Canonical</td>
+<td>云原生</td>
+<td>企业 NAS</td>
+<td>Hadoop 生态</td>
+<td>小规模部署</td>
+</tr>
+</tbody></table>
+<h3 id="4-2-详细对比分析"><a href="#4-2-详细对比分析" class="headerlink" title="4.2 详细对比分析"></a>4.2 详细对比分析</h3><h4 id="Ceph-vs-MinIO"><a href="#Ceph-vs-MinIO" class="headerlink" title="Ceph vs MinIO"></a>Ceph vs MinIO</h4><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Ceph</th>
+<th>MinIO</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>定位</strong></td>
+<td>统一存储平台</td>
+<td>专注对象存储</td>
+</tr>
+<tr>
+<td><strong>优势</strong></td>
+<td>支持多种存储接口，功能全面</td>
+<td>轻量级，部署简单，S3 兼容性好</td>
+</tr>
+<tr>
+<td><strong>劣势</strong></td>
+<td>部署复杂，运维成本高</td>
+<td>只支持对象存储，无块&#x2F;文件支持</td>
+</tr>
+<tr>
+<td><strong>适用场景</strong></td>
+<td>需要统一存储的企业级场景</td>
+<td>纯对象存储场景，云原生环境</td>
+</tr>
+</tbody></table>
+<p><strong>选型建议：</strong></p>
+<ul>
+<li>如果只需要 S3 对象存储 → <strong>MinIO</strong></li>
+<li>如果需要块存储&#x2F;文件系统 → <strong>Ceph</strong></li>
+<li>如果运维能力有限 → <strong>MinIO</strong></li>
+</ul>
+<h4 id="Ceph-vs-GlusterFS"><a href="#Ceph-vs-GlusterFS" class="headerlink" title="Ceph vs GlusterFS"></a>Ceph vs GlusterFS</h4><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Ceph</th>
+<th>GlusterFS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>定位</strong></td>
+<td>统一存储平台</td>
+<td>分布式文件系统</td>
+</tr>
+<tr>
+<td><strong>优势</strong></td>
+<td>功能全面，强一致性</td>
+<td>部署简单，POSIX 兼容性好</td>
+</tr>
+<tr>
+<td><strong>劣势</strong></td>
+<td>部署复杂</td>
+<td>无块存储&#x2F;对象存储支持</td>
+</tr>
+<tr>
+<td><strong>元数据</strong></td>
+<td>去中心化</td>
+<td>去中心化</td>
+</tr>
+<tr>
+<td><strong>适用场景</strong></td>
+<td>需要多种存储接口</td>
+<td>纯文件共享场景</td>
+</tr>
+</tbody></table>
+<p><strong>选型建议：</strong></p>
+<ul>
+<li>如果需要 NFS 替代方案 → <strong>GlusterFS</strong></li>
+<li>如果需要块存储&#x2F;对象存储 → <strong>Ceph</strong></li>
+<li>如果追求简单易用 → <strong>GlusterFS</strong></li>
+</ul>
+<h4 id="Ceph-vs-HDFS"><a href="#Ceph-vs-HDFS" class="headerlink" title="Ceph vs HDFS"></a>Ceph vs HDFS</h4><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Ceph</th>
+<th>HDFS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>定位</strong></td>
+<td>通用存储平台</td>
+<td>大数据存储</td>
+</tr>
+<tr>
+<td><strong>优势</strong></td>
+<td>支持多种接口，随机读写</td>
+<td>大文件顺序读写性能高</td>
+</tr>
+<tr>
+<td><strong>劣势</strong></td>
+<td>小文件性能差</td>
+<td>只支持文件，单点故障 (NameNode)</td>
+</tr>
+<tr>
+<td><strong>适用场景</strong></td>
+<td>通用存储</td>
+<td>Hadoop&#x2F;Spark 生态</td>
+</tr>
+</tbody></table>
+<p><strong>选型建议：</strong></p>
+<ul>
+<li>如果是 Hadoop&#x2F;Spark 生态 → <strong>HDFS</strong></li>
+<li>如果需要通用存储 → <strong>Ceph</strong></li>
+<li>如果需要对象存储 → <strong>Ceph</strong></li>
+</ul>
+<h3 id="4-3-选型决策树"><a href="#4-3-选型决策树" class="headerlink" title="4.3 选型决策树"></a>4.3 选型决策树</h3><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs armasm">你的存储需求是什么？<br>│<br>├── 需要对象存储 (<span class="hljs-built_in">S3</span>)<br>│   ├── 只需要对象存储 → MinIO<br>│   └── 还需要块/文件 → Ceph<br>│<br>├── 需要块存储 (VM/数据库)<br>│   └── Ceph (RBD)<br>│<br>├── 需要文件系统 (共享存储)<br>│   ├── NFS 替代 → GlusterFS<br>│   └── 高性能需求 → CephFS<br>│<br>└── 需要大数据存储<br>    ├── Hadoop/Spark 生态 → HDFS<br>    └── 通用存储 → Ceph<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、生产环境最佳实践"><a href="#五、生产环境最佳实践" class="headerlink" title="五、生产环境最佳实践"></a>五、生产环境最佳实践</h2><h3 id="5-1-性能优化"><a href="#5-1-性能优化" class="headerlink" title="5.1 性能优化"></a>5.1 性能优化</h3><p><strong>1. 分层存储 (Tiering)</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">SSD <span class="hljs-title function_">Pool</span> <span class="hljs-params">(热数据)</span> ←→ Cache Tier ←→ HDD <span class="hljs-title function_">Pool</span> <span class="hljs-params">(冷数据)</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建缓存池</span><br><span class="hljs-built_in">sudo</span> ceph osd pool create cache-pool 128<br><span class="hljs-built_in">sudo</span> ceph osd pool create cold-pool 128<br><br><span class="hljs-comment"># 设置缓存层</span><br><span class="hljs-built_in">sudo</span> ceph tier add cold-pool cache-pool<br><span class="hljs-built_in">sudo</span> ceph tier cache-mode cache-pool writeback<br><br><span class="hljs-comment"># 设置缓存规则</span><br><span class="hljs-built_in">sudo</span> ceph osd pool <span class="hljs-built_in">set</span> cache-pool hit_set_type bloom<br><span class="hljs-built_in">sudo</span> ceph osd pool <span class="hljs-built_in">set</span> cache-pool hit_set_count 1<br><span class="hljs-built_in">sudo</span> ceph osd pool <span class="hljs-built_in">set</span> cache-pool hit_set_period 3600<br><span class="hljs-built_in">sudo</span> ceph osd pool <span class="hljs-built_in">set</span> cache-pool target_max_bytes 100000000000  <span class="hljs-comment"># 100GB</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>2. 纠删码 (Erasure Coding)</strong></p>
+<p>纠删码可以用更少的存储空间提供相同的数据可靠性。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建纠删码池</span><br><span class="hljs-built_in">sudo</span> ceph osd pool create ec-pool 128 erasure<br><br><span class="hljs-comment"># 默认 profile：k=2, m=1 (3份数据，占用 1.5 倍空间)</span><br><span class="hljs-comment"># 自定义 profile</span><br><span class="hljs-built_in">sudo</span> ceph osd erasure-code-profile <span class="hljs-built_in">set</span> my-profile k=4 m=2 crush-failure-domain=rack<br><span class="hljs-built_in">sudo</span> ceph osd pool create ec-pool 128 erasure my-profile<br></code></pre></td></tr></table></figure>
+
+<p><strong>纠删码 vs 副本：</strong></p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th>存储开销</th>
+<th>可靠性</th>
+<th>性能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>3 副本</td>
+<td>3x</td>
+<td>高</td>
+<td>高</td>
+</tr>
+<tr>
+<td>纠删码 4+2</td>
+<td>1.5x</td>
+<td>高</td>
+<td>中</td>
+</tr>
+</tbody></table>
+<h3 id="5-2-监控告警"><a href="#5-2-监控告警" class="headerlink" title="5.2 监控告警"></a>5.2 监控告警</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看集群状态</span><br><span class="hljs-built_in">sudo</span> ceph -s<br><span class="hljs-built_in">sudo</span> ceph health detail<br><br><span class="hljs-comment"># 查看 OSD 状态</span><br><span class="hljs-built_in">sudo</span> ceph osd tree<br><span class="hljs-built_in">sudo</span> ceph osd <span class="hljs-built_in">stat</span><br><br><span class="hljs-comment"># 查看 PG 状态</span><br><span class="hljs-built_in">sudo</span> ceph pg <span class="hljs-built_in">stat</span><br><span class="hljs-built_in">sudo</span> ceph pg dump<br><br><span class="hljs-comment"># 查看性能指标</span><br><span class="hljs-built_in">sudo</span> ceph osd pool stats<br><span class="hljs-built_in">sudo</span> ceph osd perf<br></code></pre></td></tr></table></figure>
+
+<p><strong>推荐监控工具：</strong></p>
+<ul>
+<li><strong>Ceph Dashboard</strong>：官方 Web 管理界面</li>
+<li><strong>Prometheus + Grafana</strong>：指标采集和可视化</li>
+<li><strong>Zabbix</strong>：企业级监控告警</li>
+</ul>
+<h3 id="5-3-备份恢复"><a href="#5-3-备份恢复" class="headerlink" title="5.3 备份恢复"></a>5.3 备份恢复</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># RBD 快照</span><br><span class="hljs-built_in">sudo</span> rbd snap create rbd-pool/vm-disk@snap1<br><span class="hljs-built_in">sudo</span> rbd snap <span class="hljs-built_in">ls</span> rbd-pool/vm-disk<br><br><span class="hljs-comment"># RBD 导出</span><br><span class="hljs-built_in">sudo</span> rbd <span class="hljs-built_in">export</span> rbd-pool/vm-disk /backup/vm-disk.img<br><br><span class="hljs-comment"># RBD 导入</span><br><span class="hljs-built_in">sudo</span> rbd import /backup/vm-disk.img rbd-pool/vm-disk-restored<br><br><span class="hljs-comment"># RADOS 导出</span><br><span class="hljs-built_in">sudo</span> rados -p rbd-pool <span class="hljs-built_in">export</span> /backup/rados-export<br><span class="hljs-built_in">sudo</span> rados -p rbd-pool import /backup/rados-export<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、常见问题与解决方案"><a href="#六、常见问题与解决方案" class="headerlink" title="六、常见问题与解决方案"></a>六、常见问题与解决方案</h2><h3 id="6-1-OSD-频繁宕机"><a href="#6-1-OSD-频繁宕机" class="headerlink" title="6.1 OSD 频繁宕机"></a>6.1 OSD 频繁宕机</h3><p><strong>原因：</strong></p>
+<ul>
+<li>磁盘故障</li>
+<li>内存不足</li>
+<li>网络抖动</li>
+</ul>
+<p><strong>解决方案：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看 OSD 日志</span><br><span class="hljs-built_in">sudo</span> journalctl -u ceph-osd@&lt;osd-id&gt;<br><br><span class="hljs-comment"># 检查磁盘健康</span><br><span class="hljs-built_in">sudo</span> smartctl -a /dev/sdX<br><br><span class="hljs-comment"># 调整 OSD 参数</span><br><span class="hljs-built_in">sudo</span> ceph config <span class="hljs-built_in">set</span> osd osd_heartbeat_grace 60<br><span class="hljs-built_in">sudo</span> ceph config <span class="hljs-built_in">set</span> osd osd_heartbeat_interval 10<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-2-集群空间不足"><a href="#6-2-集群空间不足" class="headerlink" title="6.2 集群空间不足"></a>6.2 集群空间不足</h3><p><strong>解决方案：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看空间使用</span><br><span class="hljs-built_in">sudo</span> ceph <span class="hljs-built_in">df</span><br><span class="hljs-built_in">sudo</span> ceph osd <span class="hljs-built_in">df</span><br><br><span class="hljs-comment"># 清理已删除的对象</span><br><span class="hljs-built_in">sudo</span> rados -p rbd-pool cleanup<br><br><span class="hljs-comment"># 调整副本数</span><br><span class="hljs-built_in">sudo</span> ceph osd pool <span class="hljs-built_in">set</span> rbd-pool size 2<br><br><span class="hljs-comment"># 使用纠删码</span><br><span class="hljs-built_in">sudo</span> ceph osd pool create ec-pool 128 erasure<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-3-性能问题"><a href="#6-3-性能问题" class="headerlink" title="6.3 性能问题"></a>6.3 性能问题</h3><p><strong>排查步骤：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看 IO 统计</span><br><span class="hljs-built_in">sudo</span> ceph osd perf<br><br><span class="hljs-comment"># 查看慢请求</span><br><span class="hljs-built_in">sudo</span> ceph daemon osd.&lt;<span class="hljs-built_in">id</span>&gt; dump_ops_in_flight<br><br><span class="hljs-comment"># 查看网络延迟</span><br><span class="hljs-built_in">sudo</span> ceph daemon mon.&lt;<span class="hljs-built_in">id</span>&gt; perf dump<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、Java-Python-实战"><a href="#七、Java-Python-实战" class="headerlink" title="七、Java &#x2F; Python 实战"></a>七、Java &#x2F; Python 实战</h2><p>本节介绍如何用 Java 和 Python 操作 Ceph 的三大存储接口：RADOS Gateway (S3)、RBD (librados)、CephFS。</p>
+<h3 id="7-1-Python-访问-RADOS-Gateway-S3-兼容"><a href="#7-1-Python-访问-RADOS-Gateway-S3-兼容" class="headerlink" title="7.1 Python 访问 RADOS Gateway (S3 兼容)"></a>7.1 Python 访问 RADOS Gateway (S3 兼容)</h3><p>RADOS Gateway (RGW) 兼容 AWS S3 协议，可直接使用 <code>boto3</code> 访问，这也是<strong>最推荐</strong>的 Python 接入方式。</p>
+<h4 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install boto3<br></code></pre></td></tr></table></figure>
+
+<h4 id="基础操作：Bucket-与-Object"><a href="#基础操作：Bucket-与-Object" class="headerlink" title="基础操作：Bucket 与 Object"></a>基础操作：Bucket 与 Object</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> boto3<br><span class="hljs-keyword">from</span> botocore.client <span class="hljs-keyword">import</span> Config<br><br><span class="hljs-comment"># 创建 S3 客户端（指向 Ceph RGW）</span><br>s3 = boto3.client(<br>    <span class="hljs-string">&#x27;s3&#x27;</span>,<br>    endpoint_url=<span class="hljs-string">&#x27;http://rgw-node:8080&#x27;</span>,        <span class="hljs-comment"># RGW 地址</span><br>    aws_access_key_id=<span class="hljs-string">&#x27;YOUR_ACCESS_KEY&#x27;</span>,<br>    aws_secret_access_key=<span class="hljs-string">&#x27;YOUR_SECRET_KEY&#x27;</span>,<br>    config=Config(signature_version=<span class="hljs-string">&#x27;s3v4&#x27;</span>),     <span class="hljs-comment"># 强制使用 v4 签名</span><br>    region_name=<span class="hljs-string">&#x27;default&#x27;</span><br>)<br><br><span class="hljs-comment"># --- Bucket 操作 ---</span><br>s3.create_bucket(Bucket=<span class="hljs-string">&#x27;my-data-lake&#x27;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Buckets:&quot;</span>, [b[<span class="hljs-string">&#x27;Name&#x27;</span>] <span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> s3.list_buckets()[<span class="hljs-string">&#x27;Buckets&#x27;</span>]])<br><br><span class="hljs-comment"># --- 上传文件 ---</span><br>s3.upload_file(<span class="hljs-string">&#x27;/local/path/data.csv&#x27;</span>, <span class="hljs-string">&#x27;my-data-lake&#x27;</span>, <span class="hljs-string">&#x27;data/raw/data.csv&#x27;</span>)<br><br><span class="hljs-comment"># --- 流式上传（适合大文件 / 内存数据） ---</span><br><span class="hljs-keyword">from</span> io <span class="hljs-keyword">import</span> BytesIO<br>data = <span class="hljs-string">b&#x27;&#123;&quot;logs&quot;: [...]&#125;&#x27;</span><br>s3.upload_fileobj(BytesIO(data), <span class="hljs-string">&#x27;my-data-lake&#x27;</span>, <span class="hljs-string">&#x27;logs/app.json&#x27;</span>)<br><br><span class="hljs-comment"># --- 下载文件 ---</span><br>s3.download_file(<span class="hljs-string">&#x27;my-data-lake&#x27;</span>, <span class="hljs-string">&#x27;data/raw/data.csv&#x27;</span>, <span class="hljs-string">&#x27;/local/path/download.csv&#x27;</span>)<br><br><span class="hljs-comment"># --- 列出对象（支持前缀过滤） ---</span><br>response = s3.list_objects_v2(Bucket=<span class="hljs-string">&#x27;my-data-lake&#x27;</span>, Prefix=<span class="hljs-string">&#x27;data/&#x27;</span>)<br><span class="hljs-keyword">for</span> obj <span class="hljs-keyword">in</span> response.get(<span class="hljs-string">&#x27;Contents&#x27;</span>, []):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  <span class="hljs-subst">&#123;obj[<span class="hljs-string">&#x27;Key&#x27;</span>]&#125;</span>  size=<span class="hljs-subst">&#123;obj[<span class="hljs-string">&#x27;Size&#x27;</span>]&#125;</span>  modified=<span class="hljs-subst">&#123;obj[<span class="hljs-string">&#x27;LastModified&#x27;</span>]&#125;</span>&quot;</span>)<br><br><span class="hljs-comment"># --- 删除对象 ---</span><br>s3.delete_object(Bucket=<span class="hljs-string">&#x27;my-data-lake&#x27;</span>, Key=<span class="hljs-string">&#x27;logs/app.json&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="分片上传（大文件-5GB）"><a href="#分片上传（大文件-5GB）" class="headerlink" title="分片上传（大文件 &gt;5GB）"></a>分片上传（大文件 &gt;5GB）</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># boto3 内置分片上传，自动处理</span><br><span class="hljs-keyword">from</span> boto3.s3.transfer <span class="hljs-keyword">import</span> TransferConfig<br><br>config = TransferConfig(<br>    multipart_threshold=<span class="hljs-number">1024</span> * <span class="hljs-number">256</span>,  <span class="hljs-comment"># 256KB 以上启用分片</span><br>    max_concurrency=<span class="hljs-number">10</span>,<br>    multipart_chunksize=<span class="hljs-number">1024</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">100</span>  <span class="hljs-comment"># 每片 100MB</span><br>)<br>s3.upload_file(<span class="hljs-string">&#x27;/local/path/huge-video.mp4&#x27;</span>, <span class="hljs-string">&#x27;my-data-lake&#x27;</span>,<br>               <span class="hljs-string">&#x27;videos/huge-video.mp4&#x27;</span>, Config=config)<br></code></pre></td></tr></table></figure>
+
+<h4 id="预签名-URL（临时授权访问）"><a href="#预签名-URL（临时授权访问）" class="headerlink" title="预签名 URL（临时授权访问）"></a>预签名 URL（临时授权访问）</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 生成预签名 URL，有效期 3600 秒</span><br>url = s3.generate_presigned_url(<br>    <span class="hljs-string">&#x27;get_object&#x27;</span>,<br>    Params=&#123;<span class="hljs-string">&#x27;Bucket&#x27;</span>: <span class="hljs-string">&#x27;my-data-lake&#x27;</span>, <span class="hljs-string">&#x27;Key&#x27;</span>: <span class="hljs-string">&#x27;data/raw/data.csv&#x27;</span>&#125;,<br>    ExpiresIn=<span class="hljs-number">3600</span><br>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Download URL:&quot;</span>, url)<br><span class="hljs-comment"># 分发给前端 / 第三方，无需暴露 AK/SK</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="7-2-Python-直接访问-librados（底层-RADOS）"><a href="#7-2-Python-直接访问-librados（底层-RADOS）" class="headerlink" title="7.2 Python 直接访问 librados（底层 RADOS）"></a>7.2 Python 直接访问 librados（底层 RADOS）</h3><p>当需要<strong>极致低延迟</strong>或操作 RBD 镜像内部数据时，可使用 <code>python-rados</code> 直连集群。</p>
+<h4 id="安装依赖-1"><a href="#安装依赖-1" class="headerlink" title="安装依赖"></a>安装依赖</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 系统依赖（以 Ubuntu 为例）</span><br><span class="hljs-built_in">sudo</span> apt install python3-rados<br><br><span class="hljs-comment"># 或使用 pip（需要先安装 ceph-dev 包）</span><br>pip install rados<br></code></pre></td></tr></table></figure>
+
+<h4 id="连接集群与-IO-操作"><a href="#连接集群与-IO-操作" class="headerlink" title="连接集群与 IO 操作"></a>连接集群与 IO 操作</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> rados<br><br><span class="hljs-comment"># 1. 创建集群连接</span><br>cluster = rados.Rados(conffile=<span class="hljs-string">&#x27;/etc/ceph/ceph.conf&#x27;</span>)<br>cluster.connect()<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Cluster ID:&quot;</span>, cluster.get_fsid())<br><br><span class="hljs-comment"># 2. 打开存储池</span><br>ioctx = cluster.open_ioctx(<span class="hljs-string">&#x27;my-pool&#x27;</span>)<br><br><span class="hljs-comment"># 3. 写入对象</span><br>ioctx.write_full(<span class="hljs-string">&#x27;hello-obj&#x27;</span>, <span class="hljs-string">b&#x27;Hello Ceph from Python!&#x27;</span>)<br>ioctx.write(<span class="hljs-string">&#x27;large-obj&#x27;</span>, <span class="hljs-string">b&#x27;partial data...&#x27;</span>, offset=<span class="hljs-number">1024</span>)<br><br><span class="hljs-comment"># 4. 读取对象</span><br>data = ioctx.read(<span class="hljs-string">&#x27;hello-obj&#x27;</span>, length=<span class="hljs-number">1024</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Read:&quot;</span>, data.decode())<br><br><span class="hljs-comment"># 5. 对象属性 (xattr)</span><br>ioctx.set_xattr(<span class="hljs-string">&#x27;hello-obj&#x27;</span>, <span class="hljs-string">&#x27;content-type&#x27;</span>, <span class="hljs-string">b&#x27;text/plain&#x27;</span>)<br>ct = ioctx.get_xattr(<span class="hljs-string">&#x27;hello-obj&#x27;</span>, <span class="hljs-string">&#x27;content-type&#x27;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Xattr:&quot;</span>, ct.decode())<br><br><span class="hljs-comment"># 6. 对象统计</span><br>stat = ioctx.stat(<span class="hljs-string">&#x27;hello-obj&#x27;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Size: <span class="hljs-subst">&#123;stat[<span class="hljs-number">0</span>]&#125;</span>, Mtime: <span class="hljs-subst">&#123;stat[<span class="hljs-number">1</span>]&#125;</span>&quot;</span>)<br><br><span class="hljs-comment"># 7. 列举对象</span><br>object_iterator = ioctx.list_objects()<br><span class="hljs-keyword">for</span> obj <span class="hljs-keyword">in</span> object_iterator:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  <span class="hljs-subst">&#123;obj.key&#125;</span>&quot;</span>)<br><br><span class="hljs-comment"># 8. 清理</span><br>ioctx.close()<br>cluster.shutdown()<br></code></pre></td></tr></table></figure>
+
+<h4 id="操作-RBD-镜像"><a href="#操作-RBD-镜像" class="headerlink" title="操作 RBD 镜像"></a>操作 RBD 镜像</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> rbd<br><br><span class="hljs-comment"># 创建 RBD 句柄</span><br>ioctx = cluster.open_ioctx(<span class="hljs-string">&#x27;rbd-pool&#x27;</span>)<br>rbd_inst = rbd.RBD()<br><br><span class="hljs-comment"># 列出镜像</span><br>images = rbd_inst.<span class="hljs-built_in">list</span>(ioctx)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;RBD Images:&quot;</span>, images)<br><br><span class="hljs-comment"># 创建镜像</span><br>rbd_inst.create(ioctx, <span class="hljs-string">&#x27;new-disk&#x27;</span>, size=<span class="hljs-number">10</span> * <span class="hljs-number">1024</span>**<span class="hljs-number">3</span>)  <span class="hljs-comment"># 10GB</span><br><br><span class="hljs-comment"># 打开镜像并读写</span><br>image = rbd.Image(ioctx, <span class="hljs-string">&#x27;new-disk&#x27;</span>)<br>image.write(<span class="hljs-string">b&#x27;Ceph RBD data&#x27;</span>, offset=<span class="hljs-number">0</span>)<br>data = image.read(<span class="hljs-number">0</span>, <span class="hljs-number">13</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;RBD read:&quot;</span>, data.decode())<br><br><span class="hljs-comment"># 创建快照</span><br>image.create_snap(<span class="hljs-string">&#x27;backup-snap&#x27;</span>)<br>image.close()<br></code></pre></td></tr></table></figure>
+
+<h3 id="7-3-Java-访问-RADOS-Gateway-S3-兼容"><a href="#7-3-Java-访问-RADOS-Gateway-S3-兼容" class="headerlink" title="7.3 Java 访问 RADOS Gateway (S3 兼容)"></a>7.3 Java 访问 RADOS Gateway (S3 兼容)</h3><p>Java 生态推荐使用 <strong>AWS SDK v2</strong>（<code>software.amazon.awssdk</code>），Ceph RGW 完全兼容 S3 协议。</p>
+<h4 id="Maven-依赖"><a href="#Maven-依赖" class="headerlink" title="Maven 依赖"></a>Maven 依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>software.amazon.awssdk<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>s3<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.25.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-comment">&lt;!-- URL 连接所需的 CRT 传输 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>software.amazon.awssdk<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>s3-transfer-manager<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.25.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="基础操作封装"><a href="#基础操作封装" class="headerlink" title="基础操作封装"></a>基础操作封装</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> software.amazon.awssdk.auth.credentials.AwsBasicCredentials;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.core.sync.RequestBody;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.regions.Region;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.services.s3.S3Client;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.services.s3.model.*;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.services.s3.S3Configuration;<br><br><span class="hljs-keyword">import</span> java.net.URI;<br><span class="hljs-keyword">import</span> java.nio.file.Paths;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CephS3Client</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> S3Client s3;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">CephS3Client</span><span class="hljs-params">(String endpoint, String accessKey, String secretKey)</span> &#123;<br>        <span class="hljs-built_in">this</span>.s3 = S3Client.builder()<br>                .endpointOverride(URI.create(endpoint))<br>                .credentialsProvider(StaticCredentialsProvider.create(<br>                        AwsBasicCredentials.create(accessKey, secretKey)))<br>                .region(Region.of(<span class="hljs-string">&quot;default&quot;</span>))<br>                .serviceConfiguration(S3Configuration.builder()<br>                        .pathStyleAccessEnabled(<span class="hljs-literal">true</span>)       <span class="hljs-comment">// Ceph RGW 必须使用 path-style</span><br>                        .chunkedEncodingEnabled(<span class="hljs-literal">false</span>)      <span class="hljs-comment">// 部分 RGW 版本需要关闭</span><br>                        .build())<br>                .build();<br>    &#125;<br><br>    <span class="hljs-comment">// --- 创建 Bucket ---</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">createBucket</span><span class="hljs-params">(String bucket)</span> &#123;<br>        s3.createBucket(CreateBucketRequest.builder().bucket(bucket).build());<br>        System.out.println(<span class="hljs-string">&quot;Bucket created: &quot;</span> + bucket);<br>    &#125;<br><br>    <span class="hljs-comment">// --- 上传文件 ---</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">uploadFile</span><span class="hljs-params">(String bucket, String key, String localPath)</span> &#123;<br>        s3.putObject(PutObjectRequest.builder()<br>                        .bucket(bucket).key(key).build(),<br>                Paths.get(localPath));<br>        System.out.println(<span class="hljs-string">&quot;Uploaded: &quot;</span> + key);<br>    &#125;<br><br>    <span class="hljs-comment">// --- 上传字节数组 ---</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">uploadBytes</span><span class="hljs-params">(String bucket, String key, <span class="hljs-type">byte</span>[] data, String contentType)</span> &#123;<br>        s3.putObject(PutObjectRequest.builder()<br>                        .bucket(bucket).key(key)<br>                        .contentType(contentType).build(),<br>                RequestBody.fromBytes(data));<br>    &#125;<br><br>    <span class="hljs-comment">// --- 下载文件 ---</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">downloadFile</span><span class="hljs-params">(String bucket, String key, String localPath)</span> &#123;<br>        s3.getObject(GetObjectRequest.builder()<br>                        .bucket(bucket).key(key).build(),<br>                Paths.get(localPath));<br>        System.out.println(<span class="hljs-string">&quot;Downloaded: &quot;</span> + key);<br>    &#125;<br><br>    <span class="hljs-comment">// --- 列出对象 ---</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">listObjects</span><span class="hljs-params">(String bucket, String prefix)</span> &#123;<br>        <span class="hljs-type">ListObjectsV2Response</span> <span class="hljs-variable">response</span> <span class="hljs-operator">=</span> s3.listObjectsV2(<br>                ListObjectsV2Request.builder()<br>                        .bucket(bucket).prefix(prefix).build());<br>        <span class="hljs-keyword">for</span> (S3Object obj : response.contents()) &#123;<br>            System.out.printf(<span class="hljs-string">&quot;  %s  size=%d  modified=%s%n&quot;</span>,<br>                    obj.key(), obj.size(), obj.lastModified());<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// --- 删除对象 ---</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">deleteObject</span><span class="hljs-params">(String bucket, String key)</span> &#123;<br>        s3.deleteObject(DeleteObjectRequest.builder()<br>                .bucket(bucket).key(key).build());<br>    &#125;<br><br>    <span class="hljs-comment">// --- 生成预签名 URL ---</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">presignedUrl</span><span class="hljs-params">(String bucket, String key)</span> &#123;<br>        <span class="hljs-comment">// 需要引入 presigned-url 模块，见下方</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;TODO&quot;</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">close</span><span class="hljs-params">()</span> &#123;<br>        s3.close();<br>    &#125;<br><br>    <span class="hljs-comment">// --- 使用示例 ---</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">CephS3Client</span> <span class="hljs-variable">client</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CephS3Client</span>(<br>                <span class="hljs-string">&quot;http://rgw-node:8080&quot;</span>,<br>                <span class="hljs-string">&quot;YOUR_ACCESS_KEY&quot;</span>,<br>                <span class="hljs-string">&quot;YOUR_SECRET_KEY&quot;</span><br>        );<br><br>        client.createBucket(<span class="hljs-string">&quot;java-data-lake&quot;</span>);<br>        client.uploadFile(<span class="hljs-string">&quot;java-data-lake&quot;</span>, <span class="hljs-string">&quot;config/app.yaml&quot;</span>, <span class="hljs-string">&quot;/etc/app/config.yaml&quot;</span>);<br>        client.listObjects(<span class="hljs-string">&quot;java-data-lake&quot;</span>, <span class="hljs-string">&quot;&quot;</span>);<br>        client.close();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="预签名-URL（Java）"><a href="#预签名-URL（Java）" class="headerlink" title="预签名 URL（Java）"></a>预签名 URL（Java）</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>software.amazon.awssdk<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>presigned-url<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.25.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> software.amazon.awssdk.services.s3.presigner.S3Presigner;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;<br><br><span class="hljs-type">S3Presigner</span> <span class="hljs-variable">presigner</span> <span class="hljs-operator">=</span> S3Presigner.builder()<br>        .endpointOverride(URI.create(<span class="hljs-string">&quot;http://rgw-node:8080&quot;</span>))<br>        .credentialsProvider(StaticCredentialsProvider.create(<br>                AwsBasicCredentials.create(<span class="hljs-string">&quot;ACCESS_KEY&quot;</span>, <span class="hljs-string">&quot;SECRET_KEY&quot;</span>)))<br>        .region(Region.of(<span class="hljs-string">&quot;default&quot;</span>))<br>        .build();<br><br><span class="hljs-type">String</span> <span class="hljs-variable">url</span> <span class="hljs-operator">=</span> presigner.presignGetObject(GetObjectPresignRequest.builder()<br>        .signatureDuration(Duration.ofHours(<span class="hljs-number">1</span>))<br>        .getObjectRequest(GetObjectRequest.builder()<br>                .bucket(<span class="hljs-string">&quot;java-data-lake&quot;</span>).key(<span class="hljs-string">&quot;report.pdf&quot;</span>).build())<br>        .build()).url().toString();<br><br>System.out.println(<span class="hljs-string">&quot;Download URL: &quot;</span> + url);<br></code></pre></td></tr></table></figure>
+
+<h3 id="7-4-Java-直接访问-librados（jRados）"><a href="#7-4-Java-直接访问-librados（jRados）" class="headerlink" title="7.4 Java 直接访问 librados（jRados）"></a>7.4 Java 直接访问 librados（jRados）</h3><p>对于需要<strong>低延迟直连 Ceph 集群</strong>的场景（如实时数据分析、RBD 内部操作），可使用 <strong>jRados</strong> Java 绑定。</p>
+<h4 id="安装-jRados"><a href="#安装-jRados" class="headerlink" title="安装 jRados"></a>安装 jRados</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 编译安装（需要先安装 librados-dev）</span><br>git <span class="hljs-built_in">clone</span> https://github.com/ceph/jrados.git<br><span class="hljs-built_in">cd</span> jrados<br>mvn clean install<br><br><span class="hljs-comment"># 或使用 Ceph 自带的 Java 绑定</span><br><span class="hljs-built_in">sudo</span> apt install librados-dev librados2<br><span class="hljs-comment"># 编译 Java binding</span><br><span class="hljs-built_in">cd</span> /usr/share/ceph/java<br>javac -<span class="hljs-built_in">cp</span> . *.java<br>jar cf jrados.jar *.class<br></code></pre></td></tr></table></figure>
+
+<h4 id="Maven-依赖（自建）"><a href="#Maven-依赖（自建）" class="headerlink" title="Maven 依赖（自建）"></a>Maven 依赖（自建）</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.ceph<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>jrados<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>system<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">systemPath</span>&gt;</span>$&#123;project.basedir&#125;/lib/jrados.jar<span class="hljs-tag">&lt;/<span class="hljs-name">systemPath</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="基础操作"><a href="#基础操作" class="headerlink" title="基础操作"></a>基础操作</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> org.ceph.rados.Rados;<br><span class="hljs-keyword">import</span> org.ceph.rados.IoCTX;<br><span class="hljs-keyword">import</span> org.ceph.rados.jna.RadosObjectInfo;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CephRadosClient</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-comment">// 1. 创建 Rados 句柄</span><br>        <span class="hljs-type">Rados</span> <span class="hljs-variable">rados</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Rados</span>(<span class="hljs-string">&quot;admin&quot;</span>);  <span class="hljs-comment">// Ceph 用户名</span><br>        rados.confReadFile(<span class="hljs-keyword">new</span> <span class="hljs-title class_">java</span>.io.File(<span class="hljs-string">&quot;/etc/ceph/ceph.conf&quot;</span>));<br>        rados.connect();<br><br>        System.out.println(<span class="hljs-string">&quot;Cluster FSID: &quot;</span> + rados.getFsid());<br><br>        <span class="hljs-comment">// 2. 打开存储池</span><br>        <span class="hljs-type">IoCTX</span> <span class="hljs-variable">ioctx</span> <span class="hljs-operator">=</span> rados.ioCtxCreate(<span class="hljs-string">&quot;my-pool&quot;</span>);<br><br>        <span class="hljs-comment">// 3. 写入对象</span><br>        <span class="hljs-type">byte</span>[] data = <span class="hljs-string">&quot;Hello from Java!&quot;</span>.getBytes();<br>        ioctx.write(<span class="hljs-string">&quot;java-obj&quot;</span>, data, data.length, <span class="hljs-number">0</span>);<br><br>        <span class="hljs-comment">// 4. 读取对象</span><br>        <span class="hljs-type">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[<span class="hljs-number">1024</span>];<br>        <span class="hljs-type">int</span> <span class="hljs-variable">bytesRead</span> <span class="hljs-operator">=</span> ioctx.read(<span class="hljs-string">&quot;java-obj&quot;</span>, buffer, buffer.length, <span class="hljs-number">0</span>);<br>        System.out.println(<span class="hljs-string">&quot;Read: &quot;</span> + <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(buffer, <span class="hljs-number">0</span>, bytesRead));<br><br>        <span class="hljs-comment">// 5. 对象属性 (xattr)</span><br>        ioctx.setxattr(<span class="hljs-string">&quot;java-obj&quot;</span>, <span class="hljs-string">&quot;author&quot;</span>, <span class="hljs-string">&quot;java-app&quot;</span>.getBytes());<br>        <span class="hljs-type">byte</span>[] xattrBuf = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[<span class="hljs-number">64</span>];<br>        <span class="hljs-type">int</span> <span class="hljs-variable">xattrLen</span> <span class="hljs-operator">=</span> ioctx.getxattr(<span class="hljs-string">&quot;java-obj&quot;</span>, <span class="hljs-string">&quot;author&quot;</span>, xattrBuf, xattrBuf.length);<br>        System.out.println(<span class="hljs-string">&quot;Xattr: &quot;</span> + <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(xattrBuf, <span class="hljs-number">0</span>, xattrLen));<br><br>        <span class="hljs-comment">// 6. 对象信息</span><br>        <span class="hljs-type">RadosObjectInfo</span> <span class="hljs-variable">info</span> <span class="hljs-operator">=</span> ioctx.stat(<span class="hljs-string">&quot;java-obj&quot;</span>);<br>        System.out.println(<span class="hljs-string">&quot;Size: &quot;</span> + info.size);<br><br>        <span class="hljs-comment">// 7. 清理</span><br>        rados.ioCtxDestroy(ioctx);<br>        rados.shutdown();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="Spring-Boot-集成示例"><a href="#Spring-Boot-集成示例" class="headerlink" title="Spring Boot 集成示例"></a>Spring Boot 集成示例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> org.springframework.stereotype.Service;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.services.s3.S3Client;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.services.s3.model.*;<br><br><span class="hljs-meta">@Service</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CephStorageService</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> S3Client s3;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String defaultBucket;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">CephStorageService</span><span class="hljs-params">(S3Client s3,</span><br><span class="hljs-params">                               <span class="hljs-meta">@Value(&quot;$&#123;ceph.bucket&#125;&quot;)</span> String defaultBucket)</span> &#123;<br>        <span class="hljs-built_in">this</span>.s3 = s3;<br>        <span class="hljs-built_in">this</span>.defaultBucket = defaultBucket;<br>    &#125;<br><br>    <span class="hljs-comment">/** 上传业务数据 */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">upload</span><span class="hljs-params">(String key, <span class="hljs-type">byte</span>[] data)</span> &#123;<br>        s3.putObject(PutObjectRequest.builder()<br>                        .bucket(defaultBucket).key(key).build(),<br>                RequestBody.fromBytes(data));<br>    &#125;<br><br>    <span class="hljs-comment">/** 下载业务数据 */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">byte</span>[] download(String key) &#123;<br>        <span class="hljs-keyword">return</span> s3.getObjectAsBytes(GetObjectRequest.builder()<br>                        .bucket(defaultBucket).key(key).build())<br>                .asByteArray();<br>    &#125;<br><br>    <span class="hljs-comment">/** 检查对象是否存在 */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">exists</span><span class="hljs-params">(String key)</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            s3.headObject(HeadObjectRequest.builder()<br>                    .bucket(defaultBucket).key(key).build());<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>        &#125; <span class="hljs-keyword">catch</span> (NoSuchKeyException e) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># application.yml</span><br><span class="hljs-attr">ceph:</span><br>  <span class="hljs-attr">endpoint:</span> <span class="hljs-string">http://rgw-node:8080</span><br>  <span class="hljs-attr">access-key:</span> <span class="hljs-string">$&#123;CEPH_ACCESS_KEY&#125;</span>    <span class="hljs-comment"># 从环境变量读取</span><br>  <span class="hljs-attr">secret-key:</span> <span class="hljs-string">$&#123;CEPH_SECRET_KEY&#125;</span><br>  <span class="hljs-attr">bucket:</span> <span class="hljs-string">business-data</span><br>  <span class="hljs-attr">region:</span> <span class="hljs-string">default</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// CephConfig.java</span><br><span class="hljs-keyword">import</span> org.springframework.context.annotation.Bean;<br><span class="hljs-keyword">import</span> org.springframework.context.annotation.Configuration;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.auth.credentials.AwsBasicCredentials;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.regions.Region;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.services.s3.S3Client;<br><span class="hljs-keyword">import</span> software.amazon.awssdk.services.s3.S3Configuration;<br><br><span class="hljs-meta">@Configuration</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CephConfig</span> &#123;<br><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-keyword">public</span> S3Client <span class="hljs-title function_">cephS3Client</span><span class="hljs-params">(</span><br><span class="hljs-params">            <span class="hljs-meta">@Value(&quot;$&#123;ceph.endpoint&#125;&quot;)</span> String endpoint,</span><br><span class="hljs-params">            <span class="hljs-meta">@Value(&quot;$&#123;ceph.access-key&#125;&quot;)</span> String accessKey,</span><br><span class="hljs-params">            <span class="hljs-meta">@Value(&quot;$&#123;ceph.secret-key&#125;&quot;)</span> String secretKey,</span><br><span class="hljs-params">            <span class="hljs-meta">@Value(&quot;$&#123;ceph.region&#125;&quot;)</span> String region)</span> &#123;<br><br>        <span class="hljs-keyword">return</span> S3Client.builder()<br>                .endpointOverride(URI.create(endpoint))<br>                .credentialsProvider(StaticCredentialsProvider.create(<br>                        AwsBasicCredentials.create(accessKey, secretKey)))<br>                .region(Region.of(region))<br>                .serviceConfiguration(S3Configuration.builder()<br>                        .pathStyleAccessEnabled(<span class="hljs-literal">true</span>)<br>                        .build())<br>                .build();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="7-5-Java-Python-操作-CephFS"><a href="#7-5-Java-Python-操作-CephFS" class="headerlink" title="7.5 Java &#x2F; Python 操作 CephFS"></a>7.5 Java &#x2F; Python 操作 CephFS</h3><p>CephFS 可通过 <code>libcephfs</code> 的 Java&#x2F;Python 绑定访问，但对于大多数业务场景，<strong>直接 NFS 挂载 CephFS 后用标准文件 IO 操作更简单</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># Python 方式：挂载后直接读写（推荐）</span><br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> shutil<br><br><span class="hljs-comment"># 假设 CephFS 已挂载到 /mnt/cephfs</span><br>cephfs_root = <span class="hljs-string">&#x27;/mnt/cephfs&#x27;</span><br><br><span class="hljs-comment"># 读写文件（和本地文件系统完全一致）</span><br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(os.path.join(cephfs_root, <span class="hljs-string">&#x27;data&#x27;</span>, <span class="hljs-string">&#x27;report.txt&#x27;</span>), <span class="hljs-string">&#x27;w&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>    f.write(<span class="hljs-string">&#x27;CephFS content from Python&#x27;</span>)<br><br><span class="hljs-comment"># 列目录</span><br><span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> os.listdir(os.path.join(cephfs_root, <span class="hljs-string">&#x27;data&#x27;</span>)):<br>    <span class="hljs-built_in">print</span>(item)<br><br><span class="hljs-comment"># 递归遍历</span><br><span class="hljs-keyword">for</span> root, dirs, files <span class="hljs-keyword">in</span> os.walk(cephfs_root):<br>    <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> files:<br>        <span class="hljs-built_in">print</span>(os.path.join(root, f))<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// Java 方式：挂载后用 NIO 操作（推荐）</span><br><span class="hljs-keyword">import</span> java.nio.file.*;<br><span class="hljs-keyword">import</span> java.nio.charset.StandardCharsets;<br><br><span class="hljs-type">Path</span> <span class="hljs-variable">cephfsRoot</span> <span class="hljs-operator">=</span> Paths.get(<span class="hljs-string">&quot;/mnt/cephfs&quot;</span>);<br><br><span class="hljs-comment">// 写文件</span><br>Files.write(cephfsRoot.resolve(<span class="hljs-string">&quot;data/report.txt&quot;</span>),<br>        <span class="hljs-string">&quot;CephFS content from Java&quot;</span>.getBytes(StandardCharsets.UTF_8));<br><br><span class="hljs-comment">// 读文件</span><br><span class="hljs-type">byte</span>[] content = Files.readAllBytes(cephfsRoot.resolve(<span class="hljs-string">&quot;data/report.txt&quot;</span>));<br><br><span class="hljs-comment">// 列目录</span><br><span class="hljs-keyword">try</span> (<span class="hljs-type">var</span> <span class="hljs-variable">stream</span> <span class="hljs-operator">=</span> Files.list(cephfsRoot.resolve(<span class="hljs-string">&quot;data&quot;</span>))) &#123;<br>    stream.forEach(System.out::println);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="7-6-SDK-库速查表"><a href="#7-6-SDK-库速查表" class="headerlink" title="7.6 SDK &#x2F; 库速查表"></a>7.6 SDK &#x2F; 库速查表</h3><table>
+<thead>
+<tr>
+<th>语言</th>
+<th>库</th>
+<th>安装</th>
+<th>支持接口</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Python</strong></td>
+<td><code>boto3</code></td>
+<td><code>pip install boto3</code></td>
+<td>S3&#x2F;RGW</td>
+<td>对象存储（推荐）</td>
+</tr>
+<tr>
+<td><strong>Python</strong></td>
+<td><code>python-rados</code></td>
+<td><code>apt install python3-rados</code></td>
+<td>librados &#x2F; RBD</td>
+<td>底层直连</td>
+</tr>
+<tr>
+<td><strong>Python</strong></td>
+<td><code>minio</code></td>
+<td><code>pip install minio</code></td>
+<td>S3&#x2F;RGW</td>
+<td>对象存储（轻量）</td>
+</tr>
+<tr>
+<td><strong>Java</strong></td>
+<td>AWS SDK v2</td>
+<td>Maven <code>software.amazon.awssdk:s3</code></td>
+<td>S3&#x2F;RGW</td>
+<td>对象存储（推荐）</td>
+</tr>
+<tr>
+<td><strong>Java</strong></td>
+<td><code>jRados</code></td>
+<td>编译安装</td>
+<td>librados &#x2F; RBD</td>
+<td>底层直连</td>
+</tr>
+<tr>
+<td><strong>Java</strong></td>
+<td><code>minio-java</code></td>
+<td>Maven <code>io.minio:minio</code></td>
+<td>S3&#x2F;RGW</td>
+<td>对象存储（轻量）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Ceph 是一个功能强大的分布式存储系统，适合需要<strong>统一存储、高可用、弹性扩展</strong>的企业级场景。</p>
+<p><strong>适用场景：</strong></p>
+<ul>
+<li>✅ 云平台存储后端（OpenStack、Kubernetes）</li>
+<li>✅ 虚拟化环境存储</li>
+<li>✅ 大规模对象存储</li>
+<li>✅ 需要块存储 + 文件系统的混合场景</li>
+</ul>
+<p><strong>不适用场景：</strong></p>
+<ul>
+<li>❌ 小规模部署（运维成本高）</li>
+<li>❌ 纯对象存储场景（MinIO 更简单）</li>
+<li>❌ 纯大数据场景（HDFS 更专业）</li>
+</ul>
+<p><strong>选型建议：</strong></p>
+<ul>
+<li>如果团队有存储运维能力，且需要统一存储 → <strong>Ceph</strong></li>
+<li>如果只需要 S3 对象存储 → <strong>MinIO</strong></li>
+<li>如果需要 NFS 替代 → <strong>GlusterFS</strong></li>
+<li>如果是 Hadoop 生态 → <strong>HDFS</strong></li>
+</ul>
+<hr>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><strong>官方文档：</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.ceph.com/">Ceph 官方文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://ceph.io/en/architecture/">Ceph 架构设计</a></li>
+<li><a target="_blank" rel="noopener" href="https://ceph.io/wp-content/uploads/2016/08/weil-crush-sc06.pdf">CRUSH 算法论文</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.ceph.com/en/latest/rados/configuration/">Ceph 性能调优指南</a></li>
+</ul>
+<p><strong>Python SDK：</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html">boto3 S3 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.ceph.com/en/latest/rados/api/python/">python-rados API</a></li>
+<li><a target="_blank" rel="noopener" href="https://min.io/docs/minio/linux/developers/python/minio-py.html">MinIO Python SDK</a></li>
+</ul>
+<p><strong>Java SDK：</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/home.html">AWS SDK for Java v2</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ceph/jrados">jRados GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://min.io/docs/minio/linux/developers/java/minio-java.html">MinIO Java SDK</a></li>
+</ul>
+<hr>
+<p><em>最后更新：2026-05-09</em></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog/categories/%E5%90%8E%E7%AB%AF%E6%9E%B6%E6%9E%84/" class="category-chain-item">后端架构</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/blog/tags/Ceph/" class="print-no-link">#Ceph</a>
+      
+        <a href="/blog/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/" class="print-no-link">#分布式存储</a>
+      
+        <a href="/blog/tags/%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8/" class="print-no-link">#对象存储</a>
+      
+        <a href="/blog/tags/%E5%9D%97%E5%AD%98%E5%82%A8/" class="print-no-link">#块存储</a>
+      
+        <a href="/blog/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" class="print-no-link">#云原生</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Ceph 分布式存储系统：架构、实践与竞品分析</div>
+      <div>https://msb8080.github.io/blog/2026/05/09/ceph-distributed-storage/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>minshuaibo</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年5月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/blog/2026/05/09/prompt-engineering-guide/" title="Prompt Engineering 完全指南：从基础技巧到高级策略">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Prompt Engineering 完全指南：从基础技巧到高级策略</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2026/05/09/llm-foundation-theory/" title="大模型基础理论：Transformer 架构、LLM 核心概念与训练流程详解">
+                        <span class="hidden-mobile">大模型基础理论：Transformer 架构、LLM 核心概念与训练流程详解</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com/msb8080" target="_blank" rel="noopener">GitHub</a> · <a href="https://msb8080.github.io" target="_blank" rel="noopener">主页</a> <br> <span style="opacity:0.5; font-family: Space Mono, monospace; font-size: 0.8rem;">Powered by Hexo & Fluid · Themed with 💜</span> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/events.js" ></script>
+<script  src="/blog/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/blog/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/blog/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/blog/js/purple-animations.js?v=4.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/blog/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
