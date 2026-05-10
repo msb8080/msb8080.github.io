@@ -1,0 +1,1027 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/fluid.png">
+  <link rel="icon" href="/blog/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="rgba(43, 27, 84, 0.85)">
+  <meta name="author" content="minshuaibo">
+  <meta name="keywords" content="Prompt Engineering,Chain-of-Thought,结构化输出,System Prompt,ReAct">
+  
+    <meta name="description" content="全面梳理 Prompt Engineering 技术体系，从 Zero-shot、Few-shot、CoT 到 ReAct、Tree-of-Thought，涵盖 System Prompt 设计、结构化输出、约束提示等实战技巧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Prompt Engineering 完全指南：从基础技巧到高级策略">
+<meta property="og:url" content="https://msb8080.github.io/blog/2026/05/09/prompt-engineering-guide/index.html">
+<meta property="og:site_name" content="AI Composer 技术猿">
+<meta property="og:description" content="全面梳理 Prompt Engineering 技术体系，从 Zero-shot、Few-shot、CoT 到 ReAct、Tree-of-Thought，涵盖 System Prompt 设计、结构化输出、约束提示等实战技巧。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-09T06:10:00.000Z">
+<meta property="article:modified_time" content="2026-05-09T07:00:00.000Z">
+<meta property="article:author" content="minshuaibo">
+<meta property="article:tag" content="大模型">
+<meta property="article:tag" content="ReAct">
+<meta property="article:tag" content="Prompt Engineering">
+<meta property="article:tag" content="CoT">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Prompt Engineering 完全指南：从基础技巧到高级策略 - AI Composer 技术猿</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/blog/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/blog/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/blog/css/purple-theme.css?v=4.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"msb8080.github.io","root":"/blog/","version":"1.9.9","typing":{"enable":true,"typeSpeed":45,"cursorChar":"|","loop":true,"scope":["home"]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#7e5adc","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/blog/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/blog/js/utils.js" ></script>
+  <script  src="/blog/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/blog/atom.xml" title="AI Composer 技术猿" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/blog/">
+      <strong>AI Composer 技术猿</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/2026/04/30/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E5%A4%8D%E7%9B%98-ai-composer%E6%8A%80%E6%9C%AF%E7%8C%BF%E7%9A%84hexo%E5%AE%9E%E8%B7%B5%E4%B8%8E%E9%95%BF%E6%9C%9F%E5%86%99%E4%BD%9C%E8%A7%84%E5%88%92-2026-04-30/" target="_self">
+                <i class="iconfont icon-code-fill"></i>
+                <span>搭建复盘</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/2026/04/30/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E5%A4%8D%E7%9B%98-ai-composer%E6%8A%80%E6%9C%AF%E7%8C%BF%E7%9A%84hexo%E5%AE%9E%E8%B7%B5%E4%B8%8E%E9%95%BF%E6%9C%9F%E5%86%99%E4%BD%9C%E8%A7%84%E5%88%92-2026-04-30/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-code-fill"></i>
+                  <span>搭建复盘</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/blog/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Prompt Engineering 完全指南：从基础技巧到高级策略</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-05-09 14:10" pubdate>
+          2026年5月9日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          75 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Prompt Engineering 完全指南：从基础技巧到高级策略</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>本文从 <a href="/blog/2026/05/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF%E6%B8%85%E5%8D%95/">大模型应用开发技术路线清单</a> 中拆分，聚焦”一、Prompt Engineering”部分。不改模型、不加数据，只靠”说话方式”把效果拉到最好。</p>
+</blockquote>
+<h2 id="为什么-Prompt-Engineering-是第一优先级？"><a href="#为什么-Prompt-Engineering-是第一优先级？" class="headerlink" title="为什么 Prompt Engineering 是第一优先级？"></a>为什么 Prompt Engineering 是第一优先级？</h2><p>Prompt Engineering 是大模型应用开发的<strong>地基</strong>。无论你后面用 RAG、Agent 还是微调，最终都要通过 Prompt 跟模型沟通。Prompt 写得好坏，直接决定应用效果。</p>
+<p><strong>核心原则</strong>：Prompt 就是给模型写一份”工作说明书”——越清晰、越具体、越有结构，模型输出越好。</p>
+<hr>
+<h2 id="一、Prompt-基础技巧"><a href="#一、Prompt-基础技巧" class="headerlink" title="一、Prompt 基础技巧"></a>一、Prompt 基础技巧</h2><h3 id="1-1-Zero-shot-与-Few-shot"><a href="#1-1-Zero-shot-与-Few-shot" class="headerlink" title="1.1 Zero-shot 与 Few-shot"></a>1.1 Zero-shot 与 Few-shot</h3><p><strong>Zero-shot</strong>：直接提问，不给示例。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">将以下文本分类为 [正面/负面/中性]：</span><br><span class="hljs-string">&quot;这家餐厅的菜味道不错，但等了40分钟才上菜。&quot;</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-comment"># 模型可能输出：中性</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>Few-shot</strong>：给出几个示例，引导模型理解任务和输出格式。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">将以下文本分类为 [正面/负面/中性]。</span><br><span class="hljs-string"></span><br><span class="hljs-string">示例1：输入：&quot;服务态度超好，下次还来！&quot; → 正面</span><br><span class="hljs-string">示例2：输入：&quot;味道一般，价格偏贵。&quot; → 负面</span><br><span class="hljs-string">示例3：输入：&quot;位置在市中心，方便停车。&quot; → 中性</span><br><span class="hljs-string"></span><br><span class="hljs-string">现在分类：输入：&quot;这家餐厅的菜味道不错，但等了40分钟才上菜。&quot; →</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-comment"># 模型输出更稳定：中性</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>什么时候用 Few-shot？</strong></p>
+<ul>
+<li>需要特定输出格式</li>
+<li>任务定义模糊，示例比描述更清晰</li>
+<li>Zero-shot 效果不好时</li>
+</ul>
+<h3 id="1-2-Chain-of-Thought（思维链）"><a href="#1-2-Chain-of-Thought（思维链）" class="headerlink" title="1.2 Chain-of-Thought（思维链）"></a>1.2 Chain-of-Thought（思维链）</h3><p>CoT 是最重要的 Prompt 技巧之一。核心思想：<strong>让模型”一步步想”，而不是直接给答案</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 没有 CoT —— 容易出错</span><br>prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">小明有15个苹果，给了小红5个，又买了8个，吃了3个，还剩几个？</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-comment"># 模型可能直接猜答案，容易算错</span><br><br><span class="hljs-comment"># 使用 CoT —— 准确率大幅提升</span><br>prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">小明有15个苹果，给了小红5个，又买了8个，吃了3个，还剩几个？</span><br><span class="hljs-string"></span><br><span class="hljs-string">请一步步思考：</span><br><span class="hljs-string">1. 初始数量：15个</span><br><span class="hljs-string">2. 给了小红5个：15 - 5 = 10个</span><br><span class="hljs-string">3. 又买了8个：10 + 8 = 18个</span><br><span class="hljs-string">4. 吃了3个：18 - 3 = 15个</span><br><span class="hljs-string">所以最终答案是：15个</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>触发 CoT 的几种方式</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 方式1：直接要求</span><br>prompt = <span class="hljs-string">&quot;请一步步思考，然后给出答案。&quot;</span><br><br><span class="hljs-comment"># 方式2：使用特定标记</span><br>prompt = <span class="hljs-string">&quot;让我们一步步来分析这个问题。&quot;</span><br><br><span class="hljs-comment"># 方式3：在 Few-shot 示例中展示推理过程</span><br>prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">问题：商店有20个橙子，上午卖了8个，下午进了15个，晚上卖了6个。</span><br><span class="hljs-string">思考过程：20 - 8 + 15 - 6 = 21</span><br><span class="hljs-string">答案：21个</span><br><span class="hljs-string"></span><br><span class="hljs-string">问题：图书馆有50本书，借出23本，归还7本，新购入12本。</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-3-System-Prompt-设计"><a href="#1-3-System-Prompt-设计" class="headerlink" title="1.3 System Prompt 设计"></a>1.3 System Prompt 设计</h3><p>System Prompt 是所有应用的起点，定义模型的”人设”和约束。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 基础 System Prompt</span><br>system_prompt = <span class="hljs-string">&quot;你是一个专业的 Python 代码助手。&quot;</span><br><br><span class="hljs-comment"># 详细的 System Prompt（推荐）</span><br>system_prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string"># 角色</span><br><span class="hljs-string">你是一个专业的 Python 代码助手，擅长后端开发、API 设计和性能优化。</span><br><span class="hljs-string"></span><br><span class="hljs-string"># 能力范围</span><br><span class="hljs-string">- 编写 Python 代码（FastAPI、Django、Flask）</span><br><span class="hljs-string">- 代码审查和优化建议</span><br><span class="hljs-string">- 调试和错误排查</span><br><span class="hljs-string">- 架构设计讨论</span><br><span class="hljs-string"></span><br><span class="hljs-string"># 输出规范</span><br><span class="hljs-string">- 代码必须附带注释</span><br><span class="hljs-string">- 优先使用 Python 3.10+ 特性</span><br><span class="hljs-string">- 复杂逻辑分步骤解释</span><br><span class="hljs-string">- 给出代码的时间/空间复杂度</span><br><span class="hljs-string"></span><br><span class="hljs-string"># 约束</span><br><span class="hljs-string">- 不回答与编程无关的问题</span><br><span class="hljs-string">- 不提供任何系统的 root 密码</span><br><span class="hljs-string">- 遇到不确定的问题，明确说明而不是猜测</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><br>messages = [<br>    &#123;<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;system&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: system_prompt&#125;,<br>    &#123;<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: <span class="hljs-string">&quot;写一个 FastAPI 的 JWT 认证中间件&quot;</span>&#125;,<br>]<br></code></pre></td></tr></table></figure>
+
+<p><strong>System Prompt 设计清单</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>要素</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>角色定义</td>
+<td>模型是谁</td>
+<td>“你是 X 领域专家”</td>
+</tr>
+<tr>
+<td>能力范围</td>
+<td>能做什么</td>
+<td>“你可以做 A、B、C”</td>
+</tr>
+<tr>
+<td>输出格式</td>
+<td>怎么回答</td>
+<td>“用 Markdown 格式，代码附注释”</td>
+</tr>
+<tr>
+<td>约束条件</td>
+<td>不能做什么</td>
+<td>“不回答政治话题”</td>
+</tr>
+<tr>
+<td>语气风格</td>
+<td>怎么说话</td>
+<td>“用口语化表达，简洁明了”</td>
+</tr>
+</tbody></table>
+<h3 id="1-4-结构化输出（JSON-Mode）"><a href="#1-4-结构化输出（JSON-Mode）" class="headerlink" title="1.4 结构化输出（JSON Mode）"></a>1.4 结构化输出（JSON Mode）</h3><p>让模型输出 JSON，方便程序解析，是 RAG、Agent 等应用的基础能力。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">从以下文本中提取实体信息，输出 JSON 格式：</span><br><span class="hljs-string"></span><br><span class="hljs-string">文本：&quot;张三在北京大学计算机系读博士，导师是李四教授，研究方向是自然语言处理。&quot;</span><br><span class="hljs-string"></span><br><span class="hljs-string">输出格式：</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">    &quot;person&quot;: [&#123;&quot;name&quot;: &quot;...&quot;, &quot;role&quot;: &quot;...&quot;&#125;],</span><br><span class="hljs-string">    &quot;organization&quot;: [&#123;&quot;name&quot;: &quot;...&quot;, &quot;type&quot;: &quot;...&quot;&#125;],</span><br><span class="hljs-string">    &quot;location&quot;: [&quot;...&quot;],</span><br><span class="hljs-string">    &quot;research_topic&quot;: [&quot;...&quot;]</span><br><span class="hljs-string">&#125;</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>使用 OpenAI JSON Mode（更可靠）</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI<br><br>client = OpenAI()<br><br>response = client.chat.completions.create(<br>    model=<span class="hljs-string">&quot;gpt-4&quot;</span>,<br>    messages=[<br>        &#123;<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;system&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: <span class="hljs-string">&quot;你是一个信息提取助手。请始终以 JSON 格式回复。&quot;</span>&#125;,<br>        &#123;<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: <span class="hljs-string">&quot;提取以下文本的实体：张三在北京大学工作&quot;</span>&#125;,<br>    ],<br>    response_format=&#123;<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;json_object&quot;</span>&#125;,<br>)<br><br><span class="hljs-keyword">import</span> json<br>result = json.loads(response.choices[<span class="hljs-number">0</span>].message.content)<br><span class="hljs-built_in">print</span>(result)<br><span class="hljs-comment"># &#123;&quot;person&quot;: [&#123;&quot;name&quot;: &quot;张三&quot;, &quot;role&quot;: &quot;员工&quot;&#125;], &quot;organization&quot;: [&#123;&quot;name&quot;: &quot;北京大学&quot;, &quot;type&quot;: &quot;大学&quot;&#125;]&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-5-Prompt-模板引擎"><a href="#1-5-Prompt-模板引擎" class="headerlink" title="1.5 Prompt 模板引擎"></a>1.5 Prompt 模板引擎</h3><p>在实际项目中，Prompt 通常需要动态填充变量，需要模板引擎。</p>
+<p><strong>LangChain 方式</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain_core.prompts <span class="hljs-keyword">import</span> ChatPromptTemplate<br><br>template = ChatPromptTemplate.from_messages([<br>    (<span class="hljs-string">&quot;system&quot;</span>, <span class="hljs-string">&quot;你是&#123;role&#125;，擅长&#123;skill&#125;。&quot;</span>),<br>    (<span class="hljs-string">&quot;human&quot;</span>, <span class="hljs-string">&quot;&#123;question&#125;&quot;</span>),<br>])<br><br>prompt = template.invoke(&#123;<br>    <span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;数据分析师&quot;</span>,<br>    <span class="hljs-string">&quot;skill&quot;</span>: <span class="hljs-string">&quot;SQL 查询和数据可视化&quot;</span>,<br>    <span class="hljs-string">&quot;question&quot;</span>: <span class="hljs-string">&quot;帮我写一个查询本月销售 Top10 的 SQL&quot;</span>,<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<p><strong>Spring AI 方式（Java）</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">PromptTemplate</span> <span class="hljs-variable">template</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">PromptTemplate</span>(<span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    你是&#123;role&#125;，擅长&#123;skill&#125;。</span><br><span class="hljs-string">    用户问题：&#123;question&#125;</span><br><span class="hljs-string">    &quot;&quot;&quot;</span>);<br><br><span class="hljs-type">Prompt</span> <span class="hljs-variable">prompt</span> <span class="hljs-operator">=</span> template.create(Map.of(<br>    <span class="hljs-string">&quot;role&quot;</span>, <span class="hljs-string">&quot;数据分析师&quot;</span>,<br>    <span class="hljs-string">&quot;skill&quot;</span>, <span class="hljs-string">&quot;SQL 查询&quot;</span>,<br>    <span class="hljs-string">&quot;question&quot;</span>, <span class="hljs-string">&quot;查询本月销售Top10&quot;</span><br>));<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-6-思维链-结构化输出"><a href="#1-6-思维链-结构化输出" class="headerlink" title="1.6 思维链 + 结构化输出"></a>1.6 思维链 + 结构化输出</h3><p>CoT 和 JSON 输出结合，兼顾推理过程和可解析性：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">分析以下用户投诉，输出分析结果。</span><br><span class="hljs-string"></span><br><span class="hljs-string">投诉内容：&quot;我上周买的手机屏幕有划痕，联系客服说已经过了7天退换期，让我自己找售后维修。&quot;</span><br><span class="hljs-string"></span><br><span class="hljs-string">请先一步步分析问题（reasoning），然后给出结构化结果。</span><br><span class="hljs-string"></span><br><span class="hljs-string">输出 JSON 格式：</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">    &quot;reasoning&quot;: &quot;分析过程的每一步...&quot;,</span><br><span class="hljs-string">    &quot;category&quot;: &quot;产品问题&quot;,</span><br><span class="hljs-string">    &quot;severity&quot;: &quot;中&quot;,</span><br><span class="hljs-string">    &quot;suggested_action&quot;: &quot;建议方案&quot;,</span><br><span class="hljs-string">    &quot;keywords&quot;: [&quot;关键词1&quot;, &quot;关键词2&quot;]</span><br><span class="hljs-string">&#125;</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、高级-Prompt-技巧"><a href="#二、高级-Prompt-技巧" class="headerlink" title="二、高级 Prompt 技巧"></a>二、高级 Prompt 技巧</h2><h3 id="2-1-Self-Consistency（自一致性）"><a href="#2-1-Self-Consistency（自一致性）" class="headerlink" title="2.1 Self-Consistency（自一致性）"></a>2.1 Self-Consistency（自一致性）</h3><p><strong>核心思想</strong>：同一个问题让模型回答多次，取多数答案（投票）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> collections<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">self_consistency</span>(<span class="hljs-params">prompt, n=<span class="hljs-number">5</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;多次采样，取最多出现的答案&quot;&quot;&quot;</span><br>    answers = []<br>    <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):<br>        response = client.chat.completions.create(<br>            model=<span class="hljs-string">&quot;gpt-4&quot;</span>,<br>            messages=[&#123;<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: prompt&#125;],<br>            temperature=<span class="hljs-number">0.7</span>,  <span class="hljs-comment"># 需要一定随机性</span><br>        )<br>        answers.append(response.choices[<span class="hljs-number">0</span>].message.content.strip())<br>    <br>    <span class="hljs-comment"># 投票取多数</span><br>    counter = collections.Counter(answers)<br>    most_common = counter.most_common(<span class="hljs-number">1</span>)[<span class="hljs-number">0</span>]<br>    <span class="hljs-keyword">return</span> most_common[<span class="hljs-number">0</span>], most_common[<span class="hljs-number">1</span>] / n  <span class="hljs-comment"># 答案 + 置信度</span><br><br>answer, confidence = self_consistency(<span class="hljs-string">&quot;23 * 47 = ?&quot;</span>, n=<span class="hljs-number">5</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;答案: <span class="hljs-subst">&#123;answer&#125;</span>, 置信度: <span class="hljs-subst">&#123;confidence:<span class="hljs-number">.0</span>%&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p><strong>适用场景</strong>：数学计算、逻辑推理、事实性问答。不适合创意任务。</p>
+<h3 id="2-2-Tree-of-Thought（思维树）"><a href="#2-2-Tree-of-Thought（思维树）" class="headerlink" title="2.2 Tree-of-Thought（思维树）"></a>2.2 Tree-of-Thought（思维树）</h3><p><strong>核心思想</strong>：探索多条推理路径，选择最优路径。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">我有一个 3x3 的数字华容道（滑块拼图），当前状态是：</span><br><span class="hljs-string">2 8 3</span><br><span class="hljs-string">1 6 4</span><br><span class="hljs-string">7 _ 5</span><br><span class="hljs-string"></span><br><span class="hljs-string">目标状态：</span><br><span class="hljs-string">1 2 3</span><br><span class="hljs-string">8 _ 4</span><br><span class="hljs-string">7 6 5</span><br><span class="hljs-string"></span><br><span class="hljs-string">请用思维树方法求解：</span><br><span class="hljs-string">1. 列出当前所有可能的移动（分支）</span><br><span class="hljs-string">2. 对每个分支评估距离目标的启发值</span><br><span class="hljs-string">3. 选择最优分支继续探索</span><br><span class="hljs-string">4. 重复直到找到解</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>实际使用建议</strong>：ToT 的效果取决于任务复杂度。简单任务用 CoT 就够了。</p>
+<h3 id="2-3-ReAct-Prompting（推理-行动）"><a href="#2-3-ReAct-Prompting（推理-行动）" class="headerlink" title="2.3 ReAct Prompting（推理 + 行动）"></a>2.3 ReAct Prompting（推理 + 行动）</h3><p>ReAct 是 Agent 的 Prompt 基础，让模型在<strong>推理</strong>和<strong>行动</strong>之间交替：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">你可以使用以下工具：</span><br><span class="hljs-string">- search(query): 搜索网页</span><br><span class="hljs-string">- calculate(expression): 计算数学表达式</span><br><span class="hljs-string"></span><br><span class="hljs-string">请按照以下格式回答：</span><br><span class="hljs-string">Thought: 我需要思考下一步做什么</span><br><span class="hljs-string">Action: 工具名称(参数)</span><br><span class="hljs-string">Observation: 工具返回的结果</span><br><span class="hljs-string">...（可以重复多次）</span><br><span class="hljs-string">Thought: 我现在知道答案了</span><br><span class="hljs-string">Final Answer: 最终回答</span><br><span class="hljs-string"></span><br><span class="hljs-string">问题：2024年巴黎奥运会中国代表团获得了多少枚金牌？</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>模型输出：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs text">Thought: 我需要搜索2024年巴黎奥运会中国代表团的金牌数。<br>Action: search(&quot;2024年巴黎奥运会中国代表团金牌数&quot;)<br>Observation: 中国代表团在2024年巴黎奥运会获得40枚金牌...<br>Thought: 搜索结果显示中国获得了40枚金牌。<br>Final Answer: 2024年巴黎奥运会中国代表团获得了40枚金牌。<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-4-Role-Playing（角色扮演）"><a href="#2-4-Role-Playing（角色扮演）" class="headerlink" title="2.4 Role Playing（角色扮演）"></a>2.4 Role Playing（角色扮演）</h3><p>让模型扮演特定角色，提升特定领域表现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">你现在是一位有20年经验的资深架构师，评审以下系统设计方案。</span><br><span class="hljs-string"></span><br><span class="hljs-string">设计方案：[设计方案内容]</span><br><span class="hljs-string"></span><br><span class="hljs-string">请从以下维度评审：</span><br><span class="hljs-string">1. 可扩展性</span><br><span class="hljs-string">2. 可用性</span><br><span class="hljs-string">3. 性能瓶颈</span><br><span class="hljs-string">4. 安全风险</span><br><span class="hljs-string">5. 成本优化</span><br><span class="hljs-string"></span><br><span class="hljs-string">每个维度给出1-10分和具体建议。</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-5-Constraint-Prompting（约束提示）"><a href="#2-5-Constraint-Prompting（约束提示）" class="headerlink" title="2.5 Constraint Prompting（约束提示）"></a>2.5 Constraint Prompting（约束提示）</h3><p>明确约束条件，减少幻觉：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python">prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">基于以下参考资料回答问题。注意：</span><br><span class="hljs-string">1. 只能使用参考资料中的信息回答</span><br><span class="hljs-string">2. 如果参考资料中没有相关信息，回复&quot;根据现有资料无法回答&quot;</span><br><span class="hljs-string">3. 引用原文时标注来源段落编号</span><br><span class="hljs-string"></span><br><span class="hljs-string">参考资料：</span><br><span class="hljs-string">[段落1] Spring Boot 3.0 要求 Java 17 或更高版本...</span><br><span class="hljs-string">[段落2] Spring AI 提供了统一的 AI 模型调用接口...</span><br><span class="hljs-string"></span><br><span class="hljs-string">问题：Spring AI 支持哪些向量数据库？</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-6-Output-Format-Control（输出格式控制）"><a href="#2-6-Output-Format-Control（输出格式控制）" class="headerlink" title="2.6 Output Format Control（输出格式控制）"></a>2.6 Output Format Control（输出格式控制）</h3><p>精确控制输出格式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 要求 Markdown 表格</span><br>prompt = <span class="hljs-string">&quot;对比 Python 和 Java 在 AI 开发中的优劣，用 Markdown 表格输出。&quot;</span><br><br><span class="hljs-comment"># 要求特定列表格式</span><br>prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">列出 3 个 Python Web 框架，格式如下：</span><br><span class="hljs-string">1. **框架名** - 一句话描述</span><br><span class="hljs-string">2. **框架名** - 一句话描述</span><br><span class="hljs-string">3. **框架名** - 一句话描述</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><br><span class="hljs-comment"># 要求 XML 标签格式（某些场景更可靠）</span><br>prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">分析以下代码的潜在问题。</span><br><span class="hljs-string"></span><br><span class="hljs-string">&lt;analysis&gt;</span><br><span class="hljs-string">&lt;issue&gt;</span><br><span class="hljs-string">&lt;severity&gt;high/medium/low&lt;/severity&gt;</span><br><span class="hljs-string">&lt;description&gt;问题描述&lt;/description&gt;</span><br><span class="hljs-string">&lt;suggestion&gt;修复建议&lt;/suggestion&gt;</span><br><span class="hljs-string">&lt;/issue&gt;</span><br><span class="hljs-string">&lt;/analysis&gt;</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、Prompt-工程最佳实践"><a href="#三、Prompt-工程最佳实践" class="headerlink" title="三、Prompt 工程最佳实践"></a>三、Prompt 工程最佳实践</h2><h3 id="3-1-Prompt-调试清单"><a href="#3-1-Prompt-调试清单" class="headerlink" title="3.1 Prompt 调试清单"></a>3.1 Prompt 调试清单</h3><table>
+<thead>
+<tr>
+<th>检查项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>任务描述是否清晰？</td>
+<td>模型是否知道要做什么</td>
+</tr>
+<tr>
+<td>输出格式是否指定？</td>
+<td>JSON&#x2F;Markdown&#x2F;表格</td>
+</tr>
+<tr>
+<td>约束条件是否明确？</td>
+<td>不能做什么</td>
+</tr>
+<tr>
+<td>Few-shot 示例是否覆盖边界？</td>
+<td>特殊情况的处理</td>
+</tr>
+<tr>
+<td>是否有歧义？</td>
+<td>一个指令可能有多种理解</td>
+</tr>
+</tbody></table>
+<h3 id="3-2-常见陷阱"><a href="#3-2-常见陷阱" class="headerlink" title="3.2 常见陷阱"></a>3.2 常见陷阱</h3><p><strong>陷阱1：Prompt 太长太复杂</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ❌ 一次给太多指令，模型容易遗漏</span><br>prompt = <span class="hljs-string">&quot;做A、做B、做C、做D、做E、做F...&quot;</span><br><br><span class="hljs-comment"># ✅ 分步骤或使用分隔符</span><br>prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">## 任务1：做A</span><br><span class="hljs-string">## 任务2：做B</span><br><span class="hljs-string">## 任务3：做C</span><br><span class="hljs-string">请按顺序完成以上任务。</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>陷阱2：假设模型理解隐含信息</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ❌ 模型不知道&quot;上次&quot;是什么</span><br>prompt = <span class="hljs-string">&quot;修改上次的代码&quot;</span><br><br><span class="hljs-comment"># ✅ 提供完整上下文</span><br>prompt = <span class="hljs-string">&quot;修改以下代码，将 timeout 从 30 改为 60：\n```python\n...\n```&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>陷阱3：期望模型做不可能的事</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ❌ 模型不知道实时信息</span><br>prompt = <span class="hljs-string">&quot;现在北京的天气怎么样？&quot;</span><br><br><span class="hljs-comment"># ✅ 使用工具</span><br>prompt = <span class="hljs-string">&quot;请调用天气 API 查询北京当前天气。&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3-Prompt-性能优化"><a href="#3-3-Prompt-性能优化" class="headerlink" title="3.3 Prompt 性能优化"></a>3.3 Prompt 性能优化</h3><table>
+<thead>
+<tr>
+<th>技巧</th>
+<th>说明</th>
+<th>节省比例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>缩短 System Prompt</td>
+<td>只保留必要约束</td>
+<td>10-30%</td>
+</tr>
+<tr>
+<td>压缩 Few-shot 示例</td>
+<td>精选代表性示例</td>
+<td>20-40%</td>
+</tr>
+<tr>
+<td>使用缩写和符号</td>
+<td>“e.g.” 替代 “for example”</td>
+<td>5-10%</td>
+</tr>
+<tr>
+<td>避免重复指令</td>
+<td>合并相似要求</td>
+<td>10-20%</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="四、Java-生态的-Prompt-实践（Spring-AI）"><a href="#四、Java-生态的-Prompt-实践（Spring-AI）" class="headerlink" title="四、Java 生态的 Prompt 实践（Spring AI）"></a>四、Java 生态的 Prompt 实践（Spring AI）</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// Spring AI PromptTemplate 示例</span><br><span class="hljs-meta">@Component</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CustomerServiceAgent</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ChatModel chatModel;<br>    <br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">SYSTEM_PROMPT</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        你是客服助手，负责回答用户关于产品的问题。</span><br><span class="hljs-string">        </span><br><span class="hljs-string">        规则：</span><br><span class="hljs-string">        1. 只回答产品相关问题</span><br><span class="hljs-string">        2. 不确定时引导用户联系人工客服</span><br><span class="hljs-string">        3. 用简洁友好的语气</span><br><span class="hljs-string">        &quot;&quot;&quot;</span>;<br><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">answer</span><span class="hljs-params">(String question, ProductContext context)</span> &#123;<br>        <span class="hljs-type">PromptTemplate</span> <span class="hljs-variable">template</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">PromptTemplate</span>(<span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">            产品信息：&#123;productInfo&#125;</span><br><span class="hljs-string">            用户问题：&#123;question&#125;</span><br><span class="hljs-string">            </span><br><span class="hljs-string">            请基于产品信息回答，如果信息不足请说明。</span><br><span class="hljs-string">            &quot;&quot;&quot;</span>);<br>        <br>        <span class="hljs-type">Prompt</span> <span class="hljs-variable">prompt</span> <span class="hljs-operator">=</span> template.create(Map.of(<br>            <span class="hljs-string">&quot;productInfo&quot;</span>, context.toMarkdown(),<br>            <span class="hljs-string">&quot;question&quot;</span>, question<br>        ));<br>        <br>        <span class="hljs-comment">// 注入 System Prompt</span><br>        List&lt;Message&gt; messages = List.of(<br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">SystemMessage</span>(SYSTEM_PROMPT),<br>            prompt.getInstructions().get(<span class="hljs-number">0</span>)<br>        );<br>        <br>        <span class="hljs-keyword">return</span> chatModel.call(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Prompt</span>(messages))<br>                       .getResult()<br>                       .getOutput()<br>                       .getContent();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、学习建议"><a href="#五、学习建议" class="headerlink" title="五、学习建议"></a>五、学习建议</h2><h3 id="动手练习路径"><a href="#动手练习路径" class="headerlink" title="动手练习路径"></a>动手练习路径</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs text">Week 1: 基础<br>├── 用 Zero-shot 完成 5 个不同任务<br>├── 用 Few-shot 引导输出格式<br>└── 为你的项目写一个 System Prompt<br><br>Week 2: 进阶<br>├── 用 CoT 解决数学/逻辑推理题<br>├── 实现结构化 JSON 输出<br>└── 尝试 Self-Consistency<br><br>Week 3: Agent 基础<br>├── 学习 ReAct 范式<br>├── 设计工具集和 Prompt<br>└── 做一个简单的 Agent<br></code></pre></td></tr></table></figure>
+
+<h3 id="推荐资源"><a href="#推荐资源" class="headerlink" title="推荐资源"></a>推荐资源</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://platform.openai.com/docs/guides/prompt-engineering">OpenAI Prompt Engineering Guide</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview">Anthropic Prompt Engineering Guide</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/">DeepLearning.AI “ChatGPT Prompt Engineering for Developers”</a></li>
+</ul>
+<hr>
+<p><em>上一篇：<a href="/blog/2026/05/09/llm-foundation-theory/">零、大模型基础理论</a></em><br><em>下一篇：<a href="/blog/2026/05/09/rag-retrieval-augmented-generation/">二、RAG 检索增强生成</a></em><br><em>返回导航：<a href="/blog/2026/05/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF%E6%B8%85%E5%8D%95/">大模型应用开发技术路线清单</a></em></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog/categories/AI-%E5%90%8E%E7%AB%AF%E5%AD%A6%E4%B9%A0/" class="category-chain-item">AI 后端学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/blog/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" class="print-no-link">#大模型</a>
+      
+        <a href="/blog/tags/ReAct/" class="print-no-link">#ReAct</a>
+      
+        <a href="/blog/tags/Prompt-Engineering/" class="print-no-link">#Prompt Engineering</a>
+      
+        <a href="/blog/tags/CoT/" class="print-no-link">#CoT</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Prompt Engineering 完全指南：从基础技巧到高级策略</div>
+      <div>https://msb8080.github.io/blog/2026/05/09/prompt-engineering-guide/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>minshuaibo</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年5月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/blog/2026/05/09/rag-retrieval-augmented-generation/" title="RAG 检索增强生成：从基础架构到企业级优化">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">RAG 检索增强生成：从基础架构到企业级优化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2026/05/09/ceph-distributed-storage/" title="Ceph 分布式存储系统：架构、实践与竞品分析">
+                        <span class="hidden-mobile">Ceph 分布式存储系统：架构、实践与竞品分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com/msb8080" target="_blank" rel="noopener">GitHub</a> · <a href="https://msb8080.github.io" target="_blank" rel="noopener">主页</a> <br> <span style="opacity:0.5; font-family: Space Mono, monospace; font-size: 0.8rem;">Powered by Hexo & Fluid · Themed with 💜</span> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/events.js" ></script>
+<script  src="/blog/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/blog/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/blog/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/blog/js/purple-animations.js?v=4.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/blog/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

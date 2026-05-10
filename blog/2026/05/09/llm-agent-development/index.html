@@ -1,0 +1,998 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/fluid.png">
+  <link rel="icon" href="/blog/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="rgba(43, 27, 84, 0.85)">
+  <meta name="author" content="minshuaibo">
+  <meta name="keywords" content="AI Agent,Function Calling,ReAct 范式,Multi-Agent,LangGraph,Agent 框架">
+  
+    <meta name="description" content="全面解析 AI Agent 智能体开发，涵盖 Agent 理论、Function Calling、ReAct 范式、记忆管理、Multi-Agent 协作、主流框架对比和 3 个实战案例。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI Agent 智能体开发：从理论基础到实战案例">
+<meta property="og:url" content="https://msb8080.github.io/blog/2026/05/09/llm-agent-development/index.html">
+<meta property="og:site_name" content="AI Composer 技术猿">
+<meta property="og:description" content="全面解析 AI Agent 智能体开发，涵盖 Agent 理论、Function Calling、ReAct 范式、记忆管理、Multi-Agent 协作、主流框架对比和 3 个实战案例。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-09T06:30:00.000Z">
+<meta property="article:modified_time" content="2026-05-09T07:00:00.000Z">
+<meta property="article:author" content="minshuaibo">
+<meta property="article:tag" content="Agent">
+<meta property="article:tag" content="Function Calling">
+<meta property="article:tag" content="ReAct">
+<meta property="article:tag" content="Multi-Agent">
+<meta property="article:tag" content="LangGraph">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>AI Agent 智能体开发：从理论基础到实战案例 - AI Composer 技术猿</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/blog/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/blog/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/blog/css/purple-theme.css?v=4.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"msb8080.github.io","root":"/blog/","version":"1.9.9","typing":{"enable":true,"typeSpeed":45,"cursorChar":"|","loop":true,"scope":["home"]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#7e5adc","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/blog/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/blog/js/utils.js" ></script>
+  <script  src="/blog/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/blog/atom.xml" title="AI Composer 技术猿" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/blog/">
+      <strong>AI Composer 技术猿</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/2026/04/30/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E5%A4%8D%E7%9B%98-ai-composer%E6%8A%80%E6%9C%AF%E7%8C%BF%E7%9A%84hexo%E5%AE%9E%E8%B7%B5%E4%B8%8E%E9%95%BF%E6%9C%9F%E5%86%99%E4%BD%9C%E8%A7%84%E5%88%92-2026-04-30/" target="_self">
+                <i class="iconfont icon-code-fill"></i>
+                <span>搭建复盘</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>首页</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>归档</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>分类</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>标签</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>关于</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/blog/2026/04/30/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E5%A4%8D%E7%9B%98-ai-composer%E6%8A%80%E6%9C%AF%E7%8C%BF%E7%9A%84hexo%E5%AE%9E%E8%B7%B5%E4%B8%8E%E9%95%BF%E6%9C%9F%E5%86%99%E4%BD%9C%E8%A7%84%E5%88%92-2026-04-30/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-code-fill"></i>
+                  <span>搭建复盘</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>搜索</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="开灯"
+               data-label-dark="关灯">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">关灯</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/blog/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">AI Agent 智能体开发：从理论基础到实战案例</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-05-09 14:30" pubdate>
+          2026年5月9日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          14k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          116 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AI Agent 智能体开发：从理论基础到实战案例</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>本文从 <a href="/blog/2026/05/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF%E6%B8%85%E5%8D%95/">大模型应用开发技术路线清单</a> 中拆分，聚焦”三、Agent 智能体”部分。让模型能”用工具、做决策、执行多步任务”。</p>
+</blockquote>
+<h2 id="什么是-Agent？"><a href="#什么是-Agent？" class="headerlink" title="什么是 Agent？"></a>什么是 Agent？</h2><p>如果说 Prompt Engineering 是”教模型说话”，RAG 是”教模型查资料”，那 Agent 就是”教模型做事”。</p>
+<p><strong>Agent &#x3D; LLM + 记忆 + 工具 + 规划</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs text">┌─────────────────────────────────────────┐<br>│                 Agent                    │<br>│  ┌───────┐  ┌───────┐  ┌───────┐       │<br>│  │  LLM  │←→│ 记忆  │←→│ 规划  │       │<br>│  └───┬───┘  └───────┘  └───────┘       │<br>│      │                                   │<br>│      ↓                                   │<br>│  ┌───────┐  ┌───────┐  ┌───────┐       │<br>│  │ 工具1 │  │ 工具2 │  │ 工具3 │       │<br>│  └───────┘  └───────┘  └───────┘       │<br>└─────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<p>核心范式转变：**从”模型直接回答”到”模型决定下一步做什么”**。</p>
+<hr>
+<h2 id="一、Agent-核心技术"><a href="#一、Agent-核心技术" class="headerlink" title="一、Agent 核心技术"></a>一、Agent 核心技术</h2><h3 id="1-1-Function-Calling：Agent-的基石"><a href="#1-1-Function-Calling：Agent-的基石" class="headerlink" title="1.1 Function Calling：Agent 的基石"></a>1.1 Function Calling：Agent 的基石</h3><p>Function Calling 让模型能够选择调用哪个函数、提取参数。这是 Agent 与外部世界交互的基础。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI<br><span class="hljs-keyword">import</span> json<br><br>client = OpenAI()<br><br><span class="hljs-comment"># 定义工具</span><br>tools = [<br>    &#123;<br>        <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;function&quot;</span>,<br>        <span class="hljs-string">&quot;function&quot;</span>: &#123;<br>            <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;search_knowledge_base&quot;</span>,<br>            <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;搜索公司知识库，查找相关文档&quot;</span>,<br>            <span class="hljs-string">&quot;parameters&quot;</span>: &#123;<br>                <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;object&quot;</span>,<br>                <span class="hljs-string">&quot;properties&quot;</span>: &#123;<br>                    <span class="hljs-string">&quot;query&quot;</span>: &#123;<br>                        <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,<br>                        <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;搜索关键词&quot;</span>,<br>                    &#125;,<br>                    <span class="hljs-string">&quot;category&quot;</span>: &#123;<br>                        <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,<br>                        <span class="hljs-string">&quot;enum&quot;</span>: [<span class="hljs-string">&quot;hr&quot;</span>, <span class="hljs-string">&quot;tech&quot;</span>, <span class="hljs-string">&quot;product&quot;</span>, <span class="hljs-string">&quot;finance&quot;</span>],<br>                        <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;知识库分类&quot;</span>,<br>                    &#125;,<br>                &#125;,<br>                <span class="hljs-string">&quot;required&quot;</span>: [<span class="hljs-string">&quot;query&quot;</span>],<br>            &#125;,<br>        &#125;,<br>    &#125;,<br>    &#123;<br>        <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;function&quot;</span>,<br>        <span class="hljs-string">&quot;function&quot;</span>: &#123;<br>            <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;get_current_weather&quot;</span>,<br>            <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;获取指定城市的当前天气&quot;</span>,<br>            <span class="hljs-string">&quot;parameters&quot;</span>: &#123;<br>                <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;object&quot;</span>,<br>                <span class="hljs-string">&quot;properties&quot;</span>: &#123;<br>                    <span class="hljs-string">&quot;city&quot;</span>: &#123;<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>, <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;城市名称&quot;</span>&#125;,<br>                    <span class="hljs-string">&quot;unit&quot;</span>: &#123;<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>, <span class="hljs-string">&quot;enum&quot;</span>: [<span class="hljs-string">&quot;celsius&quot;</span>, <span class="hljs-string">&quot;fahrenheit&quot;</span>]&#125;,<br>                &#125;,<br>                <span class="hljs-string">&quot;required&quot;</span>: [<span class="hljs-string">&quot;city&quot;</span>],<br>            &#125;,<br>        &#125;,<br>    &#125;,<br>]<br><br><span class="hljs-comment"># 调用模型</span><br>messages = [&#123;<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: <span class="hljs-string">&quot;北京今天天气怎么样？&quot;</span>&#125;]<br><br>response = client.chat.completions.create(<br>    model=<span class="hljs-string">&quot;gpt-4&quot;</span>,<br>    messages=messages,<br>    tools=tools,<br>    tool_choice=<span class="hljs-string">&quot;auto&quot;</span>,  <span class="hljs-comment"># 让模型自己决定是否调用工具</span><br>)<br><br><span class="hljs-comment"># 检查模型是否决定调用工具</span><br><span class="hljs-keyword">if</span> response.choices[<span class="hljs-number">0</span>].message.tool_calls:<br>    tool_call = response.choices[<span class="hljs-number">0</span>].message.tool_calls[<span class="hljs-number">0</span>]<br>    function_name = tool_call.function.name<br>    arguments = json.loads(tool_call.function.arguments)<br>    <br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;模型决定调用: <span class="hljs-subst">&#123;function_name&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;参数: <span class="hljs-subst">&#123;arguments&#125;</span>&quot;</span>)<br>    <span class="hljs-comment"># 输出：模型决定调用: get_current_weather</span><br>    <span class="hljs-comment"># 输出：参数: &#123;&quot;city&quot;: &quot;北京&quot;, &quot;unit&quot;: &quot;celsius&quot;&#125;</span><br>    <br>    <span class="hljs-comment"># 执行函数</span><br>    weather_result = get_current_weather(**arguments)<br>    <br>    <span class="hljs-comment"># 把结果返回给模型</span><br>    messages.append(response.choices[<span class="hljs-number">0</span>].message)<br>    messages.append(&#123;<br>        <span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;tool&quot;</span>,<br>        <span class="hljs-string">&quot;tool_call_id&quot;</span>: tool_call.<span class="hljs-built_in">id</span>,<br>        <span class="hljs-string">&quot;content&quot;</span>: json.dumps(weather_result, ensure_ascii=<span class="hljs-literal">False</span>),<br>    &#125;)<br>    <br>    final_response = client.chat.completions.create(<br>        model=<span class="hljs-string">&quot;gpt-4&quot;</span>,<br>        messages=messages,<br>    )<br>    <span class="hljs-built_in">print</span>(final_response.choices[<span class="hljs-number">0</span>].message.content)<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-2-ReAct-范式：思考-行动-观察循环"><a href="#1-2-ReAct-范式：思考-行动-观察循环" class="headerlink" title="1.2 ReAct 范式：思考-行动-观察循环"></a>1.2 ReAct 范式：思考-行动-观察循环</h3><p>ReAct（Reasoning + Acting）是 Agent 的核心工作模式：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs text">Thought: 用户问的是天气问题，我需要查询天气 API<br>Action: get_current_weather(city=&quot;北京&quot;)<br>Observation: &#123;&quot;temperature&quot;: 22, &quot;weather&quot;: &quot;晴&quot;, &quot;wind&quot;: &quot;北风3级&quot;&#125;<br>Thought: 我已经获得了天气信息，可以回答用户了<br>Final Answer: 北京今天天气晴朗，气温22°C，北风3级。<br></code></pre></td></tr></table></figure>
+
+<p><strong>完整实现</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">react_agent</span>(<span class="hljs-params">user_input, tools, max_iterations=<span class="hljs-number">5</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;最简化的 ReAct Agent&quot;&quot;&quot;</span><br>    messages = [<br>        &#123;<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;system&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: <span class="hljs-string">&quot;&quot;&quot;你是一个 AI 助手，可以使用工具来完成任务。</span><br><span class="hljs-string">        </span><br><span class="hljs-string">可用工具：</span><br><span class="hljs-string">- search_web(query): 搜索网页</span><br><span class="hljs-string">- calculate(expression): 计算数学表达式</span><br><span class="hljs-string">- get_weather(city): 查询天气</span><br><span class="hljs-string"></span><br><span class="hljs-string">请按照以下步骤思考：</span><br><span class="hljs-string">1. 分析用户需要什么</span><br><span class="hljs-string">2. 决定是否需要使用工具</span><br><span class="hljs-string">3. 如果需要，调用合适的工具</span><br><span class="hljs-string">4. 根据工具结果回答用户</span><br><span class="hljs-string">&quot;&quot;&quot;</span>&#125;,<br>        &#123;<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: user_input&#125;,<br>    ]<br>    <br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(max_iterations):<br>        response = client.chat.completions.create(<br>            model=<span class="hljs-string">&quot;gpt-4&quot;</span>,<br>            messages=messages,<br>            tools=tools,<br>        )<br>        <br>        msg = response.choices[<span class="hljs-number">0</span>].message<br>        <br>        <span class="hljs-comment"># 模型不再调用工具 → 得到最终答案</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> msg.tool_calls:<br>            <span class="hljs-keyword">return</span> msg.content<br>        <br>        <span class="hljs-comment"># 模型调用了工具 → 执行工具并继续循环</span><br>        messages.append(msg)<br>        <span class="hljs-keyword">for</span> tool_call <span class="hljs-keyword">in</span> msg.tool_calls:<br>            result = execute_tool(tool_call.function.name, <br>                                  json.loads(tool_call.function.arguments))<br>            messages.append(&#123;<br>                <span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;tool&quot;</span>,<br>                <span class="hljs-string">&quot;tool_call_id&quot;</span>: tool_call.<span class="hljs-built_in">id</span>,<br>                <span class="hljs-string">&quot;content&quot;</span>: <span class="hljs-built_in">str</span>(result),<br>            &#125;)<br>    <br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;达到最大迭代次数&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-3-Tool-Use：工具设计"><a href="#1-3-Tool-Use：工具设计" class="headerlink" title="1.3 Tool Use：工具设计"></a>1.3 Tool Use：工具设计</h3><p><strong>工具设计原则</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>原则</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>命名清晰</td>
+<td>函数名和参数名要自解释</td>
+<td><code>search_web</code> 而非 <code>tool1</code></td>
+</tr>
+<tr>
+<td>描述充分</td>
+<td>description 要告诉模型什么时候用</td>
+<td>“当需要搜索实时信息时使用”</td>
+</tr>
+<tr>
+<td>参数简洁</td>
+<td>只传必要参数</td>
+<td>不要传10个可选参数</td>
+</tr>
+<tr>
+<td>返回结构化</td>
+<td>JSON 格式，方便模型理解</td>
+<td><code>&#123;&quot;result&quot;: &quot;...&quot;, &quot;source&quot;: &quot;...&quot;&#125;</code></td>
+</tr>
+</tbody></table>
+<p><strong>常用工具类型</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 搜索类工具</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">search_web</span>(<span class="hljs-params">query: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;搜索网页获取实时信息&quot;&quot;&quot;</span><br>    results = web_search_api.search(query, num=<span class="hljs-number">5</span>)<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;results&quot;</span>: [&#123;<span class="hljs-string">&quot;title&quot;</span>: r.title, <span class="hljs-string">&quot;url&quot;</span>: r.url, <span class="hljs-string">&quot;snippet&quot;</span>: r.snippet&#125; <span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> results]&#125;<br><br><span class="hljs-comment"># 数据库查询工具</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">query_database</span>(<span class="hljs-params">sql: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;执行只读 SQL 查询&quot;&quot;&quot;</span><br>    <span class="hljs-comment"># 安全校验：只允许 SELECT</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> sql.strip().upper().startswith(<span class="hljs-string">&quot;SELECT&quot;</span>):<br>        <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;error&quot;</span>: <span class="hljs-string">&quot;只允许 SELECT 查询&quot;</span>&#125;<br>    result = db.execute(sql)<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;rows&quot;</span>: result.fetchall(), <span class="hljs-string">&quot;columns&quot;</span>: result.keys()&#125;<br><br><span class="hljs-comment"># 文件操作工具</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">read_file</span>(<span class="hljs-params">path: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;读取文件内容&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(path, <span class="hljs-string">&quot;r&quot;</span>) <span class="hljs-keyword">as</span> f:<br>        <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;content&quot;</span>: f.read()&#125;<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">write_file</span>(<span class="hljs-params">path: <span class="hljs-built_in">str</span>, content: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;写入文件&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(path, <span class="hljs-string">&quot;w&quot;</span>) <span class="hljs-keyword">as</span> f:<br>        f.write(content)<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;success&quot;</span>, <span class="hljs-string">&quot;path&quot;</span>: path&#125;<br><br><span class="hljs-comment"># API 调用工具</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">send_email</span>(<span class="hljs-params">to: <span class="hljs-built_in">str</span>, subject: <span class="hljs-built_in">str</span>, body: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:<br>    <span class="hljs-string">&quot;&quot;&quot;发送邮件&quot;&quot;&quot;</span><br>    email_client.send(to=to, subject=subject, body=body)<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;sent&quot;</span>, <span class="hljs-string">&quot;to&quot;</span>: to&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-4-记忆管理"><a href="#1-4-记忆管理" class="headerlink" title="1.4 记忆管理"></a>1.4 记忆管理</h3><table>
+<thead>
+<tr>
+<th>记忆类型</th>
+<th>存储方式</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>短期记忆</td>
+<td>对话历史（Messages 数组）</td>
+<td>当前对话上下文</td>
+</tr>
+<tr>
+<td>长期记忆</td>
+<td>向量数据库</td>
+<td>跨会话的用户偏好、历史信息</td>
+</tr>
+<tr>
+<td>工作记忆</td>
+<td>Agent 内部状态</td>
+<td>任务进度、中间结果</td>
+</tr>
+</tbody></table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentMemory</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-variable language_">self</span>.short_term = []  <span class="hljs-comment"># 对话历史</span><br>        <span class="hljs-variable language_">self</span>.working = &#123;&#125;     <span class="hljs-comment"># 工作状态</span><br>        <span class="hljs-variable language_">self</span>.long_term = VectorStore()  <span class="hljs-comment"># 长期记忆</span><br>    <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">add_message</span>(<span class="hljs-params">self, role, content</span>):<br>        <span class="hljs-variable language_">self</span>.short_term.append(&#123;<span class="hljs-string">&quot;role&quot;</span>: role, <span class="hljs-string">&quot;content&quot;</span>: content&#125;)<br>        <span class="hljs-comment"># 上下文太长时，摘要压缩</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.count_tokens() &gt; MAX_TOKENS:<br>            <span class="hljs-variable language_">self</span>.summarize_history()<br>    <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">search_long_term</span>(<span class="hljs-params">self, query, k=<span class="hljs-number">3</span></span>):<br>        <span class="hljs-string">&quot;&quot;&quot;检索长期记忆&quot;&quot;&quot;</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.long_term.similarity_search(query, k=k)<br>    <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">save_to_long_term</span>(<span class="hljs-params">self, content, metadata=<span class="hljs-literal">None</span></span>):<br>        <span class="hljs-string">&quot;&quot;&quot;保存到长期记忆&quot;&quot;&quot;</span><br>        <span class="hljs-variable language_">self</span>.long_term.add_texts([content], metadatas=[metadata])<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-5-规划能力"><a href="#1-5-规划能力" class="headerlink" title="1.5 规划能力"></a>1.5 规划能力</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs text">任务拆解示例：<br><br>用户需求：&quot;帮我分析上个月的销售数据，找出 Top10 产品，生成报告&quot;<br><br>Agent 规划：<br>1. [查询] 获取上个月的销售数据（SQL 查询）<br>2. [分析] 按产品汇总销售额，排序取 Top10<br>3. [可视化] 生成柱状图<br>4. [撰写] 写分析报告（趋势、异常、建议）<br>5. [输出] 保存为 PDF 报告<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、Agent-进阶技术"><a href="#二、Agent-进阶技术" class="headerlink" title="二、Agent 进阶技术"></a>二、Agent 进阶技术</h2><h3 id="2-1-Multi-Agent-多智能体"><a href="#2-1-Multi-Agent-多智能体" class="headerlink" title="2.1 Multi-Agent 多智能体"></a>2.1 Multi-Agent 多智能体</h3><p>多个 Agent 协作完成复杂任务：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs text">┌─────────────────────────────────────────────┐<br>│              Manager Agent                   │<br>│         (任务拆解、进度监控)                  │<br>└──────┬──────────┬──────────┬────────────────┘<br>       ↓          ↓          ↓<br>┌──────────┐ ┌──────────┐ ┌──────────┐<br>│ Coder    │ │ Reviewer │ │ Tester   │<br>│ Agent    │ │ Agent    │ │ Agent    │<br>│(写代码)  │ │(代码审查) │ │(执行测试) │<br>└──────────┘ └──────────┘ └──────────┘<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-Agent-编排框架对比"><a href="#2-2-Agent-编排框架对比" class="headerlink" title="2.2 Agent 编排框架对比"></a>2.2 Agent 编排框架对比</h3><table>
+<thead>
+<tr>
+<th>框架</th>
+<th>特点</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>LangChain</strong></td>
+<td>生态最全，组件丰富</td>
+<td>通用 Agent 开发，快速原型</td>
+</tr>
+<tr>
+<td><strong>LlamaIndex</strong></td>
+<td>专注 RAG 和数据索引</td>
+<td>知识密集型应用</td>
+</tr>
+<tr>
+<td><strong>AutoGen</strong></td>
+<td>多智能体协作，对话驱动</td>
+<td>复杂任务分解</td>
+</tr>
+<tr>
+<td><strong>CrewAI</strong></td>
+<td>角色扮演，任务委派</td>
+<td>需要”角色”协作的场景</td>
+</tr>
+<tr>
+<td><strong>LangGraph</strong></td>
+<td>状态图编排，支持循环&#x2F;条件</td>
+<td>复杂工作流，精细控制</td>
+</tr>
+<tr>
+<td><strong>OpenManus</strong></td>
+<td>模块化，支持本地运行</td>
+<td>企业级定制</td>
+</tr>
+</tbody></table>
+<h3 id="2-3-LangGraph-深入"><a href="#2-3-LangGraph-深入" class="headerlink" title="2.3 LangGraph 深入"></a>2.3 LangGraph 深入</h3><p>LangGraph 是构建复杂 Agent 工作流的首选框架：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langgraph.graph <span class="hljs-keyword">import</span> StateGraph, END<br><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> TypedDict, Annotated<br><br><span class="hljs-comment"># 定义状态</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentState</span>(<span class="hljs-title class_ inherited__">TypedDict</span>):<br>    messages: <span class="hljs-built_in">list</span><br>    plan: <span class="hljs-built_in">str</span><br>    current_step: <span class="hljs-built_in">int</span><br>    results: <span class="hljs-built_in">dict</span><br><br><span class="hljs-comment"># 定义节点</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">planner</span>(<span class="hljs-params">state: AgentState</span>) -&gt; AgentState:<br>    <span class="hljs-string">&quot;&quot;&quot;规划节点：拆解任务&quot;&quot;&quot;</span><br>    plan = llm.invoke(<span class="hljs-string">f&quot;将任务拆解为步骤：<span class="hljs-subst">&#123;state[<span class="hljs-string">&#x27;messages&#x27;</span>][-<span class="hljs-number">1</span>]&#125;</span>&quot;</span>)<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;plan&quot;</span>: plan, <span class="hljs-string">&quot;current_step&quot;</span>: <span class="hljs-number">0</span>&#125;<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">executor</span>(<span class="hljs-params">state: AgentState</span>) -&gt; AgentState:<br>    <span class="hljs-string">&quot;&quot;&quot;执行节点：执行当前步骤&quot;&quot;&quot;</span><br>    step = state[<span class="hljs-string">&quot;plan&quot;</span>][state[<span class="hljs-string">&quot;current_step&quot;</span>]]<br>    result = execute_step(step)<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;results&quot;</span>: &#123;**state[<span class="hljs-string">&quot;results&quot;</span>], step: result&#125;&#125;<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">reviewer</span>(<span class="hljs-params">state: AgentState</span>) -&gt; AgentState:<br>    <span class="hljs-string">&quot;&quot;&quot;审查节点：检查结果&quot;&quot;&quot;</span><br>    review = llm.invoke(<span class="hljs-string">f&quot;审查以下结果：<span class="hljs-subst">&#123;state[<span class="hljs-string">&#x27;results&#x27;</span>]&#125;</span>&quot;</span>)<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;messages&quot;</span>: state[<span class="hljs-string">&quot;messages&quot;</span>] + [review]&#125;<br><br><span class="hljs-comment"># 构建图</span><br>graph = StateGraph(AgentState)<br>graph.add_node(<span class="hljs-string">&quot;planner&quot;</span>, planner)<br>graph.add_node(<span class="hljs-string">&quot;executor&quot;</span>, executor)<br>graph.add_node(<span class="hljs-string">&quot;reviewer&quot;</span>, reviewer)<br><br><span class="hljs-comment"># 定义边</span><br>graph.set_entry_point(<span class="hljs-string">&quot;planner&quot;</span>)<br>graph.add_edge(<span class="hljs-string">&quot;planner&quot;</span>, <span class="hljs-string">&quot;executor&quot;</span>)<br>graph.add_conditional_edges(<br>    <span class="hljs-string">&quot;executor&quot;</span>,<br>    <span class="hljs-keyword">lambda</span> s: <span class="hljs-string">&quot;reviewer&quot;</span> <span class="hljs-keyword">if</span> s[<span class="hljs-string">&quot;current_step&quot;</span>] &gt;= <span class="hljs-built_in">len</span>(s[<span class="hljs-string">&quot;plan&quot;</span>]) - <span class="hljs-number">1</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;executor&quot;</span>,<br>)<br>graph.add_edge(<span class="hljs-string">&quot;reviewer&quot;</span>, END)<br><br><span class="hljs-comment"># 编译并运行</span><br>app = graph.<span class="hljs-built_in">compile</span>()<br>result = app.invoke(&#123;<span class="hljs-string">&quot;messages&quot;</span>: [user_input]&#125;)<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-4-工具链标准化（MCP）"><a href="#2-4-工具链标准化（MCP）" class="headerlink" title="2.4 工具链标准化（MCP）"></a>2.4 工具链标准化（MCP）</h3><p>MCP（Model Context Protocol）是一种标准化的工具接入协议：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs text">传统方式：每个 Agent 自定义工具接口<br>MCP 方式：统一的工具发现和调用协议<br><br>优势：<br>- 工具复用：一个 MCP 工具可在多个 Agent 中使用<br>- 标准化：统一的参数描述和返回格式<br>- 可发现性：Agent 自动发现可用工具<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-5-Agent-可观测性"><a href="#2-5-Agent-可观测性" class="headerlink" title="2.5 Agent 可观测性"></a>2.5 Agent 可观测性</h3><p>追踪 Agent 的每一步推理和工具调用：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 使用 LangSmith 追踪</span><br><span class="hljs-keyword">import</span> langsmith<br><span class="hljs-keyword">from</span> langsmith <span class="hljs-keyword">import</span> traceable<br><br><span class="hljs-meta">@traceable</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">agent_step</span>(<span class="hljs-params">step_name, input_data</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;每个步骤都被追踪&quot;&quot;&quot;</span><br>    <span class="hljs-comment"># ... 执行逻辑</span><br>    <span class="hljs-keyword">return</span> result<br><br><span class="hljs-comment"># 使用 Langfuse（自部署）</span><br><span class="hljs-keyword">from</span> langfuse.callback <span class="hljs-keyword">import</span> CallbackHandler<br><br>handler = CallbackHandler()<br>response = agent.invoke(<span class="hljs-built_in">input</span>, config=&#123;<span class="hljs-string">&quot;callbacks&quot;</span>: [handler]&#125;)<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、Agent-实战案例"><a href="#三、Agent-实战案例" class="headerlink" title="三、Agent 实战案例"></a>三、Agent 实战案例</h2><h3 id="3-1-案例1：故障诊断-Agent"><a href="#3-1-案例1：故障诊断-Agent" class="headerlink" title="3.1 案例1：故障诊断 Agent"></a>3.1 案例1：故障诊断 Agent</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs text">工具集：<br>├── 搜索工具：查询知识库、文档<br>├── 监控工具：查询系统指标、日志<br>├── 执行工具：重启服务、修改配置<br>└── 通知工具：发送告警、生成报告<br><br>流程：<br>1. 接收告警 → 2. 分析症状 → 3. 搜索知识库<br>4. 查询监控 → 5. 定位根因 → 6. 执行修复<br>7. 验证结果 → 8. 生成报告<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs python">tools = [<br>    &#123;<br>        <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;query_logs&quot;</span>,<br>        <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;查询指定服务的日志&quot;</span>,<br>        <span class="hljs-string">&quot;parameters&quot;</span>: &#123;<br>            <span class="hljs-string">&quot;service&quot;</span>: <span class="hljs-string">&quot;服务名&quot;</span>,<br>            <span class="hljs-string">&quot;time_range&quot;</span>: <span class="hljs-string">&quot;时间范围&quot;</span>,<br>            <span class="hljs-string">&quot;level&quot;</span>: <span class="hljs-string">&quot;日志级别&quot;</span><br>        &#125;<br>    &#125;,<br>    &#123;<br>        <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;query_metrics&quot;</span>,<br>        <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;查询系统监控指标&quot;</span>,<br>        <span class="hljs-string">&quot;parameters&quot;</span>: &#123;<br>            <span class="hljs-string">&quot;metric&quot;</span>: <span class="hljs-string">&quot;指标名（CPU/内存/请求量/延迟）&quot;</span>,<br>            <span class="hljs-string">&quot;service&quot;</span>: <span class="hljs-string">&quot;服务名&quot;</span><br>        &#125;<br>    &#125;,<br>    &#123;<br>        <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;restart_service&quot;</span>,<br>        <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;重启指定服务&quot;</span>,<br>        <span class="hljs-string">&quot;parameters&quot;</span>: &#123;<br>            <span class="hljs-string">&quot;service&quot;</span>: <span class="hljs-string">&quot;服务名&quot;</span><br>        &#125;<br>    &#125;,<br>    &#123;<br>        <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;send_alert&quot;</span>,<br>        <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;发送告警通知&quot;</span>,<br>        <span class="hljs-string">&quot;parameters&quot;</span>: &#123;<br>            <span class="hljs-string">&quot;channel&quot;</span>: <span class="hljs-string">&quot;通知渠道&quot;</span>,<br>            <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">&quot;告警内容&quot;</span><br>        &#125;<br>    &#125;<br>]<br><br><span class="hljs-comment"># Agent Prompt</span><br>system_prompt = <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">你是一个运维故障诊断 Agent。收到告警后：</span><br><span class="hljs-string">1. 分析告警信息，确定受影响的服务</span><br><span class="hljs-string">2. 查询相关日志和监控指标</span><br><span class="hljs-string">3. 根据症状在知识库中搜索类似案例</span><br><span class="hljs-string">4. 定位根因</span><br><span class="hljs-string">5. 如果是已知问题，执行修复方案</span><br><span class="hljs-string">6. 生成故障报告</span><br><span class="hljs-string"></span><br><span class="hljs-string">注意：重启服务前必须确认影响范围，重大操作需要人工确认。</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-案例2：AI-写作助手（Multi-Agent）"><a href="#3-2-案例2：AI-写作助手（Multi-Agent）" class="headerlink" title="3.2 案例2：AI 写作助手（Multi-Agent）"></a>3.2 案例2：AI 写作助手（Multi-Agent）</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs text">模块设计：<br>├── Orchestrator：任务编排，分配写作任务<br>├── Research Agent：收集素材，搜索资料<br>├── Writer Agent：生成内容，风格控制<br>├── Editor Agent：润色修改，质量检查<br>└── Memory：保存写作偏好、历史稿件<br><br>流程：<br>1. 用户输入主题 → 2. 研究 Agent 收集素材<br>3. 写作 Agent 生成初稿 → 4. 编辑 Agent 润色<br>5. 用户确认 → 6. 保存到知识库<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langgraph.graph <span class="hljs-keyword">import</span> StateGraph<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">WritingState</span>(<span class="hljs-title class_ inherited__">TypedDict</span>):<br>    topic: <span class="hljs-built_in">str</span><br>    research_results: <span class="hljs-built_in">list</span><br>    draft: <span class="hljs-built_in">str</span><br>    final_version: <span class="hljs-built_in">str</span><br>    feedback: <span class="hljs-built_in">str</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">research_agent</span>(<span class="hljs-params">state: WritingState</span>) -&gt; WritingState:<br>    <span class="hljs-string">&quot;&quot;&quot;研究 Agent：搜索素材&quot;&quot;&quot;</span><br>    results = search_web(state[<span class="hljs-string">&quot;topic&quot;</span>])<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;research_results&quot;</span>: results&#125;<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">writer_agent</span>(<span class="hljs-params">state: WritingState</span>) -&gt; WritingState:<br>    <span class="hljs-string">&quot;&quot;&quot;写作 Agent：生成初稿&quot;&quot;&quot;</span><br>    prompt = <span class="hljs-string">f&quot;&quot;&quot;</span><br><span class="hljs-string">    主题：<span class="hljs-subst">&#123;state[<span class="hljs-string">&#x27;topic&#x27;</span>]&#125;</span></span><br><span class="hljs-string">    素材：<span class="hljs-subst">&#123;state[<span class="hljs-string">&#x27;research_results&#x27;</span>]&#125;</span></span><br><span class="hljs-string">    </span><br><span class="hljs-string">    请根据以上素材撰写一篇 2000 字的文章。</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    draft = llm.invoke(prompt)<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;draft&quot;</span>: draft&#125;<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">editor_agent</span>(<span class="hljs-params">state: WritingState</span>) -&gt; WritingState:<br>    <span class="hljs-string">&quot;&quot;&quot;编辑 Agent：润色修改&quot;&quot;&quot;</span><br>    prompt = <span class="hljs-string">f&quot;&quot;&quot;</span><br><span class="hljs-string">    请对以下文章进行编辑润色：</span><br><span class="hljs-string">    <span class="hljs-subst">&#123;state[<span class="hljs-string">&#x27;draft&#x27;</span>]&#125;</span></span><br><span class="hljs-string">    </span><br><span class="hljs-string">    编辑要求：</span><br><span class="hljs-string">    1. 修正语法错误</span><br><span class="hljs-string">    2. 优化表达方式</span><br><span class="hljs-string">    3. 检查逻辑连贯性</span><br><span class="hljs-string">    4. 确保准确性</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    final = llm.invoke(prompt)<br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-string">&quot;final_version&quot;</span>: final&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3-案例3：Multi-Agent-协作（代码开发）"><a href="#3-3-案例3：Multi-Agent-协作（代码开发）" class="headerlink" title="3.3 案例3：Multi-Agent 协作（代码开发）"></a>3.3 案例3：Multi-Agent 协作（代码开发）</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs text">角色设计：<br>├── Manager Agent：任务拆解，进度监控<br>├── Coder Agent：代码编写，单元测试<br>├── Reviewer Agent：代码审查，安全扫描<br>├── Tester Agent：集成测试，性能测试<br>└── Deployer Agent：部署上线，监控告警<br><br>协作模式：<br>Manager → 分配任务 → Coder → 提交代码<br>                    ↓<br>           Reviewer ← Code Review<br>                    ↓<br>               Tester → 测试通过<br>                    ↓<br>            Deployer → 部署上线<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、Spring-AI-Agent-实践（Java）"><a href="#四、Spring-AI-Agent-实践（Java）" class="headerlink" title="四、Spring AI Agent 实践（Java）"></a>四、Spring AI Agent 实践（Java）</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// Spring AI Function Calling 示例</span><br><span class="hljs-meta">@Configuration</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ToolConfig</span> &#123;<br><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-meta">@Description(&quot;查询公司知识库&quot;)</span><br>    <span class="hljs-keyword">public</span> Function&lt;KnowledgeQuery, KnowledgeResult&gt; <span class="hljs-title function_">searchKnowledge</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> query -&gt; &#123;<br>            List&lt;Document&gt; docs = vectorStore.similaritySearch(query.getQuery());<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">KnowledgeResult</span>(docs.stream()<br>                .map(Document::getContent)<br>                .collect(Collectors.joining(<span class="hljs-string">&quot;\n---\n&quot;</span>)));<br>        &#125;;<br>    &#125;<br><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-meta">@Description(&quot;查询数据库&quot;)</span><br>    <span class="hljs-keyword">public</span> Function&lt;DatabaseQuery, DatabaseResult&gt; <span class="hljs-title function_">queryDatabase</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> query -&gt; &#123;<br>            <span class="hljs-comment">// SQL 安全校验</span><br>            <span class="hljs-keyword">if</span> (!query.getSql().trim().toUpperCase().startsWith(<span class="hljs-string">&quot;SELECT&quot;</span>)) &#123;<br>                <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DatabaseResult</span>(<span class="hljs-string">&quot;只允许 SELECT 查询&quot;</span>);<br>            &#125;<br>            List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(query.getSql());<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DatabaseResult</span>(rows);<br>        &#125;;<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">// Agent 调用</span><br><span class="hljs-meta">@RestController</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentController</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ChatModel chatModel;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> List&lt;FunctionCallback&gt; tools;<br><br>    <span class="hljs-meta">@PostMapping(&quot;/agent/chat&quot;)</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">chat</span><span class="hljs-params">(<span class="hljs-meta">@RequestBody</span> String userMessage)</span> &#123;<br>        <span class="hljs-type">var</span> <span class="hljs-variable">prompt</span> <span class="hljs-operator">=</span> Prompt.builder()<br>            .messages(<span class="hljs-keyword">new</span> <span class="hljs-title class_">SystemMessage</span>(<span class="hljs-string">&quot;你是一个 AI 助手，可以使用工具完成任务。&quot;</span>),<br>                      <span class="hljs-keyword">new</span> <span class="hljs-title class_">UserMessage</span>(userMessage))<br>            .toolCallbacks(tools)<br>            .build();<br>        <br>        <span class="hljs-keyword">return</span> chatModel.call(prompt).getResult().getOutput().getContent();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、学习建议"><a href="#五、学习建议" class="headerlink" title="五、学习建议"></a>五、学习建议</h2><h3 id="动手路径"><a href="#动手路径" class="headerlink" title="动手路径"></a>动手路径</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs text">Week 1: Function Calling<br>├── 定义 3 个工具（搜索、计算、查天气）<br>├── 实现基础 Function Calling<br>└── 理解 tool_calls 和 tool 响应<br><br>Week 2: ReAct Agent<br>├── 实现 ReAct 循环<br>├── 加入错误处理<br>└── 做一个能搜索+计算的 Agent<br><br>Week 3: 进阶<br>├── 学习 LangGraph<br>├── 实现 Multi-Agent 协作<br>└── 加入可观测性（LangSmith/Langfuse）<br></code></pre></td></tr></table></figure>
+
+<hr>
+<p><em>上一篇：<a href="/blog/2026/05/09/rag-retrieval-augmented-generation/">二、RAG 检索增强生成</a></em><br><em>下一篇：<a href="/blog/2026/05/09/llm-fine-tuning-guide/">四、模型微调 Fine-tuning</a></em><br><em>返回导航：<a href="/blog/2026/05/09/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF%E6%B8%85%E5%8D%95/">大模型应用开发技术路线清单</a></em></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog/categories/AI-%E5%90%8E%E7%AB%AF%E5%AD%A6%E4%B9%A0/" class="category-chain-item">AI 后端学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/blog/tags/Agent/" class="print-no-link">#Agent</a>
+      
+        <a href="/blog/tags/Function-Calling/" class="print-no-link">#Function Calling</a>
+      
+        <a href="/blog/tags/ReAct/" class="print-no-link">#ReAct</a>
+      
+        <a href="/blog/tags/Multi-Agent/" class="print-no-link">#Multi-Agent</a>
+      
+        <a href="/blog/tags/LangGraph/" class="print-no-link">#LangGraph</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AI Agent 智能体开发：从理论基础到实战案例</div>
+      <div>https://msb8080.github.io/blog/2026/05/09/llm-agent-development/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>minshuaibo</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年5月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/blog/2026/05/09/llm-fine-tuning-guide/" title="大模型微调完全指南：LoRA、DPO、数据工程与工具链">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">大模型微调完全指南：LoRA、DPO、数据工程与工具链</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2026/05/09/rag-retrieval-augmented-generation/" title="RAG 检索增强生成：从基础架构到企业级优化">
+                        <span class="hidden-mobile">RAG 检索增强生成：从基础架构到企业级优化</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com/msb8080" target="_blank" rel="noopener">GitHub</a> · <a href="https://msb8080.github.io" target="_blank" rel="noopener">主页</a> <br> <span style="opacity:0.5; font-family: Space Mono, monospace; font-size: 0.8rem;">Powered by Hexo & Fluid · Themed with 💜</span> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/events.js" ></script>
+<script  src="/blog/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/blog/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/blog/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/blog/js/purple-animations.js?v=4.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/blog/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
