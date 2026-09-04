@@ -183,10 +183,59 @@
         });
     }
 
+    /* ----- 首页内容枢纽：让新访客先理解主题，再进入文章流 ----- */
+    function initHomeHub() {
+        var path = window.location.pathname.replace(/\/+$/, '');
+        if (path !== '' && path !== '/blog') return;
+        if (document.querySelector('.home-hub')) return;
+
+        var stream = document.querySelector('#board > .container > .row > .col-12');
+        var firstCard = stream && stream.querySelector('.index-card');
+        if (!stream || !firstCard) return;
+
+        var articleCount = stream.querySelectorAll('.index-card').length;
+        var hub = document.createElement('section');
+        hub.className = 'home-hub';
+        hub.setAttribute('aria-labelledby', 'home-hub-title');
+        hub.innerHTML = [
+            '<div class="home-hub__intro">',
+            '  <div class="home-hub__copy">',
+            '    <span class="home-hub__eyebrow">BUILD LOG · JAVA × AI</span>',
+            '    <h1 id="home-hub-title">把复杂技术，拆成能运行的工程。</h1>',
+            '    <p>这里记录 AI 应用开发、Java 后端与工程复盘。少一点概念堆叠，多一点真实代码、验证过程和取舍依据。</p>',
+            '    <div class="home-hub__actions">',
+            '      <a class="home-hub__primary" href="/blog/2026/05/09/大模型应用开发技术路线清单/">查看 AI 开发路线 <span aria-hidden="true">↗</span></a>',
+            '      <a class="home-hub__secondary" href="https://github.com/msb8080" target="_blank" rel="noopener">GitHub</a>',
+            '    </div>',
+            '  </div>',
+            '  <div class="home-hub__signal" aria-label="当前关注方向">',
+            '    <span class="home-hub__status"><i></i> NOW BUILDING</span>',
+            '    <strong>AI Dev Copilot</strong>',
+            '    <p>模型流式对话、上下文工程、Agent Skills 与安全工具调用。</p>',
+            '    <div class="home-hub__metrics">',
+            '      <span><b>' + articleCount + '</b> 篇精选</span>',
+            '      <span><b>4</b> 个方向</span>',
+            '      <span><b>∞</b> 持续迭代</span>',
+            '    </div>',
+            '  </div>',
+            '</div>',
+            '<nav class="home-hub__topics" aria-label="内容主题">',
+            '  <a href="/blog/tags/AI-工程化/" class="home-topic home-topic--featured"><span>01</span><strong>AI 应用工程</strong><small>LLM · Agent · Skills</small></a>',
+            '  <a href="/blog/categories/后端架构/" class="home-topic"><span>02</span><strong>Java 后端</strong><small>架构 · 稳定性 · 复盘</small></a>',
+            '  <a href="/blog/tags/Skills/" class="home-topic"><span>03</span><strong>Agent Skills</strong><small>上下文 · 工具 · 工作流</small></a>',
+            '  <a href="/blog/about/" class="home-topic"><span>04</span><strong>关于作者</strong><small>经历 · 方向 · 联系</small></a>',
+            '</nav>',
+            '<div class="home-stream-title"><span>RECENT WRITING</span><h2>最近更新</h2><p>按时间阅读正在发生的思考与实践。</p></div>'
+        ].join('');
+
+        stream.insertBefore(hub, firstCard);
+    }
+
     /* ========================================= */
     function init() {
         initAmbientOrbs();
         initThemeTransition();
+        initHomeHub();
         initScrollReveal();
         initBannerAnimation();
         initNavbarScroll();
