@@ -8,6 +8,12 @@
         var navigation = document.querySelector('[data-site-nav]');
         if (!navigation) return;
         var ticking = false;
+        function updateNavigationHeight() {
+            document.documentElement.style.setProperty('--nav-height', navigation.offsetHeight + 'px');
+        }
+        if ('ResizeObserver' in window) new ResizeObserver(updateNavigationHeight).observe(navigation);
+        else window.addEventListener('resize', updateNavigationHeight, { passive: true });
+        updateNavigationHeight();
 
         function updateNavigation() {
             navigation.classList.toggle('is-scrolled', window.scrollY > 28);
@@ -35,10 +41,10 @@
         }, { threshold: 0.08, rootMargin: '0px 0px -40px' });
 
         items.forEach(function (item, index) {
-            item.classList.add('reveal-ready');
             if (item.getBoundingClientRect().top < window.innerHeight * 0.96) {
                 item.classList.add('is-visible');
             } else {
+                item.classList.add('reveal-ready');
                 item.style.transitionDelay = Math.min(index * 55, 220) + 'ms';
                 observer.observe(item);
             }
@@ -86,6 +92,10 @@
         var modeButtons = Array.from(document.querySelectorAll('[data-trace-mode]'));
         var pulseButton = document.querySelector('[data-trace-pulse]');
         var resetButton = document.querySelector('[data-trace-reset]');
+        var pauseButton = document.querySelector('[data-trace-pause]');
+        var feedback = document.querySelector('[data-trace-feedback]');
+        var paused = reduceMotion;
+        var pointerStart = null;
         var width = 900;
         var height = 520;
         var mode = 'cruise';
@@ -128,8 +138,23 @@
                 button.classList.toggle('is-active', active);
                 button.setAttribute('aria-pressed', String(active));
             });
-            if (stateLabel) stateLabel.textContent = mode === 'focus' ? '聚焦中' : '巡航中';
-            if (reduceMotion) draw(0);
+            updatePlayback();
+            if (paused || reduceMotion) draw(0);
+        }
+
+        function updatePlayback() {
+            if (stateLabel) stateLabel.textContent = paused ? '已暂停' : mode === 'focus' ? '聚焦中' : '巡航中';
+            if (pauseButton) {
+                pauseButton.textContent = paused ? '继续动画' : '暂停动画';
+                pauseButton.setAttribute('aria-pressed', String(paused));
+            }
+            document.querySelector('.trace-lab').classList.toggle('is-paused', paused);
+        }
+
+        function stopAnimation() {
+            if (frameId) cancelAnimationFrame(frameId);
+            frameId = 0;
+            previousTime = 0;
         }
 
         function addPulse(originIndex) {
@@ -140,16 +165,20 @@
                 ? candidateEdges[pulses.length % candidateEdges.length].index
                 : pulses.length % edges.length;
             pulses.push({ edge: selection, progress: 0, speed: 0.15, fresh: true });
-            if (pulses.length > 9) pulses.shift();
+            var replaced = pulses.length > 9;
+            if (replaced) pulses.shift();
             updateCount();
-            if (reduceMotion) draw(0);
+            if (feedback) feedback.textContent = replaced
+                ? '已派发新任务，替换最早的示意任务；当前显示 9 个。'
+                : '已派发任务，当前显示 ' + pulses.length + ' 个。' + (paused ? '动画已暂停，可继续播放观察轨迹。' : '');
+            if (paused || reduceMotion) draw(0);
         }
 
         function resize() {
             var rect = canvas.getBoundingClientRect();
             var ratio = Math.min(window.devicePixelRatio || 1, 2);
-            width = Math.max(280, rect.width);
-            height = Math.max(220, rect.height);
+            width = Math.max(1, rect.width);
+            height = Math.max(1, rect.height);
             canvas.width = Math.round(width * ratio);
             canvas.height = Math.round(height * ratio);
             context.setTransform(ratio, 0, 0, ratio, 0, 0);
@@ -190,7 +219,7 @@
         }
 
         function drawNode(node, position) {
-            var radius = node.core ? Math.max(29, width * 0.047) : Math.max(17, width * 0.025);
+            var radius = node.core ? Math.max(29, width * 0.047) : Math.max(24, width * 0.025);
             context.save();
             context.shadowColor = node.color;
             context.shadowBlur = node.core ? 30 : 18;
@@ -203,7 +232,7 @@
             context.stroke();
             context.shadowBlur = 0;
             context.fillStyle = node.core ? '#ffffff' : node.color;
-            context.font = (node.core ? '700 ' : '600 ') + Math.max(9, Math.min(13, width / 64)) + 'px "Space Mono", monospace';
+            context.font = (node.core ? '700 ' : '600 ') + Math.max(10, Math.min(13, width / 64)) + 'px "Space Mono", monospace';
             context.textAlign = 'center';
             context.textBaseline = 'middle';
             context.fillText(node.label, position.x, position.y);
@@ -259,7 +288,7 @@
         }
 
         function animate(time) {
-            if (!visible || document.hidden || reduceMotion) {
+            if (!visible || document.hidden || paused) {
                 frameId = 0;
                 return;
             }
@@ -279,7 +308,7 @@
         }
 
         function ensureAnimation() {
-            if (!frameId && visible && !document.hidden && !reduceMotion) {
+            if (!frameId && visible && !document.hidden && !paused) {
                 previousTime = 0;
                 frameId = requestAnimationFrame(animate);
             }
@@ -295,6 +324,14 @@
         }, { passive: true });
         canvas.addEventListener('pointerleave', function () { pointer.active = false; });
         canvas.addEventListener('pointerdown', function (event) {
+            pointerStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
+        });
+        canvas.addEventListener('pointercancel', function () { pointerStart = null; pointer.active = false; });
+        canvas.addEventListener('pointerup', function (event) {
+            if (!pointerStart || pointerStart.id !== event.pointerId) return;
+            var distanceMoved = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+            pointerStart = null;
+            if (distanceMoved > 10) return;
             var point = canvasPoint(event);
             var positions = nodes.map(function (node, index) { return getNodePosition(node, index, performance.now()); });
             var nearest = 0;
@@ -317,11 +354,19 @@
             button.addEventListener('click', function () { setMode(button.getAttribute('data-trace-mode')); });
         });
         if (pulseButton) pulseButton.addEventListener('click', function () { addPulse(0); });
+        if (pauseButton) pauseButton.addEventListener('click', function () {
+            paused = !paused;
+            if (paused) stopAnimation();
+            else ensureAnimation();
+            updatePlayback();
+            if (feedback) feedback.textContent = paused ? '动画已暂停。仍可派发任务、切换布局或重置。' : '动画已继续。';
+        });
         if (resetButton) resetButton.addEventListener('click', function () {
             elapsed = 0;
             pointer.active = false;
             resetPulses();
             setMode('cruise');
+            if (feedback) feedback.textContent = '已重置为 4 个示意任务。' + (paused ? '动画保持暂停。' : '');
         });
 
         if ('ResizeObserver' in window) new ResizeObserver(resize).observe(canvas);
@@ -331,13 +376,28 @@
             new IntersectionObserver(function (entries) {
                 visible = entries[0].isIntersecting;
                 if (visible) ensureAnimation();
+                else stopAnimation();
             }, { rootMargin: '120px' }).observe(canvas);
         }
-        document.addEventListener('visibilitychange', ensureAnimation);
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) stopAnimation();
+            else ensureAnimation();
+        });
+        window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', function (event) {
+            reduceMotion = event.matches;
+            if (reduceMotion) {
+                paused = true;
+                stopAnimation();
+                updatePlayback();
+                draw(0);
+                if (feedback) feedback.textContent = '已按系统减少动态效果设置暂停，可手动继续。';
+            }
+        });
 
         resetPulses();
         resize();
         setMode('cruise');
+        if (reduceMotion && feedback) feedback.textContent = '已按系统减少动态效果设置暂停，可手动继续。';
         ensureAnimation();
     }
 

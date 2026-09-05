@@ -22,11 +22,11 @@ button:focus-visible {
     outline-offset: 4px;
 }
 
-/* The navigation shares the exact 1280px rail used by .main-container.
+/* Align with the visible content inside the 1280px container's 24px gutters.
    It stays visually centered because it is intentionally excluded from
    the transform-based content reveal animation. */
 .cyber-nav {
-    width: min(calc(100% - 3rem), 1280px);
+    width: min(calc(100% - 3rem), 1232px);
     min-height: 64px;
     justify-content: space-between;
     gap: clamp(1rem, 2.4vw, 2rem);
@@ -60,7 +60,7 @@ button:focus-visible {
     margin-top: 0.05rem;
     color: rgba(255, 255, 255, 0.42);
     font-family: "Space Mono", monospace;
-    font-size: 0.52rem;
+    font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.11em;
     line-height: 1.2;
@@ -75,7 +75,7 @@ button:focus-visible {
     min-width: 0;
     color: rgba(255, 255, 255, 0.48);
     font-family: "Space Mono", monospace;
-    font-size: 0.6rem;
+    font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -113,6 +113,13 @@ button:focus-visible {
 }
 
 .nav-links .nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
     padding: 0.7rem 0.75rem;
     border-radius: 0.8rem;
     color: rgba(255, 255, 255, 0.58);
@@ -180,7 +187,7 @@ button:focus-visible {
         radial-gradient(circle at 68% 10%, rgba(49, 210, 255, 0.12), transparent 34%),
         linear-gradient(135deg, rgba(13, 10, 31, 0.92), rgba(36, 20, 65, 0.88));
     box-shadow: 0 30px 90px rgba(7, 4, 18, 0.35);
-    overflow: hidden;
+    overflow: clip;
     position: relative;
     isolation: isolate;
     scroll-margin-top: 6.5rem;
@@ -416,6 +423,10 @@ button:focus-visible {
     .trace-copy > p { max-width: 48rem; }
 }
 
+@media (max-width: 1150px) {
+    .nav-context { display: none; }
+}
+
 @media (max-width: 600px) {
     .cyber-nav {
         top: 0.75rem;
@@ -429,8 +440,8 @@ button:focus-visible {
     .nav-title { font-size: 0.94rem; }
     .nav-role { display: none; }
     .nav-links { display: flex; gap: 0.1rem; }
-    .nav-links .nav-link { padding: 0.62rem 0.55rem; font-size: 0.6rem; }
-    .nav-link--github { display: none; }
+    .nav-links .nav-link { padding: 0.62rem 0.5rem; font-size: 0.875rem; }
+    .nav-links .nav-link--github { display: none; }
     .nav-links .nav-link--primary { padding-inline: 0.72rem; }
     .trace-lab { margin-top: 1.25rem; padding: 1.15rem; border-radius: 1.5rem; }
     .trace-copy h2 { font-size: 2.25rem; }
@@ -446,6 +457,80 @@ button:focus-visible {
     .hero-panel .stat-card { padding: 0.75rem 0.65rem; }
     .hero-panel .stat-value { font-size: 1.05rem; }
     .hero-panel .stat-label { font-size: 0.58rem; }
+}
+
+/* Readable type, content-sized cards, and motion controls. */
+.hero p, .trace-copy > p { color: #d6cde5; font-size: 1rem; line-height: 1.8; }
+.hero .panel-text { font-size: 1rem; max-width: none; }
+.hero-topline { font-size: 0.75rem; letter-spacing: 0.035em; flex-wrap: wrap; }
+.hero-tag { font-size: 0.875rem; color: #e2d9f0; }
+.hero-tags { gap: 0.5rem; margin-top: 1.15rem; }
+.hero-card { padding: clamp(1.25rem, 3vw, 2.2rem); }
+.hero-avatar { width: 72px; height: 72px; font-size: 32px; animation: none; }
+.panel-title, .section-title { font-size: 1.5rem; }
+.work-desc, .card-desc { font-size: 1rem; color: #d6cde5; line-height: 1.65; }
+.stat-label, .hero-panel .stat-label, .section-kicker, .card-kicker { font-size: 0.75rem; color: #c8b7e4; }
+.section-subtitle { font-size: 0.9375rem; color: #d6cde5; }
+.nav-role { color: #c8b7e4; }
+.nav-links .nav-link { color: #e1d6f2; }
+.trace-actions { display: flex; flex-wrap: wrap; }
+.trace-button { min-height: 44px; font-size: 0.875rem; color: #e2d9f0; }
+.trace-button--reset { margin-left: 0; }
+.trace-pipeline li { font-size: 0.8125rem; letter-spacing: 0; text-transform: none; }
+.trace-feedback { margin-top: 0.85rem; min-height: 3.2em; color: #d6cde5; font-size: 0.875rem; line-height: 1.6; }
+.trace-metrics dd, .trace-hint, .trace-visual__bar { font-size: 0.75rem; color: #bfb2d4; line-height: 1.6; }
+.trace-metrics dt, .hero-panel .stat-value { font-size: 1rem; }
+.trace-lab.is-paused .trace-visual__bar i { background: #e8c77f; box-shadow: none; }
+.trace-visual:focus-within { outline: 3px solid #d5c3ff; outline-offset: 4px; }
+.bento-grid { grid-auto-flow: row; }
+.card-content { height: auto; min-height: 100%; }
+.card-base { position: absolute; }
+.bento-grid > a { border-radius: 1.5rem; }
+.bento-grid > a:focus-visible { outline-offset: 6px; }
+.card-disabled { opacity: 1; }
+.card-disabled .card-kicker { color: #f0cf92; }
+.hero-tag:hover { transform: none; }
+.contact-heading { margin: 3rem auto 1rem; text-align: center; }
+.contact-heading h2 { font-size: 1.5rem; color: #fff; }
+.contact-heading p { margin-top: 0.65rem; font-size: 1rem; color: #d6cde5; }
+.social-links { flex-wrap: wrap; }
+.contact-email { color: #e2d9f0; text-underline-offset: 0.3em; overflow-wrap: anywhere; }
+footer { font-size: 0.8125rem; }
+.main-container { padding-top: max(96px, calc(var(--nav-height, 64px) + 4rem)); }
+[id] { scroll-margin-top: calc(var(--nav-height, 64px) + 3rem); }
+@media (max-width: 768px) {
+    .main-container { padding-top: max(96px, calc(var(--nav-height, 64px) + 2rem)); }
+    .cyber-nav { width: calc(100% - 2rem); }
+    .hero-card, .hero-panel { min-width: 0; }
+    .hero h1 { font-size: clamp(2rem, 8vw, 3rem); overflow-wrap: anywhere; }
+    .hero-topline { font-size: 0.75rem; }
+    .hero p, .card-desc { font-size: 1rem; }
+    .card-content { padding: 1.4rem; }
+    .card-row { flex-wrap: wrap; }
+    .panel-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+    .cyber-nav { width: calc(100% - 1.5rem); }
+    .trace-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .trace-button--reset { grid-column: 1 / -1; }
+    .trace-metrics dt { font-size: 0.875rem; }
+    .nav-title { font-size: 0.875rem; }
+    .nav-brand { gap: 0.35rem; }
+}
+@media (max-width: 360px) {
+    .nav-icon { display: none; }
+    .nav-links .nav-link { padding-inline: 0.35rem; }
+    .trace-pipeline { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+    .cyber-nav { flex-wrap: wrap; }
+    .nav-links { flex-shrink: 1; flex-wrap: wrap; }
+}
+@media (hover: none), (prefers-reduced-motion: reduce) {
+    .card-wrapper:hover .card-content { transform: translateZ(10px); }
+    .card-wrapper:hover .card-base { transform: none; }
+    .card-wrapper:hover .card-glass { opacity: 0; }
+    .work-item:hover, .nav-brand:hover .nav-icon { transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
