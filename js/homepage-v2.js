@@ -8,7 +8,6 @@
         var items = Array.from(document.querySelectorAll('.gsap-reveal'));
         if (!items.length || reduceMotion || !('IntersectionObserver' in window)) return;
 
-        items.forEach(function (item) { item.classList.add('reveal-ready'); });
         var observer = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
                 if (!entry.isIntersecting) return;
@@ -18,8 +17,13 @@
         }, { threshold: 0.08, rootMargin: '0px 0px -40px' });
 
         items.forEach(function (item, index) {
-            item.style.transitionDelay = Math.min(index * 55, 220) + 'ms';
-            observer.observe(item);
+            item.classList.add('reveal-ready');
+            if (item.getBoundingClientRect().top < window.innerHeight * 0.96) {
+                item.classList.add('is-visible');
+            } else {
+                item.style.transitionDelay = Math.min(index * 55, 220) + 'ms';
+                observer.observe(item);
+            }
         });
     }
 
