@@ -67,9 +67,7 @@ important_changes:
 - [Harness 系列 02：Codex、Claude Code、OpenCode 与自建方案怎么选](/blog/2026/09/04/agent-harness-series-02-selection/)
 - [Harness 系列 07：安全、评测与可观测性](/blog/2026/09/04/agent-harness-series-07-security-evaluation/)
 
-&gt; 维护原则：新增厂商时必须至少补齐“模型目录或 API 文档”和“变更/退役入口”中的两项；无法从官方来源验证的信息，不进入主表。</content:encoded><category>大模型</category><category>模型发布</category><category>Agent</category><category>Harness</category></item><item><title>Agent Harness 系列 01：从大模型到可执行系统</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-01-overview/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-01-overview/</guid><description>解释 Agent Harness 的核心组成、运行循环、上下文工程、工具协议、权限、沙箱和评测，并给出最小可用架构。</description><pubDate>Fri, 04 Sep 2026 14:30:00 GMT</pubDate><content:encoded>&gt; 系列导航：**01 原理** · [02 选型](/blog/2026/09/04/agent-harness-series-02-selection/) · [03 Codex](/blog/2026/09/04/agent-harness-series-03-codex/) · [04 Claude Code](/blog/2026/09/04/agent-harness-series-04-claude-code/) · [05 OpenCode](/blog/2026/09/04/agent-harness-series-05-opencode/) · [06 Java 自建](/blog/2026/09/04/agent-harness-series-06-java-spring-ai/) · [07 安全评测](/blog/2026/09/04/agent-harness-series-07-security-evaluation/)
-
-## Harness 到底是什么
+&gt; 维护原则：新增厂商时必须至少补齐“模型目录或 API 文档”和“变更/退役入口”中的两项；无法从官方来源验证的信息，不进入主表。</content:encoded><category>大模型</category><category>模型发布</category><category>Agent</category><category>Harness</category></item><item><title>Agent Harness 系列 01：从大模型到可执行系统</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-01-overview/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-01-overview/</guid><description>解释 Agent Harness 的核心组成、运行循环、上下文工程、工具协议、权限、沙箱和评测，并给出最小可用架构。</description><pubDate>Fri, 04 Sep 2026 14:30:00 GMT</pubDate><content:encoded>## Harness 到底是什么
 
 模型只负责“根据上下文预测下一步输出”。要让它读取仓库、修改文件、执行测试、请求审批并在失败后恢复，还需要一层运行系统，这就是 **Agent Harness（智能体执行框架/运行外壳）**。
 
@@ -157,9 +155,7 @@ raise StepLimitExceeded(state.summary())
 - 每一步写事件日志，敏感字段先脱敏。
 - 建立真实任务回归集，模型或 Harness 升级前后对比。
 
-下一篇进入实际选型：[Codex、Claude Code、OpenCode 与自建 Harness 怎么选](/blog/2026/09/04/agent-harness-series-02-selection/)。</content:encoded><category>Harness</category><category>Agent</category><category>MCP</category><category>AI 工程</category></item><item><title>Agent Harness 系列 02：Codex、Claude Code、OpenCode 与自建方案怎么选</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-02-selection/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-02-selection/</guid><description>从模型自由度、权限、沙箱、扩展、自动化和团队治理维度，对比 Codex、Claude Code、OpenCode 与自建 Harness。</description><pubDate>Fri, 04 Sep 2026 14:20:00 GMT</pubDate><content:encoded>&gt; 系列导航：[01 原理](/blog/2026/09/04/agent-harness-series-01-overview/) · **02 选型** · [03 Codex](/blog/2026/09/04/agent-harness-series-03-codex/) · [04 Claude Code](/blog/2026/09/04/agent-harness-series-04-claude-code/) · [05 OpenCode](/blog/2026/09/04/agent-harness-series-05-opencode/) · [06 Java 自建](/blog/2026/09/04/agent-harness-series-06-java-spring-ai/) · [07 安全评测](/blog/2026/09/04/agent-harness-series-07-security-evaluation/)
-
-## 一张表先做初筛
+下一篇进入实际选型：[Codex、Claude Code、OpenCode 与自建 Harness 怎么选](/blog/2026/09/04/agent-harness-series-02-selection/)。</content:encoded><category>Harness</category><category>Agent</category><category>MCP</category><category>AI 工程</category></item><item><title>Agent Harness 系列 02：Codex、Claude Code、OpenCode 与自建方案怎么选</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-02-selection/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-02-selection/</guid><description>从模型自由度、权限、沙箱、扩展、自动化和团队治理维度，对比 Codex、Claude Code、OpenCode 与自建 Harness。</description><pubDate>Fri, 04 Sep 2026 14:20:00 GMT</pubDate><content:encoded>## 一张表先做初筛
 
 | 方案 | 更适合 | 主要优势 | 需要注意 |
 |---|---|---|---|
@@ -214,9 +210,7 @@ raise StepLimitExceeded(state.summary())
 
 我的默认建议是：先用现成 Harness 发现真实工作流，再抽取稳定部分自建。过早自建容易把时间花在终端 UI、流式事件和工具协议上，却还没有找到真正值得自动化的任务。
 
-下一篇从可直接使用的方案开始：[Codex 实战](/blog/2026/09/04/agent-harness-series-03-codex/)。</content:encoded><category>Harness</category><category>Codex</category><category>Claude Code</category><category>OpenCode</category></item><item><title>Agent Harness 系列 03：Codex 从仓库规则到可审计自动化</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-03-codex/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-03-codex/</guid><description>Codex CLI 与 SDK 使用路线：仓库规则、任务表达、权限审批、验证闭环和非交互自动化。</description><pubDate>Fri, 04 Sep 2026 14:10:00 GMT</pubDate><content:encoded>&gt; 系列导航：[01 原理](/blog/2026/09/04/agent-harness-series-01-overview/) · [02 选型](/blog/2026/09/04/agent-harness-series-02-selection/) · **03 Codex** · [04 Claude Code](/blog/2026/09/04/agent-harness-series-04-claude-code/) · [05 OpenCode](/blog/2026/09/04/agent-harness-series-05-opencode/) · [06 Java 自建](/blog/2026/09/04/agent-harness-series-06-java-spring-ai/) · [07 安全评测](/blog/2026/09/04/agent-harness-series-07-security-evaluation/)
-
-Codex 不只是聊天式补全。它的 Harness 把仓库理解、文件编辑、命令执行、审批、沙箱、任务状态和可扩展工具组织成一条执行链。当前能力和命令以 [Codex CLI 文档](https://developers.openai.com/codex/cli) 与 [CLI Reference](https://developers.openai.com/codex/cli/reference) 为准。
+下一篇从可直接使用的方案开始：[Codex 实战](/blog/2026/09/04/agent-harness-series-03-codex/)。</content:encoded><category>Harness</category><category>Codex</category><category>Claude Code</category><category>OpenCode</category></item><item><title>Agent Harness 系列 03：Codex 从仓库规则到可审计自动化</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-03-codex/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-03-codex/</guid><description>Codex CLI 与 SDK 使用路线：仓库规则、任务表达、权限审批、验证闭环和非交互自动化。</description><pubDate>Fri, 04 Sep 2026 14:10:00 GMT</pubDate><content:encoded>Codex 不只是聊天式补全。它的 Harness 把仓库理解、文件编辑、命令执行、审批、沙箱、任务状态和可扩展工具组织成一条执行链。当前能力和命令以 [Codex CLI 文档](https://developers.openai.com/codex/cli) 与 [CLI Reference](https://developers.openai.com/codex/cli/reference) 为准。
 
 ## 1. 安装与启动
 
@@ -291,9 +285,7 @@ codex
 - 让 Agent 自动 push/发布，却没有最终 diff 和审批门。
 - 模型升级后不跑回归任务。
 
-下一篇：[Claude Code 的 CLAUDE.md、权限、Hooks 与 Agent SDK](/blog/2026/09/04/agent-harness-series-04-claude-code/)。</content:encoded><category>Harness</category><category>Codex</category><category>AGENTS.md</category><category>AI 编程工具</category></item><item><title>Agent Harness 系列 04：Claude Code 的规则、权限、Hooks 与 Agent SDK</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-04-claude-code/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-04-claude-code/</guid><description>Claude Code 实战指南，覆盖安装、CLAUDE.md、设置作用域、权限、Hooks、MCP、Skills 和 Agent SDK。</description><pubDate>Fri, 04 Sep 2026 14:00:00 GMT</pubDate><content:encoded>&gt; 系列导航：[01 原理](/blog/2026/09/04/agent-harness-series-01-overview/) · [02 选型](/blog/2026/09/04/agent-harness-series-02-selection/) · [03 Codex](/blog/2026/09/04/agent-harness-series-03-codex/) · **04 Claude Code** · [05 OpenCode](/blog/2026/09/04/agent-harness-series-05-opencode/) · [06 Java 自建](/blog/2026/09/04/agent-harness-series-06-java-spring-ai/) · [07 安全评测](/blog/2026/09/04/agent-harness-series-07-security-evaluation/)
-
-[Claude Code](https://code.claude.com/docs/en/overview) 把同一套 Agent 引擎带到终端、IDE、桌面和 Web。它适合把一次对话逐步沉淀为仓库规则、可复用 Skill、Hook 和自动化任务。
+下一篇：[Claude Code 的 CLAUDE.md、权限、Hooks 与 Agent SDK](/blog/2026/09/04/agent-harness-series-04-claude-code/)。</content:encoded><category>Harness</category><category>Codex</category><category>AGENTS.md</category><category>AI 编程工具</category></item><item><title>Agent Harness 系列 04：Claude Code 的规则、权限、Hooks 与 Agent SDK</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-04-claude-code/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-04-claude-code/</guid><description>Claude Code 实战指南，覆盖安装、CLAUDE.md、设置作用域、权限、Hooks、MCP、Skills 和 Agent SDK。</description><pubDate>Fri, 04 Sep 2026 14:00:00 GMT</pubDate><content:encoded>[Claude Code](https://code.claude.com/docs/en/overview) 把同一套 Agent 引擎带到终端、IDE、桌面和 Web。它适合把一次对话逐步沉淀为仓库规则、可复用 Skill、Hook 和自动化任务。
 
 ## 1. 安装
 
@@ -377,9 +369,7 @@ brew install --cask claude-code
 - Hook 失败是否阻断高风险流程。
 - 自动化是否有超时、成本限制和人工接管。
 
-下一篇：[OpenCode 多模型 Harness 实战](/blog/2026/09/04/agent-harness-series-05-opencode/)。</content:encoded><category>Harness</category><category>Claude Code</category><category>MCP</category><category>Skills</category></item><item><title>Agent Harness 系列 05：OpenCode 多模型配置与权限实战</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-05-opencode/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-05-opencode/</guid><description>使用 OpenCode 组织多模型 Provider、主 Agent、子 Agent、项目规则与细粒度权限，并规避版本配置差异。</description><pubDate>Fri, 04 Sep 2026 13:50:00 GMT</pubDate><content:encoded>&gt; 系列导航：[01 原理](/blog/2026/09/04/agent-harness-series-01-overview/) · [02 选型](/blog/2026/09/04/agent-harness-series-02-selection/) · [03 Codex](/blog/2026/09/04/agent-harness-series-03-codex/) · [04 Claude Code](/blog/2026/09/04/agent-harness-series-04-claude-code/) · **05 OpenCode** · [06 Java 自建](/blog/2026/09/04/agent-harness-series-06-java-spring-ai/) · [07 安全评测](/blog/2026/09/04/agent-harness-series-07-security-evaluation/)
-
-OpenCode 的核心吸引力是开放和多模型：可以按任务在不同 Provider/模型间选择，并用 Agent 配置约束提示词、步数和工具权限。入口见 [OpenCode Providers](https://opencode.ai/docs/providers) 与 [Agents](https://opencode.ai/docs/agents)。
+下一篇：[OpenCode 多模型 Harness 实战](/blog/2026/09/04/agent-harness-series-05-opencode/)。</content:encoded><category>Harness</category><category>Claude Code</category><category>MCP</category><category>Skills</category></item><item><title>Agent Harness 系列 05：OpenCode 多模型配置与权限实战</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-05-opencode/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-05-opencode/</guid><description>使用 OpenCode 组织多模型 Provider、主 Agent、子 Agent、项目规则与细粒度权限，并规避版本配置差异。</description><pubDate>Fri, 04 Sep 2026 13:50:00 GMT</pubDate><content:encoded>OpenCode 的核心吸引力是开放和多模型：可以按任务在不同 Provider/模型间选择，并用 Agent 配置约束提示词、步数和工具权限。入口见 [OpenCode Providers](https://opencode.ai/docs/providers) 与 [Agents](https://opencode.ai/docs/agents)。
 
 ## 1. 先建立两个角色
 
@@ -451,9 +441,7 @@ git push、发布、删除远端资源：deny/最终人工审批
 - 测试失败时不会自动删测试或扩大权限。
 - 模型不可用时能明确失败，而不是静默换到未知模型。
 
-下一篇：[用 Java / Spring AI 自建业务 Harness](/blog/2026/09/04/agent-harness-series-06-java-spring-ai/)。</content:encoded><category>Harness</category><category>OpenCode</category><category>DeepSeek</category><category>多模型</category></item><item><title>Agent Harness 系列 06：用 Java 与 Spring AI 自建业务 Agent</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-06-java-spring-ai/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-06-java-spring-ai/</guid><description>面向 Java 后端的自建 Harness 方案：状态机、模型适配、工具注册、审批、事件流、持久化和可替换模型。</description><pubDate>Fri, 04 Sep 2026 13:40:00 GMT</pubDate><content:encoded>&gt; 系列导航：[01 原理](/blog/2026/09/04/agent-harness-series-01-overview/) · [02 选型](/blog/2026/09/04/agent-harness-series-02-selection/) · [03 Codex](/blog/2026/09/04/agent-harness-series-03-codex/) · [04 Claude Code](/blog/2026/09/04/agent-harness-series-04-claude-code/) · [05 OpenCode](/blog/2026/09/04/agent-harness-series-05-opencode/) · **06 Java 自建** · [07 安全评测](/blog/2026/09/04/agent-harness-series-07-security-evaluation/)
-
-当 Agent 需要嵌入业务系统、接入内部审批、支持租户隔离并沉淀审计数据时，自建 Harness 才真正有价值。Spring AI 提供模型、工具调用和可观测性抽象，具体 API 以[官方参考文档](https://docs.spring.io/spring-ai/reference/)为准。
+下一篇：[用 Java / Spring AI 自建业务 Harness](/blog/2026/09/04/agent-harness-series-06-java-spring-ai/)。</content:encoded><category>Harness</category><category>OpenCode</category><category>DeepSeek</category><category>多模型</category></item><item><title>Agent Harness 系列 06：用 Java 与 Spring AI 自建业务 Agent</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-06-java-spring-ai/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-06-java-spring-ai/</guid><description>面向 Java 后端的自建 Harness 方案：状态机、模型适配、工具注册、审批、事件流、持久化和可替换模型。</description><pubDate>Fri, 04 Sep 2026 13:40:00 GMT</pubDate><content:encoded>当 Agent 需要嵌入业务系统、接入内部审批、支持租户隔离并沉淀审计数据时，自建 Harness 才真正有价值。Spring AI 提供模型、工具调用和可观测性抽象，具体 API 以[官方参考文档](https://docs.spring.io/spring-ai/reference/)为准。
 
 ## 1. 先定义领域状态机
 
@@ -569,9 +557,7 @@ task.completed
 
 第一版只做单 Agent、有限工具、人工审批、持久化步骤和离线评测。多 Agent、长期记忆和自动规划不是起步必需品。先让 30 个真实任务稳定完成，再增加复杂度。
 
-下一篇收尾：[Harness 安全、评测与可观测性](/blog/2026/09/04/agent-harness-series-07-security-evaluation/)。</content:encoded><category>Harness</category><category>Spring AI</category><category>Java</category><category>Agent</category></item><item><title>Agent Harness 系列 07：安全、评测与可观测性落地清单</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-07-security-evaluation/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-07-security-evaluation/</guid><description>面向生产 Agent 的安全与质量方案：威胁模型、权限分级、Prompt Injection 防护、回归评测、事件日志和上线门禁。</description><pubDate>Fri, 04 Sep 2026 13:30:00 GMT</pubDate><content:encoded>&gt; 系列导航：[01 原理](/blog/2026/09/04/agent-harness-series-01-overview/) · [02 选型](/blog/2026/09/04/agent-harness-series-02-selection/) · [03 Codex](/blog/2026/09/04/agent-harness-series-03-codex/) · [04 Claude Code](/blog/2026/09/04/agent-harness-series-04-claude-code/) · [05 OpenCode](/blog/2026/09/04/agent-harness-series-05-opencode/) · [06 Java 自建](/blog/2026/09/04/agent-harness-series-06-java-spring-ai/) · **07 安全评测**
-
-Harness 的价值不是让模型“拥有更多权限”，而是让能力、权限、证据和责任边界可以被工程化管理。安全和评测必须进入执行循环，而不是上线前补一份文档。
+下一篇收尾：[Harness 安全、评测与可观测性](/blog/2026/09/04/agent-harness-series-07-security-evaluation/)。</content:encoded><category>Harness</category><category>Spring AI</category><category>Java</category><category>Agent</category></item><item><title>Agent Harness 系列 07：安全、评测与可观测性落地清单</title><link>https://msb8080.github.io/blog/2026/09/04/agent-harness-series-07-security-evaluation/</link><guid isPermaLink="true">https://msb8080.github.io/blog/2026/09/04/agent-harness-series-07-security-evaluation/</guid><description>面向生产 Agent 的安全与质量方案：威胁模型、权限分级、Prompt Injection 防护、回归评测、事件日志和上线门禁。</description><pubDate>Fri, 04 Sep 2026 13:30:00 GMT</pubDate><content:encoded>Harness 的价值不是让模型“拥有更多权限”，而是让能力、权限、证据和责任边界可以被工程化管理。安全和评测必须进入执行循环，而不是上线前补一份文档。
 
 ## 1. 先画威胁模型
 
