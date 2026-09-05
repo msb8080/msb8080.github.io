@@ -1,940 +1,121 @@
-
-
-<!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=dark>
-
-
-
-<head>
-  <meta charset="UTF-8">
-
-  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/fluid.png">
-  <link rel="icon" href="/blog/img/fluid.png">
-  
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  
-  <meta name="theme-color" content="rgba(43, 27, 84, 0.85)">
-  <meta name="author" content="minshuaibo">
-  <meta name="keywords" content="前沿模型,模型发布资讯,大模型 API,模型退役公告">
-  
-    <meta name="description" content="持续维护的前沿模型发布索引，覆盖 OpenAI、Anthropic、Google、DeepSeek、Qwen、xAI、Mistral、Kimi、MiniMax 与 GLM 的官方发布、模型目录、API 文档和退役公告。">
-<meta property="og:type" content="article">
-<meta property="og:title" content="2026 前沿大模型发布雷达：官方资讯、API 文档与退役公告入口">
-<meta property="og:url" content="https://msb8080.github.io/blog/2026/09/04/frontier-model-release-radar/index.html">
-<meta property="og:site_name" content="AI Composer 技术猿">
-<meta property="og:description" content="持续维护的前沿模型发布索引，覆盖 OpenAI、Anthropic、Google、DeepSeek、Qwen、xAI、Mistral、Kimi、MiniMax 与 GLM 的官方发布、模型目录、API 文档和退役公告。">
-<meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-09-04T14:40:00.000Z">
-<meta property="article:modified_time" content="2026-09-04T14:40:00.000Z">
-<meta property="article:author" content="minshuaibo">
-<meta property="article:tag" content="Harness">
-<meta property="article:tag" content="Agent">
-<meta property="article:tag" content="大模型">
-<meta property="article:tag" content="模型发布">
-<meta name="twitter:card" content="summary_large_image">
-  
-  
-  
-  <title>2026 前沿大模型发布雷达：官方资讯、API 文档与退役公告入口 - AI Composer 技术猿</title>
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
-
-
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
-
-
-
-<!-- 主题依赖的图标库，不要自行修改 -->
-<!-- Do not modify the link that theme dependent icons -->
-
-<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
-
-
-
-<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
-
-
-<link  rel="stylesheet" href="/blog/css/main.css" />
-
-
-  <link id="highlight-css" rel="stylesheet" href="/blog/css/highlight.css" />
-  
-    <link id="highlight-css-dark" rel="stylesheet" href="/blog/css/highlight-dark.css" />
-  
-
-
-
-  
-<link rel="stylesheet" href="/blog/css/purple-theme.css?v=5.css">
-
-
-
-  <script id="fluid-configs">
-    var Fluid = window.Fluid || {};
-    Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"msb8080.github.io","root":"/blog/","version":"1.9.9","typing":{"enable":true,"typeSpeed":45,"cursorChar":"|","loop":true,"scope":["home"]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#7e5adc","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/blog/local-search.xml","include_content_in_search":true};
-
-    if (CONFIG.web_analytics.follow_dnt) {
-      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
-    }
-  </script>
-  <script  src="/blog/js/utils.js" ></script>
-  <script  src="/blog/js/color-schema.js" ></script>
-  
-
-
-  
-<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/blog/atom.xml" title="AI Composer 技术猿" type="application/atom+xml">
-</head>
-
-
-<body>
-  
-
-  <header>
-    
-
-<div class="header-inner" style="height: 70vh;">
-  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
-  <div class="container">
-    <a class="navbar-brand" href="/blog/">
-      <strong>AI Composer 技术猿</strong>
-    </a>
-
-    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <div class="animated-icon"><span></span><span></span><span></span></div>
-    </button>
-
-    <!-- Collapsible content (desktop) -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav ml-auto text-center">
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/blog/" target="_self">
-                <i class="iconfont icon-home-fill"></i>
-                <span>首页</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/blog/archives/" target="_self">
-                <i class="iconfont icon-archive-fill"></i>
-                <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/blog/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/blog/tags/" target="_self">
-                <i class="iconfont icon-tags-fill"></i>
-                <span>标签</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/blog/about/" target="_self">
-                <i class="iconfont icon-user-fill"></i>
-                <span>关于</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/blog/2026/04/30/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E5%A4%8D%E7%9B%98-ai-composer%E6%8A%80%E6%9C%AF%E7%8C%BF%E7%9A%84hexo%E5%AE%9E%E8%B7%B5%E4%B8%8E%E9%95%BF%E6%9C%9F%E5%86%99%E4%BD%9C%E8%A7%84%E5%88%92-2026-04-30/" target="_self">
-                <i class="iconfont icon-code-fill"></i>
-                <span>搭建复盘</span>
-              </a>
-            </li>
-          
-        
-        
-          <li class="nav-item" id="search-btn">
-            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
-              <i class="iconfont icon-search"></i>
-            </a>
-          </li>
-          
-        
-        
-          <li class="nav-item" id="color-toggle-btn">
-            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
-              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
-            </a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<!-- Mobile grid menu overlay -->
-<div id="mobile-grid-menu" class="d-lg-none">
-  <div class="mobile-grid-menu-inner">
-    <div class="container">
-      <div class="row">
-        
-          
-          
-          
-          
-            <div class="col-4 mobile-grid-cell">
-              <a href="/blog/" target="_self">
-                <div class="mobile-grid-item">
-                  <i class="iconfont icon-home-fill"></i>
-                  <span>首页</span>
-                </div>
-              </a>
-            </div>
-          
-        
-          
-          
-          
-          
-            <div class="col-4 mobile-grid-cell">
-              <a href="/blog/archives/" target="_self">
-                <div class="mobile-grid-item">
-                  <i class="iconfont icon-archive-fill"></i>
-                  <span>归档</span>
-                </div>
-              </a>
-            </div>
-          
-        
-          
-          
-          
-          
-            <div class="col-4 mobile-grid-cell">
-              <a href="/blog/categories/" target="_self">
-                <div class="mobile-grid-item">
-                  <i class="iconfont icon-category-fill"></i>
-                  <span>分类</span>
-                </div>
-              </a>
-            </div>
-          
-        
-          
-          
-          
-          
-            <div class="col-4 mobile-grid-cell">
-              <a href="/blog/tags/" target="_self">
-                <div class="mobile-grid-item">
-                  <i class="iconfont icon-tags-fill"></i>
-                  <span>标签</span>
-                </div>
-              </a>
-            </div>
-          
-        
-          
-          
-          
-          
-            <div class="col-4 mobile-grid-cell">
-              <a href="/blog/about/" target="_self">
-                <div class="mobile-grid-item">
-                  <i class="iconfont icon-user-fill"></i>
-                  <span>关于</span>
-                </div>
-              </a>
-            </div>
-          
-        
-          
-          
-          
-          
-            <div class="col-4 mobile-grid-cell">
-              <a href="/blog/2026/04/30/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E5%A4%8D%E7%9B%98-ai-composer%E6%8A%80%E6%9C%AF%E7%8C%BF%E7%9A%84hexo%E5%AE%9E%E8%B7%B5%E4%B8%8E%E9%95%BF%E6%9C%9F%E5%86%99%E4%BD%9C%E8%A7%84%E5%88%92-2026-04-30/" target="_self">
-                <div class="mobile-grid-item">
-                  <i class="iconfont icon-code-fill"></i>
-                  <span>搭建复盘</span>
-                </div>
-              </a>
-            </div>
-          
-        
-        
-          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
-            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
-              <div class="mobile-grid-item">
-                <i class="iconfont icon-search"></i>
-                <span>搜索</span>
-              </div>
-            </a>
-          </div>
-        
-        
-          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
-               data-label-light="开灯"
-               data-label-dark="关灯">
-            <a href="javascript:;" aria-label="Color Toggle">
-              <div class="mobile-grid-item">
-                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
-                <span id="mobile-color-toggle-label">关灯</span>
-              </div>
-            </a>
-          </div>
-        
-      </div>
-    </div>
-  </div>
-</div>
-
-  
-
-<div id="banner" class="banner" parallax=true
-     style="background: url('/blog/img/default.png') no-repeat center center; background-size: cover;">
-  <div class="full-bg-img">
-    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-      <div class="banner-text text-center fade-in-up">
-        <div class="h2">
-          
-            <span id="subtitle">2026 前沿大模型发布雷达：官方资讯、API 文档与退役公告入口</span>
-          
-        </div>
-
-        
-          
-  <div class="mt-3">
-    
-    
-      <span class="post-meta">
-        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-09-04 22:40" pubdate>
-          2026年9月4日 晚上
-        </time>
-      </span>
-    
-  </div>
-
-  <div class="mt-1">
-    
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-chart"></i>
-        
-          1.7k 字
-        
-      </span>
-    
-
-    
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-clock-fill"></i>
-        
-        
-        
-          15 分钟
-        
-      </span>
-    
-
-    
-    
-  </div>
-
-
-        
-      </div>
-
-      
-    </div>
-  </div>
-</div>
-
-
-
-</div>
-
-  </header>
-
-  <main>
-    
-      
-
-<div class="container-fluid nopadding-x">
-  <div class="row nomargin-x">
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-
-    </div>
-
-    <div class="col-lg-8 nopadding-x-md">
-      <div class="container nopadding-x-md" id="board-ctn">
-        <div id="board">
-          <article class="post-content mx-auto">
-            <h1 id="seo-header">2026 前沿大模型发布雷达：官方资讯、API 文档与退役公告入口</h1>
-            
-            
-              <div class="markdown-body">
-                
-                <blockquote>
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.3.1"><meta name="description" content="持续维护的前沿模型发布索引，覆盖 OpenAI、Anthropic、Google、DeepSeek、Qwen、xAI、Mistral、Kimi、MiniMax 与 GLM 的官方发布、模型目录、API 文档和退役公告。"><meta name="theme-color" content="#151020"><link rel="canonical" href="https://msb8080.github.io/blog/2026/09/04/frontier-model-release-radar/"><link rel="alternate" type="application/atom+xml" title="AI Composer 技术猿" href="/blog/atom.xml"><meta property="og:type" content="article"><meta property="og:title" content="2026 前沿大模型发布雷达：官方资讯、API 文档与退役公告入口 · AI Composer"><meta property="og:description" content="持续维护的前沿模型发布索引，覆盖 OpenAI、Anthropic、Google、DeepSeek、Qwen、xAI、Mistral、Kimi、MiniMax 与 GLM 的官方发布、模型目录、API 文档和退役公告。"><meta property="og:url" content="https://msb8080.github.io/blog/2026/09/04/frontier-model-release-radar/"><meta property="article:published_time" content="2026-09-04T22:40:00+08:00"><meta name="twitter:card" content="summary"><title>2026 前沿大模型发布雷达：官方资讯、API 文档与退役公告入口 · AI Composer</title><script>
+      document.documentElement.dataset.theme = localStorage.getItem('ai-composer-theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    </script><link rel="stylesheet" href="/blog/_astro/BaseLayout.5_iZEFdQ.css"></head><body class="is-post"><a class="skip-link" href="#main">跳到正文</a><div class="reading-progress" data-reading-progress></div><div class="ambient ambient-one"></div><div class="ambient ambient-two"></div><header class="site-header"><div class="nav-shell"><a class="brand" href="/blog/" aria-label="AI Composer 技术猿首页"><span class="brand-mark">AI</span><span class="brand-copy"><strong>AI Composer 技术猿</strong><small>BUILD · VERIFY · SHARE</small></span></a><nav class="site-menu" aria-label="主导航" data-site-menu><a href="/blog/">首页</a><a href="/blog/archives/">归档</a><a href="/blog/categories/">分类</a><a href="/blog/tags/">标签</a><a href="/blog/about/">关于</a></nav><div class="nav-actions"><button class="icon-button" type="button" aria-label="搜索" title="搜索（⌘/Ctrl K）" data-search-open>⌕</button><button class="icon-button" type="button" aria-label="切换明暗主题" title="切换主题" data-theme-toggle>◐</button><button class="icon-button menu-toggle" type="button" aria-label="展开导航" aria-expanded="false" data-nav-toggle>☰</button></div></div></header><main id="main" class="site-main"><article class="article-shell shell"><header class="article-header"><div class="article-kicker"><time datetime="2026-09-04T22:40:00+08:00">2026-09-04</time><span>·</span><span>3 分钟阅读</span><span>·</span><a href="/blog/categories/AI-后端学习/">AI 后端学习</a></div><h1>2026 前沿大模型发布雷达：官方资讯、API 文档与退役公告入口</h1><p class="article-description">持续维护的前沿模型发布索引，覆盖 OpenAI、Anthropic、Google、DeepSeek、Qwen、xAI、Mistral、Kimi、MiniMax 与 GLM 的官方发布、模型目录、API 文档和退役公告。</p><div class="article-tags"><a href="/blog/tags/大模型/">#大模型</a><a href="/blog/tags/模型发布/">#模型发布</a><a href="/blog/tags/Agent/">#Agent</a><a href="/blog/tags/Harness/">#Harness</a></div></header><div class="article-layout"><div class="article-content"><blockquote>
 <p>最后核验：<strong>2026-09-04</strong>。模型名称、价格、上下文长度和可用区域都可能快速变化，本文把“官方入口”放在结论之前；接入生产环境前，请再次查看模型目录、价格页和退役公告。</p>
 </blockquote>
-<h2 id="先看结论：不要只收藏发布新闻"><a href="#先看结论：不要只收藏发布新闻" class="headerlink" title="先看结论：不要只收藏发布新闻"></a>先看结论：不要只收藏发布新闻</h2><p>追踪模型至少需要四类入口：</p>
+<h2 id="先看结论不要只收藏发布新闻">先看结论：不要只收藏发布新闻</h2>
+<p>追踪模型至少需要四类入口：</p>
 <ol>
-<li><strong>发布&#x2F;变更日志</strong>：知道新模型何时出现、能力发生了什么变化。</li>
+<li><strong>发布/变更日志</strong>：知道新模型何时出现、能力发生了什么变化。</li>
 <li><strong>模型目录</strong>：确认真实可调用的模型 ID、模态与限制。</li>
 <li><strong>API 文档与价格</strong>：判断能否接入以及成本结构。</li>
 <li><strong>退役公告</strong>：提前处理别名漂移、强制迁移和行为变化。</li>
 </ol>
 <p>生产配置建议固定到明确版本，并把 <code>latest</code> 一类动态别名只用于实验环境。每次升级都应重新跑一遍自己的回归集，而不是只看厂商榜单。</p>
-<h2 id="2026-年-9-月模型速览"><a href="#2026-年-9-月模型速览" class="headerlink" title="2026 年 9 月模型速览"></a>2026 年 9 月模型速览</h2><table>
+<h2 id="2026-年-9-月模型速览">2026 年 9 月模型速览</h2>
+<table>
 <thead>
 <tr>
-<th>厂商&#x2F;系列</th>
+<th>厂商/系列</th>
 <th>本次核验时值得关注的模型</th>
 <th>适合先验证的方向</th>
 <th>官方入口</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>OpenAI</td>
-<td>GPT-6 Astra、GPT-5.6 Sol &#x2F; Terra &#x2F; Luna</td>
+<td>GPT-6 Astra、GPT-5.6 Sol / Terra / Luna</td>
 <td>端到端任务、编码、通用 Agent</td>
-<td><a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/models">模型目录</a> · <a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/latest-model">模型选型指南</a></td>
+<td><a href="https://developers.openai.com/api/docs/models">模型目录</a> · <a href="https://developers.openai.com/api/docs/guides/latest-model">模型选型指南</a></td>
 </tr>
 <tr>
 <td>Anthropic Claude</td>
-<td>Opus &#x2F; Sonnet &#x2F; Fable 当前代模型</td>
+<td>Opus / Sonnet / Fable 当前代模型</td>
 <td>长任务、编码、工具使用</td>
-<td><a target="_blank" rel="noopener" href="https://docs.anthropic.com/en/docs/about-claude/model-deprecations">模型生命周期</a> · <a target="_blank" rel="noopener" href="https://code.claude.com/docs/en/overview">Claude Code 文档</a></td>
+<td><a href="https://docs.anthropic.com/en/docs/about-claude/model-deprecations">模型生命周期</a> · <a href="https://code.claude.com/docs/en/overview">Claude Code 文档</a></td>
 </tr>
 <tr>
 <td>Google Gemini</td>
 <td>Gemini 3.8 Flash、Gemini 3.7 Flash</td>
 <td>长上下文、低延迟、多模态与 Agent</td>
-<td><a target="_blank" rel="noopener" href="https://ai.google.dev/gemini-api/docs/changelog">Gemini API Changelog</a> · <a target="_blank" rel="noopener" href="https://ai.google.dev/gemini-api/docs/deprecations">退役公告</a></td>
+<td><a href="https://ai.google.dev/gemini-api/docs/changelog">Gemini API Changelog</a> · <a href="https://ai.google.dev/gemini-api/docs/deprecations">退役公告</a></td>
 </tr>
 <tr>
 <td>DeepSeek</td>
 <td><code>deepseek-v4-flash</code>、<code>deepseek-v4-pro</code>、实验视觉模型</td>
 <td>中文、推理、代码、兼容接口</td>
-<td><a target="_blank" rel="noopener" href="https://api-docs.deepseek.com/">API 文档</a> · <a target="_blank" rel="noopener" href="https://api-docs.deepseek.com/updates">更新日志</a></td>
+<td><a href="https://api-docs.deepseek.com/">API 文档</a> · <a href="https://api-docs.deepseek.com/updates">更新日志</a></td>
 </tr>
 <tr>
 <td>Qwen</td>
 <td>Qwen3.6、Qwen3-Coder、Qwen3-VL、Qwen3-Omni</td>
 <td>开源权重、代码、多模态、本地部署</td>
-<td><a target="_blank" rel="noopener" href="https://github.com/QwenLM">Qwen 官方 GitHub</a> · <a target="_blank" rel="noopener" href="https://qwenlm.github.io/blog/">Qwen 官方博客</a></td>
+<td><a href="https://github.com/QwenLM">Qwen 官方 GitHub</a> · <a href="https://qwenlm.github.io/blog/">Qwen 官方博客</a></td>
 </tr>
 <tr>
 <td>xAI Grok</td>
 <td>Grok 4.6、Grok Build</td>
 <td>编码、Agent、实时信息工具</td>
-<td><a target="_blank" rel="noopener" href="https://docs.x.ai/developers/release-notes">发布日志</a> · <a target="_blank" rel="noopener" href="https://docs.x.ai/developers/models">模型目录</a></td>
+<td><a href="https://docs.x.ai/developers/release-notes">发布日志</a> · <a href="https://docs.x.ai/developers/models">模型目录</a></td>
 </tr>
 <tr>
 <td>Mistral</td>
-<td>Mistral 模型族与 OCR &#x2F; Vibe 能力</td>
+<td>Mistral 模型族与 OCR / Vibe 能力</td>
 <td>欧洲部署、轻量模型、文档处理</td>
-<td><a target="_blank" rel="noopener" href="https://docs.mistral.ai/resources/release-notes">Release Notes</a> · <a target="_blank" rel="noopener" href="https://docs.mistral.ai/resources/changelogs">Changelog</a></td>
+<td><a href="https://docs.mistral.ai/resources/release-notes">Release Notes</a> · <a href="https://docs.mistral.ai/resources/changelogs">Changelog</a></td>
 </tr>
 <tr>
 <td>Kimi</td>
 <td>Kimi K2.5 及平台当前模型</td>
 <td>中文长上下文、工具调用、多模态</td>
-<td><a target="_blank" rel="noopener" href="https://platform.moonshot.ai/docs/">Kimi API 文档</a></td>
+<td><a href="https://platform.moonshot.ai/docs/">Kimi API 文档</a></td>
 </tr>
 <tr>
 <td>MiniMax</td>
-<td>MiniMax M2.7 &#x2F; M2.7-highspeed</td>
+<td>MiniMax M2.7 / M2.7-highspeed</td>
 <td>编码、Agent、语音视频多模态</td>
-<td><a target="_blank" rel="noopener" href="https://platform.minimaxi.com/docs/api-reference/api-overview">接口能力总览</a> · <a target="_blank" rel="noopener" href="https://platform.minimaxi.com/docs/api-reference/models/openai/list-models">模型列表 API</a></td>
+<td><a href="https://platform.minimaxi.com/docs/api-reference/api-overview">接口能力总览</a> · <a href="https://platform.minimaxi.com/docs/api-reference/models/openai/list-models">模型列表 API</a></td>
 </tr>
 <tr>
 <td>智谱 GLM</td>
 <td>GLM-5.2 及平台当前模型</td>
 <td>中文、代码、Agent 与国产化接入</td>
-<td><a target="_blank" rel="noopener" href="https://docs.bigmodel.cn/cn/update/new-releases">新品发布</a></td>
+<td><a href="https://docs.bigmodel.cn/cn/update/new-releases">新品发布</a></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>这张表是“入口地图”，不是绝对排名。对工程团队更有意义的指标通常是：任务成功率、工具调用正确率、单位成功任务成本、P95 延迟、长任务恢复能力和权限边界。</p>
-<h2 id="每周-20-分钟更新法"><a href="#每周-20-分钟更新法" class="headerlink" title="每周 20 分钟更新法"></a>每周 20 分钟更新法</h2><h3 id="第一步：只扫官方变更页"><a href="#第一步：只扫官方变更页" class="headerlink" title="第一步：只扫官方变更页"></a>第一步：只扫官方变更页</h3><p>按“变更日志 → 模型目录 → 退役公告”的顺序浏览。营销文章可以帮助理解定位，但不能替代 API 文档。</p>
-<h3 id="第二步：记录五个字段"><a href="#第二步：记录五个字段" class="headerlink" title="第二步：记录五个字段"></a>第二步：记录五个字段</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">verified_at:</span> <span class="hljs-number">2026-09-04</span><br><span class="hljs-attr">provider:</span> <span class="hljs-string">example</span><br><span class="hljs-attr">model_id:</span> <span class="hljs-string">exact-model-id</span><br><span class="hljs-attr">availability:</span> <span class="hljs-string">preview</span> <span class="hljs-string">|</span> <span class="hljs-string">ga</span> <span class="hljs-string">|</span> <span class="hljs-string">deprecated</span><br><span class="hljs-attr">important_changes:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">tool_calling</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">context_window</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">pricing</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">api_shape</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="第三步：跑自己的最小回归集"><a href="#第三步：跑自己的最小回归集" class="headerlink" title="第三步：跑自己的最小回归集"></a>第三步：跑自己的最小回归集</h3><p>建议至少准备 20～50 个真实任务，覆盖：代码修改、信息抽取、结构化输出、工具调用、长上下文和拒答边界。记录成功与失败原因，不要只记平均分。</p>
-<h3 id="第四步：把升级当成依赖升级"><a href="#第四步：把升级当成依赖升级" class="headerlink" title="第四步：把升级当成依赖升级"></a>第四步：把升级当成依赖升级</h3><ul>
+<h2 id="每周-20-分钟更新法">每周 20 分钟更新法</h2>
+<h3 id="第一步只扫官方变更页">第一步：只扫官方变更页</h3>
+<p>按“变更日志 → 模型目录 → 退役公告”的顺序浏览。营销文章可以帮助理解定位，但不能替代 API 文档。</p>
+<h3 id="第二步记录五个字段">第二步：记录五个字段</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#85E89D">verified_at</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">2026-09-04</span></span>
+<span class="line"><span style="color:#85E89D">provider</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">example</span></span>
+<span class="line"><span style="color:#85E89D">model_id</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">exact-model-id</span></span>
+<span class="line"><span style="color:#85E89D">availability</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">preview | ga | deprecated</span></span>
+<span class="line"><span style="color:#85E89D">important_changes</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">  - </span><span style="color:#9ECBFF">tool_calling</span></span>
+<span class="line"><span style="color:#E1E4E8">  - </span><span style="color:#9ECBFF">context_window</span></span>
+<span class="line"><span style="color:#E1E4E8">  - </span><span style="color:#9ECBFF">pricing</span></span>
+<span class="line"><span style="color:#E1E4E8">  - </span><span style="color:#9ECBFF">api_shape</span></span></code></pre>
+<h3 id="第三步跑自己的最小回归集">第三步：跑自己的最小回归集</h3>
+<p>建议至少准备 20～50 个真实任务，覆盖：代码修改、信息抽取、结构化输出、工具调用、长上下文和拒答边界。记录成功与失败原因，不要只记平均分。</p>
+<h3 id="第四步把升级当成依赖升级">第四步：把升级当成依赖升级</h3>
+<ul>
 <li>实验环境可跟随动态别名。</li>
 <li>生产环境固定模型 ID，并提供快速回滚。</li>
 <li>同时保存 Prompt、工具 schema、Harness 版本和评测集版本。</li>
 <li>关注“旧 ID 被自动路由到新模型”的公告，它可能让结果和账单一起变化。</li>
 </ul>
-<h2 id="接下来读什么"><a href="#接下来读什么" class="headerlink" title="接下来读什么"></a>接下来读什么</h2><p>模型决定能力上限，Harness 决定它能否稳定完成工作。继续阅读：</p>
+<h2 id="接下来读什么">接下来读什么</h2>
+<p>模型决定能力上限，Harness 决定它能否稳定完成工作。继续阅读：</p>
 <ul>
 <li><a href="/blog/2026/09/04/agent-harness-series-01-overview/">Harness 系列 01：从模型到可执行系统</a></li>
 <li><a href="/blog/2026/09/04/agent-harness-series-02-selection/">Harness 系列 02：Codex、Claude Code、OpenCode 与自建方案怎么选</a></li>
 <li><a href="/blog/2026/09/04/agent-harness-series-07-security-evaluation/">Harness 系列 07：安全、评测与可观测性</a></li>
 </ul>
 <blockquote>
-<p>维护原则：新增厂商时必须至少补齐“模型目录或 API 文档”和“变更&#x2F;退役入口”中的两项；无法从官方来源验证的信息，不进入主表。</p>
+<p>维护原则：新增厂商时必须至少补齐“模型目录或 API 文档”和“变更/退役入口”中的两项；无法从官方来源验证的信息，不进入主表。</p>
 </blockquote>
-
-                
-              </div>
-            
-            <hr/>
-            <div>
-              <div class="post-metas my-3">
-  
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/blog/categories/AI-%E5%90%8E%E7%AB%AF%E5%AD%A6%E4%B9%A0/" class="category-chain-item">AI 后端学习</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/blog/tags/Harness/" class="print-no-link">#Harness</a>
-      
-        <a href="/blog/tags/Agent/" class="print-no-link">#Agent</a>
-      
-        <a href="/blog/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" class="print-no-link">#大模型</a>
-      
-        <a href="/blog/tags/%E6%A8%A1%E5%9E%8B%E5%8F%91%E5%B8%83/" class="print-no-link">#模型发布</a>
-      
-    </div>
-  
-</div>
-
-
-              
-  
-
-  <div class="license-box my-3">
-    <div class="license-title">
-      <div>2026 前沿大模型发布雷达：官方资讯、API 文档与退役公告入口</div>
-      <div>https://msb8080.github.io/blog/2026/09/04/frontier-model-release-radar/</div>
-    </div>
-    <div class="license-meta">
-      
-        <div class="license-meta-item">
-          <div>作者</div>
-          <div>minshuaibo</div>
-        </div>
-      
-      
-        <div class="license-meta-item license-meta-date">
-          <div>发布于</div>
-          <div>2026年9月4日</div>
-        </div>
-      
-      
-      
-        <div class="license-meta-item">
-          <div>许可协议</div>
-          <div>
-            
-              
-              
-                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
-                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
-                    <i class="iconfont icon-cc-by"></i>
-                  </span>
-                </a>
-              
-            
-          </div>
-        </div>
-      
-    </div>
-    <div class="license-icon iconfont"></div>
-  </div>
-
-
-
-              
-                <div class="post-prevnext my-3">
-                  <article class="post-prev col-6">
-                    
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/blog/2026/09/04/agent-harness-series-01-overview/" title="Agent Harness 系列 01：从大模型到可执行系统">
-                        <span class="hidden-mobile">Agent Harness 系列 01：从大模型到可执行系统</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
-              
-            </div>
-
-            
-          </article>
-        </div>
-      </div>
-    </div>
-
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-  <aside class="sidebar" style="margin-left: -1rem">
-    <div id="toc">
-  <p class="toc-header">
-    <i class="iconfont icon-list"></i>
-    <span>目录</span>
-  </p>
-  <div class="toc-body" id="toc-body"></div>
-</div>
-
-
-
-  </aside>
-
-
-    </div>
-  </div>
-</div>
-
-
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-
-
-
-
-    
-
-    
-      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
-        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
-      </a>
-    
-
-    
-      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
-        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-          <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
-        </div>
-        <div class="list-group" id="local-search-result"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-    
-
-    
-  </main>
-
-  <footer>
-    <div class="footer-inner">
-  
-    <div class="footer-content">
-       <a href="https://github.com/msb8080" target="_blank" rel="noopener">GitHub</a> · <a href="https://msb8080.github.io" target="_blank" rel="noopener">主页</a> <br> <span style="opacity:0.5; font-family: Space Mono, monospace; font-size: 0.8rem;">Powered by Hexo & Fluid · Themed with 💜</span> 
-    </div>
-  
-  
-  
-</div>
-
-  </footer>
-
-  <!-- Scripts -->
-  
-  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
-  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
-
-  <script>
-    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
-    NProgress.start()
-    window.addEventListener('load', function() {
-      NProgress.done();
-    })
-  </script>
-
-
-<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
-<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
-<script  src="/blog/js/events.js" ></script>
-<script  src="/blog/js/plugins.js" ></script>
-
-
-
-
-
-  
-    <script  src="/blog/js/img-lazyload.js" ></script>
-  
-
-
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
-    var toc = jQuery('#toc');
-    if (toc.length === 0 || !window.tocbot) { return; }
-    var boardCtn = jQuery('#board-ctn');
-    var boardTop = boardCtn.offset().top;
-
-    function isExpandAllEnabled() {
-      return CONFIG.toc && CONFIG.toc.expand_all === true;
-    }
-    function expandAllToc() {
-      if (!isExpandAllEnabled()) { return; }
-      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
-    }
-    function updateTocToggle($li, $childList) {
-      var $toggle = $li.children('.toc-toggle');
-      if ($toggle.length === 0) { return; }
-      var collapsed = $childList.hasClass('tocbot-is-collapsed');
-      $toggle
-        .toggleClass('toc-toggle-collapsed', collapsed)
-        .toggleClass('toc-toggle-expanded', !collapsed);
-    }
-    function bindTocToggle() {
-      if (!isExpandAllEnabled()) { return; }
-      jQuery('#toc-body .toc-list-item').each(function() {
-        var $li = jQuery(this);
-        var $childList = $li.children('ol');
-        if ($childList.length === 0) {
-          if ($li.children('.toc-toggle').length === 0) {
-            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
-          }
-          return;
-        }
-
-        if ($li.children('.toc-toggle').length === 0) {
-          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
-        }
-        updateTocToggle($li, $childList);
-      });
-      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var $li = jQuery(this).parent('.toc-list-item');
-        var $childList = $li.children('ol');
-        if ($childList.length === 0) { return; }
-        $childList.toggleClass('tocbot-is-collapsed');
-        updateTocToggle($li, $childList);
-      });
-      if (!window.__tocToggleObserver) {
-        window.__tocToggleObserver = new MutationObserver(function(mutations) {
-          mutations.forEach(function(mutation) {
-            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
-            var $list = jQuery(mutation.target);
-            var $li = $list.parent('.toc-list-item');
-            if ($li.length === 0) { return; }
-            updateTocToggle($li, $list);
-          });
-        });
-        jQuery('#toc-body ol').each(function() {
-          window.__tocToggleObserver.observe(this, { attributes: true });
-        });
-      }
-    }
-    var tocConfig = Object.assign({
-      tocSelector     : '#toc-body',
-      contentSelector : '.markdown-body',
-      linkClass       : 'tocbot-link',
-      activeLinkClass : 'tocbot-active-link',
-      listClass       : 'tocbot-list',
-      isCollapsedClass: 'tocbot-is-collapsed',
-      collapsibleClass: 'tocbot-is-collapsible',
-      scrollSmooth    : true,
-      includeTitleTags: true,
-      headingsOffset  : -boardTop,
-    }, CONFIG.toc);
-    if (isExpandAllEnabled()) {
-      tocConfig.collapseDepth = 6;
-    }
-    window.tocbot.init(tocConfig);
-    if (toc.find('.toc-list-item').length > 0) {
-      toc.css('visibility', 'visible');
-    }
-    expandAllToc();
-    bindTocToggle();
-
-    Fluid.events.registerRefreshCallback(function() {
-      if ('tocbot' in window) {
-        tocbot.refresh();
-        var toc = jQuery('#toc');
-        if (toc.length === 0 || !tocbot) {
-          return;
-        }
-        if (toc.find('.toc-list-item').length > 0) {
-          toc.css('visibility', 'visible');
-        }
-        expandAllToc();
-        bindTocToggle();
-      }
-    });
-  });
-</script>
-
-
-  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
-
-  <script>Fluid.plugins.codeWidget();</script>
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
-    window.anchors.options = {
-      placement: CONFIG.anchorjs.placement,
-      visible  : CONFIG.anchorjs.visible
-    };
-    if (CONFIG.anchorjs.icon) {
-      window.anchors.options.icon = CONFIG.anchorjs.icon;
-    }
-    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-    var res = [];
-    for (var item of el) {
-      res.push('.markdown-body > ' + item.trim());
-    }
-    if (CONFIG.anchorjs.placement === 'left') {
-      window.anchors.options.class = 'anchorjs-link-left';
-    }
-    window.anchors.add(res.join(', '));
-
-    Fluid.events.registerRefreshCallback(function() {
-      if ('anchors' in window) {
-        anchors.removeAll();
-        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-        var res = [];
-        for (var item of el) {
-          res.push('.markdown-body > ' + item.trim());
-        }
-        if (CONFIG.anchorjs.placement === 'left') {
-          anchors.options.class = 'anchorjs-link-left';
-        }
-        anchors.add(res.join(', '));
-      }
-    });
-  });
-</script>
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
-    Fluid.plugins.fancyBox();
-  });
-</script>
-
-
-  <script>Fluid.plugins.imageCaption();</script>
-
-  <script  src="/blog/js/local-search.js" ></script>
-
-
-
-
-  
-<script src="/blog/js/purple-animations.js?v=5.js"></script>
-
-
-
-<!-- 主题的启动项，将它保持在最底部 -->
-<!-- the boot of the theme, keep it at the bottom -->
-<script  src="/blog/js/boot.js" ></script>
-
-
-  
-
-  <noscript>
-    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
-  </noscript>
-</body>
-</html>
+</div><aside class="article-aside"><div class="aside-card"><span>ON THIS PAGE</span><nav data-toc></nav></div></aside></div><footer class="article-footer"><span><a href="/blog/2026/09/04/agent-harness-series-01-overview/">← Agent Harness 系列 01：从大模型到可执行系统</a></span><button type="button" data-copy-url>复制文章链接</button><span>已经是最新一篇</span></footer></article></main><footer class="site-footer"><div><strong>AI Composer 技术猿</strong><p>把 AI 新知变成可验证、可复用的工程实践。</p></div><div class="footer-links"><a href="/blog/atom.xml">RSS</a><a href="https://github.com/msb8080" target="_blank" rel="noreferrer">GitHub</a><span>© 2026</span></div></footer><div class="search-layer" hidden data-search-layer data-index-url="/blog/search.json"><button class="search-backdrop" type="button" aria-label="关闭搜索" data-search-close></button><section class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-heading"><div><span class="eyebrow">SEARCH</span><h2>搜索文章</h2></div><button class="icon-button" type="button" aria-label="关闭搜索" data-search-close>×</button></div><label class="search-input-wrap"><span aria-hidden="true">⌕</span><input type="search" placeholder="标题、标签或正文关键词" autocomplete="off" data-search-input><kbd>ESC</kbd></label><div class="search-results" aria-live="polite" data-search-results><p class="search-empty">输入关键词开始搜索。</p></div></section></div><script type="module">var e=document.documentElement,t=document.querySelector(`[data-nav-toggle]`),n=document.querySelector(`[data-site-menu]`),r=document.querySelector(`[data-search-layer]`),i=document.querySelector(`[data-search-input]`),a=document.querySelector(`[data-search-results]`),o=null;function s(){t?.setAttribute(`aria-expanded`,`false`),n?.classList.remove(`is-open`)}t?.addEventListener(`click`,()=>{let e=t.getAttribute(`aria-expanded`)!==`true`;t.setAttribute(`aria-expanded`,String(e)),n?.classList.toggle(`is-open`,e)}),n?.addEventListener(`click`,s),document.querySelector(`[data-theme-toggle]`)?.addEventListener(`click`,()=>{let t=e.dataset.theme===`dark`?`light`:`dark`;e.dataset.theme=t,localStorage.setItem(`ai-composer-theme`,t)});function c(){r&&(r.hidden=!0,document.body.classList.remove(`has-dialog`))}function l(e){if(a){if(a.replaceChildren(),!e.length){let e=document.createElement(`p`);e.className=`search-empty`,e.textContent=`没有匹配结果，换个关键词试试。`,a.append(e);return}e.forEach(e=>{let t=document.createElement(`a`);t.className=`search-result`,t.href=e.url;let n=document.createElement(`time`);n.textContent=e.date;let r=document.createElement(`strong`);r.textContent=e.title;let i=document.createElement(`p`);i.textContent=e.description,t.append(n,r,i),a.append(t)})}}async function u(){if(r&&i&&(r.hidden=!1,document.body.classList.add(`has-dialog`),i.focus(),!o))try{let e=await fetch(r.dataset.indexUrl??`./search.json`);if(!e.ok)throw Error(`Search index returned ${e.status}`);o=await e.json()}catch{o=[],a&&(a.textContent=`搜索索引加载失败，请稍后重试。`)}}document.querySelectorAll(`[data-search-open]`).forEach(e=>e.addEventListener(`click`,u)),document.querySelectorAll(`[data-search-close]`).forEach(e=>e.addEventListener(`click`,c)),i?.addEventListener(`input`,()=>{if(!o||!a)return;let e=i.value.trim().toLocaleLowerCase(`zh-CN`);if(!e){a.innerHTML=`<p class="search-empty">输入关键词开始搜索。</p>`;return}l(o.filter(t=>[t.title,t.description,t.text,...t.tags].join(` `).toLocaleLowerCase(`zh-CN`).includes(e)).slice(0,10))}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&(c(),s()),(e.metaKey||e.ctrlKey)&&e.key.toLowerCase()===`k`&&(e.preventDefault(),u())});var d=document.querySelector(`[data-reading-progress]`);if(d&&document.body.classList.contains(`is-post`)){let e=()=>{let e=document.documentElement.scrollHeight-window.innerHeight;d.style.transform=`scaleX(${e>0?window.scrollY/e:0})`};e(),window.addEventListener(`scroll`,e,{passive:!0})}var f=document.querySelector(`[data-toc]`);if(f){let e=[...document.querySelectorAll(`.article-content h2, .article-content h3`)];e.length||(f.textContent=`这篇文章没有分节。`),e.forEach(e=>{let t=document.createElement(`a`);t.className=`toc-${e.tagName.toLowerCase()}`,t.href=`#${e.id}`,t.textContent=e.textContent,f.append(t)})}document.querySelector(`[data-copy-url]`)?.addEventListener(`click`,async e=>{await navigator.clipboard.writeText(window.location.href),e.currentTarget.textContent=`已复制`}),document.querySelectorAll(`.article-content pre`).forEach(e=>{let t=document.createElement(`button`);t.className=`copy-code`,t.type=`button`,t.textContent=`COPY`,t.addEventListener(`click`,async()=>{await navigator.clipboard.writeText(e.querySelector(`code`)?.textContent??``),t.textContent=`COPIED`,window.setTimeout(()=>{t.textContent=`COPY`},1600)}),e.append(t)});</script></body></html>
