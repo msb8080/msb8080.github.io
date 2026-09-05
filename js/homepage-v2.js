@@ -4,6 +4,24 @@
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
+    function initNavigation() {
+        var navigation = document.querySelector('[data-site-nav]');
+        if (!navigation) return;
+        var ticking = false;
+
+        function updateNavigation() {
+            navigation.classList.toggle('is-scrolled', window.scrollY > 28);
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', function () {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(updateNavigation);
+        }, { passive: true });
+        updateNavigation();
+    }
+
     function initReveal() {
         var items = Array.from(document.querySelectorAll('.gsap-reveal'));
         if (!items.length || reduceMotion || !('IntersectionObserver' in window)) return;
@@ -323,6 +341,7 @@
         ensureAnimation();
     }
 
+    initNavigation();
     initReveal();
     initTilt();
     initAgentTraceLab();

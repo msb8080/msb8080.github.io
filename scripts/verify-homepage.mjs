@@ -31,6 +31,9 @@ const requiredMetadata = [
   'property="og:image"',
   'name="twitter:card"'
 ].filter((value) => !html.includes(value));
+const navigationUsesRevealTransform = /<nav\b[^>]*class="[^"]*gsap-reveal/.test(html);
+const requiredNavigationHooks = ['data-site-nav', 'nav-context', 'nav-link--primary']
+  .filter((value) => !html.includes(value));
 const cssBraceBalance = [...css].reduce(
   (balance, character) => balance + (character === '{' ? 1 : character === '}' ? -1 : 0),
   0
@@ -42,6 +45,8 @@ const failures = {
   missingReferences: [...new Set(missingReferences)],
   forbiddenRuntimeDependencies,
   requiredMetadata,
+  navigationUsesRevealTransform: navigationUsesRevealTransform ? ['fixed navigation must not use transform-based reveal'] : [],
+  requiredNavigationHooks,
   cssBraceBalance
 };
 const hasFailures = Object.values(failures).some((value) => Array.isArray(value) ? value.length : value !== 0);
