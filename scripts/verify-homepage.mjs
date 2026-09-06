@@ -3,7 +3,6 @@ import { resolve } from 'node:path';
 
 const html = readFileSync('index.html', 'utf8');
 const css = readFileSync('css/homepage-v2.css', 'utf8');
-const independentProjectPaths = new Set(['/codelens-ai/']);
 
 const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
 const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
@@ -15,7 +14,7 @@ const localReferences = [...html.matchAll(/(?:href|src)="(\/[^"]+)"/g)]
   .filter((reference) => !reference.startsWith('//'));
 const missingReferences = localReferences.filter((reference) => {
   const pathname = reference.split(/[?#]/)[0];
-  if (!pathname || independentProjectPaths.has(pathname)) return false;
+  if (!pathname) return false;
   const target = resolve(decodeURIComponent(pathname.replace(/^\//, '')));
   return !existsSync(target) && !existsSync(resolve(target, 'index.html'));
 });
@@ -40,6 +39,8 @@ const cssBraceBalance = [...css].reduce(
 );
 
 const failures = {
+  retiredOrPrivateLinks: [...html.matchAll(/(?:href|src)="([^"]*(?:codelens-ai|github\.com\/msb8080\/ai-develop)[^"]*)"/g)].map(match => match[1]),
+  missingHashTargets: [...html.matchAll(/href="#([^"]+)"/g)].map(match => match[1]).filter(id => !ids.includes(id)),
   duplicateIds,
   unsafeBlankLinks,
   missingReferences: [...new Set(missingReferences)],

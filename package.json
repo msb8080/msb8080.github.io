@@ -3,6 +3,6 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "check": "node --check js/homepage-v2.js && node scripts/verify-homepage.mjs"
+    "check": "node --check js/homepage-v2.js && node --check js/homepage-actions.js && node scripts/verify-homepage.mjs"
   }
 }

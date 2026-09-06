@@ -730,7 +730,7 @@
 
     <!-- 导航 -->
     <nav class="cyber-nav" aria-label="主导航" data-site-nav>
-        <a class="nav-brand" href="/" aria-label="minshuaibo 个人主页">
+        <a class="nav-brand" href="#main-content" aria-label="返回个人主页顶部">
             <div class="nav-icon" aria-hidden="true">🚀</div>
             <div class="nav-identity">
                 <div class="nav-title">minshuaibo<span>.</span></div>
@@ -760,7 +760,7 @@
                 <p>AI Agent 与 Java 后端开发者。围绕 Spring Boot、Spring AI、Agent Harness 和评测体系，把模型能力落成可验证、可维护的工程系统。</p>
                 <div class="hero-actions">
                     <a href="/blog/" class="hero-action primary">进入博客</a>
-                    <a href="https://github.com/msb8080" target="_blank" rel="noopener noreferrer" class="hero-action secondary">查看 GitHub</a>
+                    <a href="#projects" class="hero-action secondary">探索项目 ↓</a>
                 </div>
                 <div class="hero-tags">
                     <span class="hero-tag">Java</span>
@@ -791,11 +791,11 @@
                             </div>
                             <span class="work-arrow" aria-hidden="true">↗</span>
                         </a>
-                        <a class="work-item" href="/codelens-ai/">
+                        <a class="work-item" href="#project-notes">
                             <div class="work-index">02</div>
                             <div class="work-copy">
-                                <div class="work-title">OmniAgent</div>
-                                <div class="work-desc">多 Agent + MCP + Skills 的智能体平台实践。</div>
+                                <div class="work-title">AI Develop · 私有项目</div>
+                                <div class="work-desc">融合 OmniAgent 的 Java AI 研发工作台。</div>
                             </div>
                             <span class="work-arrow" aria-hidden="true">↗</span>
                         </a>
@@ -810,22 +810,18 @@
                     </div>
                 </div>
                 <div class="panel-stats">
-                    <div class="stat-card">
-                        <span class="stat-value">20+</span>
-                        <span class="stat-label">技术文章</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-value">3</span>
-                        <span class="stat-label">内容方向</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-value">1</span>
-                        <span class="stat-label">交互实验</span>
-                    </div>
+                    <a class="stat-card" href="/blog/2026/09/04/frontier-model-release-radar/"><span class="stat-value">模型雷达</span><span class="stat-label">发布与官方入口 ↗</span></a>
+                    <a class="stat-card" href="/blog/2026/09/04/agent-harness-series-01-overview/"><span class="stat-value">Harness</span><span class="stat-label">从系列第一篇开始 ↗</span></a>
+                    <a class="stat-card" href="#agent-trace-lab"><span class="stat-value">交互实验</span><span class="stat-label">亲手派发任务 ↓</span></a>
                 </div>
             </aside>
         </section>
 
+        <nav class="section-jumps" aria-label="本页章节">
+            <a href="#agent-trace-lab" data-section-link>轨迹实验</a>
+            <a href="#projects" data-section-link>项目与内容</a>
+            <a href="#contact" data-section-link>联系我</a>
+        </nav>
         <section class="trace-lab gsap-reveal" id="agent-trace-lab" aria-labelledby="trace-title">
             <div class="trace-copy">
                 <div class="section-kicker">Interactive / Agent Runtime</div>
@@ -833,21 +829,25 @@
                 <p>派发一个任务，观察它在规划、上下文、工具、记忆和校验节点之间流动。这里是运行过程的交互示意，不会调用真实模型。</p>
 
                 <ol class="trace-pipeline" aria-label="Agent 执行阶段">
-                    <li><span>01</span>Agent · 协调</li>
-                    <li><span>02</span>Plan · 规划</li>
-                    <li><span>03</span>Context · 上下文</li>
-                    <li><span>04</span>Tools · 工具</li>
-                    <li><span>05</span>Memory · 记忆</li>
-                    <li><span>06</span>Verify · 校验</li>
+                    <li><button type="button" data-trace-node="0" aria-pressed="true" disabled><span>01</span>Agent · 协调</button></li>
+                    <li><button type="button" data-trace-node="1" aria-pressed="false" disabled><span>02</span>Plan · 规划</button></li>
+                    <li><button type="button" data-trace-node="2" aria-pressed="false" disabled><span>03</span>Context · 上下文</button></li>
+                    <li><button type="button" data-trace-node="3" aria-pressed="false" disabled><span>04</span>Tools · 工具</button></li>
+                    <li><button type="button" data-trace-node="4" aria-pressed="false" disabled><span>05</span>Memory · 记忆</button></li>
+                    <li><button type="button" data-trace-node="5" aria-pressed="false" disabled><span>06</span>Verify · 校验</button></li>
                 </ol>
+                <p class="node-detail" data-node-detail aria-live="polite">Agent · 协调：接收目标，安排各节点协作，并决定下一步行动。</p>
 
                 <div class="trace-actions" role="group" aria-label="轨迹场控制">
                     <button class="trace-button is-active" type="button" data-trace-mode="cruise" aria-pressed="true">巡航</button>
                     <button class="trace-button" type="button" data-trace-mode="focus" aria-pressed="false">聚焦</button>
                     <button class="trace-button" type="button" data-trace-pulse>派发任务</button>
                     <button class="trace-button" type="button" data-trace-pause aria-pressed="false">暂停动画</button>
+                    <button class="trace-button" type="button" data-trace-step>前进一步</button>
                     <button class="trace-button trace-button--reset" type="button" data-trace-reset>重置轨迹</button>
                 </div>
+                <label class="trace-speed">播放速度 <input type="range" min="0.5" max="2" step="0.5" value="1" data-trace-speed aria-label="播放速度"><output data-trace-speed-value>1×</output></label>
+                <noscript><p class="node-detail">动画需要 JavaScript。你仍可阅读节点说明、浏览项目和文章。</p></noscript>
                 <p class="trace-feedback" data-trace-feedback role="status" aria-live="polite">当前 4 个示意任务，最多显示 9 个。聚焦可收拢节点并加快轨迹。</p>
 
                 <dl class="trace-metrics">
@@ -869,7 +869,7 @@
             </div>
         </section>
 
-        <div class="section-heading gsap-reveal">
+        <div class="section-heading gsap-reveal" id="projects" tabindex="-1">
             <div>
                 <div class="section-kicker">Featured Links</div>
                 <h2 class="section-title">项目与内容</h2>
@@ -901,7 +901,7 @@
             </a>
 
             <!-- OmniAgent (大卡片) -->
-            <a href="/codelens-ai/" class="gsap-reveal span-6 row-2" style="text-decoration: none;">
+            <a href="#project-notes" class="gsap-reveal span-6 row-2" style="text-decoration: none;">
                 <div class="card-wrapper">
                     <div class="card-anchor">
                         <div class="card-layer card-base card-base--agent"></div>
@@ -912,8 +912,8 @@
                                 <span class="material-symbols-outlined" aria-hidden="true">psychology</span>
                             </div>
                             <div>
-                                <div class="card-title">OmniAgent</div>
-                                <div class="card-desc">全能智能体平台 · 多 Agent + MCP + Skills<br>Spring Boot 3 + Spring AI</div>
+                                <div class="card-title">AI Develop</div>
+                                <div class="card-desc">融合 OmniAgent · Java + AI 研发工作台<br>私有项目 · 查看项目说明 ↓</div>
                             </div>
                         </div>
                     </div>
@@ -954,7 +954,7 @@
                                 <div>
                                     <div class="card-kicker">Open Source</div>
                                     <div class="card-title" style="font-size: 1.1rem;">GitHub</div>
-                                    <div class="card-desc">@msb8080</div>
+                                    <div class="card-desc">@msb8080 · 新标签页 ↗</div>
                                 </div>
                             </div>
                         </div>
@@ -976,7 +976,7 @@
                                 <div>
                                     <div class="card-kicker">In Progress</div>
                                     <div class="card-title" style="font-size: 1.1rem;">玄鉴仙族 AI短剧</div>
-                                    <div class="card-desc">开发中...</div>
+                                    <div class="card-desc">开发中，暂未开放体验</div>
                                 </div>
                             </div>
                         </div>
@@ -1007,8 +1007,14 @@
 
         </div>
 
+        <details class="project-notes" id="project-notes">
+            <summary>AI Develop 与 OmniAgent 的关系</summary>
+            <p>OmniAgent 的角色、对话和工程辅助能力已整合进 AI Develop，统一维护。源码与工作台保持私有，个人主页仅展示项目介绍。</p>
+            <a href="#contact">交流项目与工程实践 ↓</a>
+        </details>
+
         <!-- 社交链接 -->
-        <div class="contact-heading"><h2>聊聊 Agent 工程</h2><p>交流实现思路、项目问题与实践经验。</p></div>
+        <div class="contact-heading" id="contact" tabindex="-1"><h2>聊聊 Agent 工程</h2><p>交流实现思路、项目问题与实践经验。</p></div>
         <div class="social-links gsap-reveal">
             <a href="https://github.com/msb8080" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub" aria-label="GitHub">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
@@ -1019,14 +1025,18 @@
                 <span class="material-symbols-outlined" aria-hidden="true">mail</span>
             </a>
             <a class="contact-email" href="mailto:msb8080@163.com">msb8080@163.com</a>
+            <button class="trace-button" type="button" data-copy-email hidden>复制邮箱</button>
         </div>
+        <p class="contact-feedback" data-contact-feedback role="status" aria-live="polite"></p>
 
         <footer class="gsap-reveal">
+            <a class="back-top" href="#main-content">返回顶部 ↑</a>
             <p>© 2026 minshuaibo · Agent systems, made inspectable.</p>
         </footer>
     </main>
 
     <script src="/js/homepage-v2.js" defer></script>
+    <script src="/js/homepage-actions.js" defer></script>
 </body>
 
 </html>

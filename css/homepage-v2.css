@@ -544,3 +544,23 @@ footer { font-size: 0.8125rem; }
     .reveal-ready { opacity: 1; transform: none; }
     #agent-trace-canvas { cursor: default; }
 }
+/* Section actions remain usable without JavaScript. */
+[hidden] { display: none !important; }
+.section-jumps { display:flex; gap:.75rem; flex-wrap:wrap; margin:1.5rem 0; }
+.section-jumps a, .back-top { color:#e6d7ff; padding:.7rem 1rem; border:1px solid #76628f; border-radius:2rem; text-decoration:none; }
+.section-jumps a[aria-current] { background:#643aa1; border-color:#c6a0ff; }
+.stat-card { text-decoration:none; color:inherit; }
+.stat-card:hover { background:rgba(255,255,255,.12); }
+.project-notes { padding:1.2rem; margin-top:1.5rem; border:1px solid #76628f; border-radius:1rem; }
+.project-notes summary { cursor:pointer; font-weight:700; min-height:44px; }
+.project-notes p { line-height:1.8; margin:.75rem 0; }
+.project-notes a { color:#dec9ff; }
+.trace-pipeline li { padding:0; border:0; background:none; }
+.trace-pipeline button { width:100%; min-height:44px; padding:.6rem; border:1px solid #625476; border-radius:.8rem; background:#241a37; color:#e9e0f6; font:inherit; text-align:left; cursor:pointer; }
+.trace-pipeline button[aria-pressed=true] { border-color:#c9a6ff; background:#493164; }
+.node-detail { color:#d6cde5; line-height:1.7; font-size:.875rem; margin-top:.8rem; min-height:4em; }
+.trace-speed { display:flex; align-items:center; gap:1rem; margin-top:1rem; font-size:.875rem; }
+.trace-speed input { min-width:0; width:100%; flex:1; accent-color:#b48aff; min-height:44px; }
+.contact-feedback { min-height:2em; text-align:center; color:#d6cde5; line-height:1.7; }
+.back-top { display:inline-block; margin-bottom:1rem; }
+.trace-button:disabled { opacity:.5; cursor:not-allowed; }

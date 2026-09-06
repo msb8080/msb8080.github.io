@@ -95,6 +95,17 @@
         var pauseButton = document.querySelector('[data-trace-pause]');
         var feedback = document.querySelector('[data-trace-feedback]');
         var paused = reduceMotion;
+        var selectedNode = 0;
+        var playbackSpeed = 1;
+        var speedInput = document.querySelector('[data-trace-speed]');
+        var nodeButtons = Array.from(document.querySelectorAll('[data-trace-node]'));
+        var nodeDescriptions = ['接收目标，安排各节点协作，并决定下一步行动。','把目标拆为可验证的步骤。','选择本轮需要的文件、规则与历史。','通过受控工具读取证据或执行已批准的动作。','保留有用的会话信息和任务结果。','检查证据与结果是否符合验收条件。'];
+        function selectNode(index) {
+            selectedNode = index;
+            nodeButtons.forEach(function(button) { button.setAttribute('aria-pressed', String(Number(button.dataset.traceNode) === index)); });
+            document.querySelector('[data-node-detail]').textContent = nodes[index].label + '：' + nodeDescriptions[index];
+            if (paused) draw(0);
+        }
         var pointerStart = null;
         var width = 900;
         var height = 520;
@@ -160,7 +171,7 @@
         function addPulse(originIndex) {
             var candidateEdges = edges
                 .map(function (edge, index) { return { edge: edge, index: index }; })
-                .filter(function (item) { return item.edge[0] === originIndex || item.edge[1] === originIndex; });
+                .filter(function (item) { return item.edge[0] === originIndex; });
             var selection = candidateEdges.length
                 ? candidateEdges[pulses.length % candidateEdges.length].index
                 : pulses.length % edges.length;
@@ -221,6 +232,10 @@
         function drawNode(node, position) {
             var radius = node.core ? Math.max(29, width * 0.047) : Math.max(24, width * 0.025);
             context.save();
+            if (nodes[selectedNode] === node) {
+                context.strokeStyle = '#ffffff'; context.lineWidth = 1;
+                context.beginPath(); context.arc(position.x, position.y, radius + 6, 0, Math.PI * 2); context.stroke();
+            }
             context.shadowColor = node.color;
             context.shadowBlur = node.core ? 30 : 18;
             context.fillStyle = node.core ? 'rgba(30, 18, 62, 0.96)' : 'rgba(15, 13, 35, 0.96)';
@@ -287,6 +302,18 @@
             nodes.forEach(function (node, index) { drawNode(node, positions[index]); });
         }
 
+        function advancePulse(pulse, amount) {
+            pulse.progress += amount;
+            while (pulse.progress >= 1) {
+                pulse.progress -= 1;
+                var destination = edges[pulse.edge][1];
+                var nextEdge = edges.findIndex(function (edge) { return edge[0] === destination; });
+                if (nextEdge < 0) { pulse.progress = 1; return; }
+                pulse.edge = nextEdge;
+                pulse.fresh = false;
+            }
+        }
+
         function animate(time) {
             if (!visible || document.hidden || paused) {
                 frameId = 0;
@@ -296,12 +323,7 @@
             previousTime = time;
             elapsed += delta;
             pulses.forEach(function (pulse) {
-                pulse.progress += delta * pulse.speed * (mode === 'focus' ? 1.65 : 1);
-                if (pulse.progress > 1) {
-                    pulse.progress = 0;
-                    pulse.edge = (pulse.edge + 2) % edges.length;
-                    pulse.fresh = false;
-                }
+                advancePulse(pulse, delta * pulse.speed * playbackSpeed * (mode === 'focus' ? 1.65 : 1));
             });
             draw(time + elapsed * 300);
             frameId = requestAnimationFrame(animate);
@@ -342,18 +364,30 @@
                 var distance = dx * dx + dy * dy;
                 if (distance < nearestDistance) { nearest = index; nearestDistance = distance; }
             });
+            selectNode(nearest);
             addPulse(nearest);
         });
         canvas.addEventListener('keydown', function (event) {
             if (event.key !== 'Enter' && event.key !== ' ') return;
             event.preventDefault();
-            addPulse(0);
+            addPulse(selectedNode);
         });
 
         modeButtons.forEach(function (button) {
             button.addEventListener('click', function () { setMode(button.getAttribute('data-trace-mode')); });
         });
-        if (pulseButton) pulseButton.addEventListener('click', function () { addPulse(0); });
+        nodeButtons.forEach(function(button) { button.disabled = false; button.addEventListener('click', function(){selectNode(Number(button.dataset.traceNode));}); });
+        if (speedInput) speedInput.addEventListener('input', function() {
+            playbackSpeed = Number(speedInput.value);
+            document.querySelector('[data-trace-speed-value]').textContent = playbackSpeed + '×';
+        });
+        document.querySelector('[data-trace-step]').addEventListener('click', function() {
+            paused = true; stopAnimation(); updatePlayback();
+            pulses.forEach(function(pulse){ advancePulse(pulse, 0.12); });
+            draw(0);
+            feedback.textContent = '已暂停并向前推进一步；可继续观察或恢复播放。';
+        });
+        if (pulseButton) pulseButton.addEventListener('click', function () { addPulse(selectedNode); });
         if (pauseButton) pauseButton.addEventListener('click', function () {
             paused = !paused;
             if (paused) stopAnimation();
@@ -365,6 +399,8 @@
             elapsed = 0;
             pointer.active = false;
             resetPulses();
+            playbackSpeed = 1; speedInput.value = '1'; document.querySelector('[data-trace-speed-value]').textContent = '1×';
+            selectNode(0);
             setMode('cruise');
             if (feedback) feedback.textContent = '已重置为 4 个示意任务。' + (paused ? '动画保持暂停。' : '');
         });
