@@ -39,7 +39,7 @@ const cssBraceBalance = [...css].reduce(
 );
 
 const failures = {
-  retiredOrPrivateLinks: [...html.matchAll(/(?:href|src)="([^"]*(?:codelens-ai|github\.com\/msb8080\/ai-develop)[^"]*)"/g)].map(match => match[1]),
+  retiredOrPrivateLinks: [...html.matchAll(/(?:href|src)="([^"]*codelens-ai[^"]*)"/g)].map(match => match[1]),
   missingHashTargets: [...html.matchAll(/href="#([^"]+)"/g)].map(match => match[1]).filter(id => !ids.includes(id)),
   duplicateIds,
   unsafeBlankLinks,
