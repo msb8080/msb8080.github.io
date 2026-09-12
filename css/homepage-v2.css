@@ -1,5 +1,19 @@
 /* Homepage v2: local progressive enhancement and the Agent Trace Lab. */
 
+/* Shared visual language with /blog/: same ink, violet, cyan and reading width. */
+html, body {
+    background: #151020;
+    color: #f7f3ff;
+    font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+body {
+    background:
+        radial-gradient(circle at 12% 8%, rgba(139, 92, 246, .15), transparent 27rem),
+        radial-gradient(circle at 88% 32%, rgba(117, 230, 218, .08), transparent 25rem),
+        #151020;
+}
+.main-container { width: min(1180px, calc(100vw - 40px)); margin-inline: auto; }
+
 .skip-link {
     position: fixed;
     left: 1rem;
