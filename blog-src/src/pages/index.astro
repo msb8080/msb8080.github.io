@@ -1,0 +1,83 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import Pagination from '../components/Pagination.astro';
+import { SITE, countValues, sortPosts, withBase } from '../lib/site';
+
+const posts = sortPosts(await getCollection('posts'));
+const pagePosts = posts.slice(0, SITE.pageSize);
+const pageCount = Math.ceil(posts.length / SITE.pageSize);
+const tagCount = countValues(posts, 'tags').length;
+const seriesCount = new Set(posts.map((post) => post.data.series).filter(Boolean)).size;
+const topics = [
+  { label: 'MODEL RADAR', title: '前沿模型', text: '官方发布、API 入口与退役信息', href: '/tags/模型发布/', wide: true },
+  { label: 'AGENT SYSTEM', title: 'Harness', text: '工具、权限、上下文与评测', href: '/series/agent-harness/' },
+  { label: 'ENGINEERING', title: 'AI 后端', text: '从原理到可运行服务', href: '/categories/AI-后端学习/' },
+  { label: 'KNOWLEDGE', title: '全部归档', text: '按时间查看所有文章', href: '/archives/' }
+];
+---
+
+<BaseLayout>
+  <section class="home-hero shell">
+    <div class="hero-copy">
+      <span class="eyebrow">ENGINEERING INTELLIGENCE / 2026</span>
+      <h1>理解模型，<br /><em>驾驭 Agent。</em></h1>
+      <p>聚焦前沿模型发布、Agent Harness 与 AI 后端工程。这里不只汇总资讯，更把变化拆成可验证、可落地的技术路线。</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href={withBase('/2026/09/04/frontier-model-release-radar/')}>查看模型雷达 <span>↗</span></a>
+        <a class="button button-secondary" href={withBase('/series/agent-harness/')}>开始 Harness 系列</a>
+      </div>
+    </div>
+    <aside class="signal-stage" aria-label="内容雷达" data-signal-stage>
+      <a class="signal-teaser signal-teaser--models" href={withBase('/tags/模型发布/')}>
+        <span>MODEL RADAR</span>
+        <strong>10 个模型源</strong>
+        <small>官方发布 · API · 退役公告</small>
+        <b aria-hidden="true">↗</b>
+      </a>
+      <a class="signal-teaser signal-teaser--harness" href={withBase('/series/agent-harness/')}>
+        <span>HARNESS PLAYBOOK</span>
+        <strong>7 篇专题</strong>
+        <small>工具 · 权限 · 上下文 · 评测</small>
+        <b aria-hidden="true">↗</b>
+      </a>
+      <div class="signal-card">
+        <img
+          class="signal-card__image"
+          src={withBase('/assets/og-default.jpg')}
+          width="1200"
+          height="630"
+          alt="AI Composer 技术猿：理解模型，驾驭 Agent"
+          decoding="async"
+        />
+        <div class="signal-card__top"><span>KNOWLEDGE SIGNAL</span><span>{String(posts.length).padStart(2, '0')} NOTES</span></div>
+        <dl>
+          <div><dt>{tagCount}</dt><dd>主题标签</dd></div>
+          <div><dt>{seriesCount}</dt><dd>专题系列</dd></div>
+          <div><dt>∞</dt><dd>持续更新</dd></div>
+        </dl>
+      </div>
+      <span class="signal-stage__hint" aria-hidden="true">MOVE TO EXPLORE</span>
+    </aside>
+  </section>
+
+  <section class="topic-grid shell" aria-label="核心内容方向">
+    {topics.map((topic) => (
+      <a class:list={['topic-card', { 'topic-card--wide': topic.wide }]} href={withBase(topic.href)}>
+        <span>{topic.label}</span><strong>{topic.title}</strong><p>{topic.text}</p><b>↗</b>
+      </a>
+    ))}
+  </section>
+
+  <section class="content-section shell">
+    <div class="section-heading">
+      <div><span class="eyebrow">LATEST WRITING</span><h2>最新文章</h2></div>
+      <a href={withBase('/archives/')}>浏览全部 {posts.length} 篇 →</a>
+    </div>
+    <div class="post-grid">
+      {pagePosts.map((post, index) => <PostCard post={post} featured={index === 0} />)}
+    </div>
+    <Pagination current={1} last={pageCount} />
+  </section>
+</BaseLayout>

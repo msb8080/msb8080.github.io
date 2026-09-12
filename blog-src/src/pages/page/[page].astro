@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import Listing from '../../components/Listing.astro';
+import { SITE, sortPosts } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = sortPosts(await getCollection('posts'));
+  const pageCount = Math.ceil(posts.length / SITE.pageSize);
+  return Array.from({ length: Math.max(0, pageCount - 1) }, (_, index) => {
+    const page = index + 2;
+    return {
+      params: { page: String(page) },
+      props: { posts: posts.slice((page - 1) * SITE.pageSize, page * SITE.pageSize), page, pageCount }
+    };
+  });
+}
+
+const { posts, page, pageCount } = Astro.props;
+---
+
+<Listing title={`全部文章 · 第 ${page} 页`} description="继续浏览 AI 工程、Agent Harness 与技术复盘。" posts={posts} current={page} last={pageCount} />

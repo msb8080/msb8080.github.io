@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import Listing from '../../components/Listing.astro';
+import type { Post } from '../../lib/site';
+import { SITE, sortPosts, taxonomySlug } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = sortPosts(await getCollection('posts'));
+  const groups = new Map<string, { name: string; posts: Post[] }>();
+  posts.forEach((post) => (post.data.categories as string[]).forEach((name: string, index: number) => {
+    const key = (post.data.categories as string[]).slice(0, index + 1).map(taxonomySlug).join('/');
+    const group = groups.get(key) ?? { name, posts: [] as Post[] };
+    group.posts.push(post);
+    groups.set(key, group);
+  }));
+  const paths: Array<{ params: { category: string }; props: Record<string, unknown> }> = [];
+  groups.forEach((group, key) => {
+    const pageCount = Math.ceil(group.posts.length / SITE.pageSize);
+    const root = `/categories/${key}/`;
+    paths.push({ params: { category: key }, props: { ...group, posts: group.posts.slice(0, SITE.pageSize), page: 1, pageCount, root } });
+    for (let page = 2; page <= pageCount; page += 1) {
+      paths.push({ params: { category: `${key}/page/${page}` }, props: { ...group, posts: group.posts.slice((page - 1) * SITE.pageSize, page * SITE.pageSize), page, pageCount, root } });
+    }
+  });
+  return paths;
+}
+
+const { name, posts, page, pageCount, root } = Astro.props as { name: string; posts: Post[]; page: number; pageCount: number; root: string };
+---
+
+<Listing title={name} description={`“${name}”分类下的文章与持续更新。`} posts={posts} current={page} last={pageCount} root={root} />

@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { Post } from '../../lib/site';
+import { formatDate, postPath, sortPosts, sourceDateIso, taxonomySlug, withBase } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = sortPosts(await getCollection('posts'));
+  const groups = new Map<string, { title: string; posts: Post[] }>();
+  posts.forEach((post) => {
+    if (!post.data.series) return;
+    const slug = taxonomySlug(post.data.series);
+    const group = groups.get(slug) ?? { title: post.data.series_title ?? post.data.series, posts: [] as Post[] };
+    group.posts.push(post);
+    groups.set(slug, group);
+  });
+  return [...groups.entries()].map(([series, group]) => ({
+    params: { series },
+    props: { title: group.title, posts: group.posts.sort((a, b) => (a.data.series_order ?? 0) - (b.data.series_order ?? 0)) }
+  }));
+}
+
+const { title, posts } = Astro.props as { title: string; posts: Post[] };
+const description = `${title}完整学习路径，共 ${posts.length} 篇，覆盖原理、工具选型、实践、权限治理与评测。`;
+const seriesPath = `/series/${Astro.params.series}/`;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  breadcrumbs={[{ name: '首页', path: '/' }, { name: title, path: seriesPath }]}
+>
+  <section class="listing-shell shell">
+    <div class="series-hero">
+      <header class="listing-header">
+        <span class="eyebrow">GUIDED LEARNING PATH</span>
+        <h1>{title}</h1>
+        <p>{description} 建议按顺序阅读，也可以直接进入当前最相关的章节。</p>
+        <a class="button button-primary" href={withBase(postPath(posts[0]))}>从第 1 篇开始 <span>↗</span></a>
+      </header>
+      <aside class="series-summary" aria-label="系列概览">
+        <strong>{String(posts.length).padStart(2, '0')}</strong>
+        <span>ARTICLES IN THIS SERIES</span>
+      </aside>
+    </div>
+    <div class="series-list">
+      {posts.map((post) => (
+        <a class="series-item" href={withBase(postPath(post))}>
+          <span class="series-item__number">{String(post.data.series_order ?? 0).padStart(2, '0')}</span>
+          <div><h2>{post.data.title}</h2><p>{post.data.description}</p></div>
+          <time datetime={sourceDateIso(post.data.updated ?? post.data.date)}>{formatDate(post.data.updated ?? post.data.date)}</time>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

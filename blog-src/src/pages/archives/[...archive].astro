@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import Listing from '../../components/Listing.astro';
+import { SITE, sortPosts } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = sortPosts(await getCollection('posts'));
+  const groups = new Map<string, typeof posts>();
+  posts.forEach((post) => {
+    const year = String(post.data.date.getUTCFullYear());
+    const month = String(post.data.date.getUTCMonth() + 1).padStart(2, '0');
+    for (const key of [year, `${year}/${month}`]) groups.set(key, [...(groups.get(key) ?? []), post]);
+  });
+
+  const paths: Array<{ params: { archive: string }; props: Record<string, unknown> }> = [];
+  const addPages = (key: string, groupedPosts: typeof posts, title: string, root: string) => {
+    const pageCount = Math.ceil(groupedPosts.length / SITE.pageSize);
+    paths.push({ params: { archive: key }, props: { posts: groupedPosts.slice(0, SITE.pageSize), page: 1, pageCount, title, root } });
+    for (let page = 2; page <= pageCount; page += 1) {
+      paths.push({ params: { archive: `${key}/page/${page}` }, props: { posts: groupedPosts.slice((page - 1) * SITE.pageSize, page * SITE.pageSize), page, pageCount, title, root } });
+    }
+  };
+
+  const allPageCount = Math.ceil(posts.length / SITE.pageSize);
+  for (let page = 2; page <= allPageCount; page += 1) {
+    paths.push({ params: { archive: `page/${page}` }, props: { posts: posts.slice((page - 1) * SITE.pageSize, page * SITE.pageSize), page, pageCount: allPageCount, title: '文章归档', root: '/archives/' } });
+  }
+  groups.forEach((groupedPosts, key) => {
+    const [year, month] = key.split('/');
+    addPages(key, groupedPosts, month ? `${year} 年 ${month} 月` : `${year} 年`, `/archives/${key}/`);
+  });
+  return paths;
+}
+
+const { posts, page, pageCount, title, root } = Astro.props;
+---
+
+<Listing title={title} description="按时间浏览归档文章。" posts={posts} current={page} last={pageCount} root={root} />

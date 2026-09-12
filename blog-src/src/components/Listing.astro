@@ -1,0 +1,39 @@
+---
+import type { Post } from '../lib/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Pagination from './Pagination.astro';
+import { formatDate, postPath, sourceDateIso, withBase } from '../lib/site';
+
+interface Props {
+  title: string;
+  description: string;
+  posts: Post[];
+  current?: number;
+  last?: number;
+  root?: string;
+}
+
+const { title, description, posts, current = 1, last = 1, root = '/' } = Astro.props as Props;
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="listing-shell shell">
+    <header class="listing-header">
+      <span class="eyebrow">KNOWLEDGE INDEX</span>
+      <h1>{title}</h1>
+      <p>{description}</p>
+    </header>
+    <div class="timeline">
+      {posts.map((post) => (
+        <article>
+          <time datetime={sourceDateIso(post.data.date)}>{formatDate(post.data.date)}</time>
+          <div>
+            <h2><a href={withBase(postPath(post))}>{post.data.title}</a></h2>
+            <p>{post.data.description}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+    <Pagination current={current} last={last} root={root} />
+  </section>
+</BaseLayout>

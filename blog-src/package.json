@@ -1,0 +1,30 @@
+{
+  "name": "ai-composer-blog",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.12",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "server": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "postbuild": "npm run verify",
+    "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "validate": "npm run check && npm run build",
+    "verify": "node ./bin/verify-build.mjs",
+    "smoke": "node ./bin/smoke-site.mjs",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "deploy": "./deploy.sh"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^6.0.3"
+  }
+}

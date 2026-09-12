@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import Listing from '../../components/Listing.astro';
+import type { Post } from '../../lib/site';
+import { sortPosts, taxonomySlug } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = sortPosts(await getCollection('posts'));
+  const tags = new Map<string, { name: string; posts: Post[] }>();
+  posts.forEach((post) => (post.data.tags as string[]).forEach((name: string) => {
+    const slug = taxonomySlug(name);
+    const group = tags.get(slug) ?? { name, posts: [] as Post[] };
+    group.posts.push(post);
+    tags.set(slug, group);
+  }));
+  return [...tags.entries()].map(([tag, props]) => ({ params: { tag }, props }));
+}
+
+const { name, posts } = Astro.props as { name: string; posts: Post[] };
+---
+
+<Listing title={`#${name}`} description={`包含“${name}”标签的 ${posts.length} 篇文章。`} posts={posts} />

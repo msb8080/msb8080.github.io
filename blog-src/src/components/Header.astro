@@ -1,0 +1,32 @@
+---
+import { SITE, withBase } from '../lib/site';
+
+const path = Astro.url.pathname;
+const links = [
+  { href: '/', label: '个人主页', external: true },
+  { href: '/', label: '首页' },
+  { href: '/archives/', label: '归档' },
+  { href: '/categories/', label: '分类' },
+  { href: '/tags/', label: '标签' },
+  { href: '/about/', label: '关于' }
+];
+---
+
+<header class="site-header">
+  <div class="nav-shell">
+    <a class="brand" href={withBase('/')} aria-label={`${SITE.title}首页`}>
+      <span class="brand-mark">AI</span>
+      <span class="brand-copy"><strong>{SITE.title}</strong><small>BUILD · VERIFY · SHARE</small></span>
+    </a>
+    <nav id="site-menu" class="site-menu" aria-label="主导航" data-site-menu>
+      {links.map((link) => (
+        <a class:list={{ active: !link.external && (link.href === '/' ? path === withBase('/') : path.startsWith(withBase(link.href))) }} href={link.external ? 'https://msb8080.github.io/' : withBase(link.href)}>{link.label}</a>
+      ))}
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-button" type="button" aria-label="搜索" title="搜索（⌘/Ctrl K）" data-search-open>⌕</button>
+      <button class="icon-button" type="button" aria-label="切换明暗主题" title="切换主题" aria-pressed="false" data-theme-toggle>◐</button>
+      <button class="icon-button menu-toggle" type="button" aria-label="展开导航" aria-controls="site-menu" aria-expanded="false" data-nav-toggle>☰</button>
+    </div>
+  </div>
+</header>

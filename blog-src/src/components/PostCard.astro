@@ -1,0 +1,23 @@
+---
+import type { Post } from '../lib/site';
+import { formatDate, postPath, readingMinutes, sourceDateIso, taxonomySlug, withBase } from '../lib/site';
+
+interface Props { post: Post; featured?: boolean; }
+const { post, featured = false } = Astro.props as Props;
+---
+
+<article class:list={['post-card', { 'post-card--featured': featured }]}>
+  <div class="post-card__meta">
+    <time datetime={sourceDateIso(post.data.date)}>{formatDate(post.data.date)}</time>
+    <span>{readingMinutes(post.body)} 分钟</span>
+    {post.data.series && <a class="post-card__series" href={withBase(`/series/${taxonomySlug(post.data.series)}/`)}>系列 {post.data.series_order}</a>}
+  </div>
+  <h2><a href={withBase(postPath(post))}>{post.data.title}</a></h2>
+  <p>{post.data.description}</p>
+  <div class="post-card__footer">
+    <div class="tag-row">
+      {(post.data.tags as string[]).slice(0, 3).map((tag: string) => <a href={withBase(`/tags/${taxonomySlug(tag)}/`)}>#{tag}</a>)}
+    </div>
+    <a class="read-link" href={withBase(postPath(post))}>阅读全文 <span>↗</span></a>
+  </div>
+</article>

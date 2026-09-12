@@ -1,0 +1,10 @@
+---
+import { getCollection } from 'astro:content';
+import Listing from '../../components/Listing.astro';
+import { SITE, sortPosts } from '../../lib/site';
+
+const allPosts = sortPosts(await getCollection('posts'));
+const pageCount = Math.ceil(allPosts.length / SITE.pageSize);
+---
+
+<Listing title="文章归档" description={`按时间浏览全部 ${allPosts.length} 篇文章。`} posts={allPosts.slice(0, SITE.pageSize)} current={1} last={pageCount} root="/archives/" />

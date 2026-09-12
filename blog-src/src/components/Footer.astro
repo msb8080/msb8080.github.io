@@ -1,0 +1,13 @@
+---
+import { SITE, withBase } from '../lib/site';
+---
+
+<footer class="site-footer">
+  <div><strong>{SITE.title}</strong><p>把 AI 新知变成可验证、可复用的工程实践。</p></div>
+  <div class="footer-links">
+    <a href={withBase('/links/')}>资料</a>
+    <a href={withBase('/atom.xml')}>RSS</a>
+    <a href={SITE.github} target="_blank" rel="noreferrer">GitHub</a>
+    <span>© {new Date().getFullYear()}</span>
+  </div>
+</footer>

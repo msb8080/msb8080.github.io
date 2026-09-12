@@ -1,0 +1,21 @@
+---
+import { withBase } from '../lib/site';
+---
+
+<div class="search-layer" hidden data-search-layer data-index-url={withBase('/search.json')}>
+  <button class="search-backdrop" type="button" tabindex="-1" aria-label="关闭搜索" data-search-close></button>
+  <section class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索">
+    <div class="search-heading">
+      <div><span class="eyebrow">SEARCH</span><h2>搜索文章</h2></div>
+      <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close>×</button>
+    </div>
+    <label class="search-input-wrap">
+      <span aria-hidden="true">⌕</span>
+      <input type="search" placeholder="标题、标签或正文关键词" autocomplete="off" data-search-input />
+      <kbd>ESC</kbd>
+    </label>
+    <div class="search-results" aria-live="polite" data-search-results>
+      <p class="search-empty">输入关键词开始搜索。</p>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,110 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import PostCard from '../../../../components/PostCard.astro';
+import type { Post } from '../../../../lib/site';
+import { formatDate, postPath, readingMinutes, sortPosts, sourceDateIso, taxonomySlug, withBase } from '../../../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = sortPosts(await getCollection('posts'));
+  return posts.map((post) => {
+    const [year, month, day, slug] = postPath(post).split('/').filter(Boolean);
+    return { params: { year, month, day, slug }, props: { post, posts } };
+  });
+}
+
+const { post, posts } = Astro.props as { post: Post; posts: Post[] };
+const { Content } = await render(post);
+const index = posts.findIndex((candidate) => candidate.id === post.id);
+const newer = index > 0 ? posts[index - 1] : undefined;
+const older = index < posts.length - 1 ? posts[index + 1] : undefined;
+const seriesPosts = post.data.series
+  ? posts.filter((candidate) => candidate.data.series === post.data.series).sort((a, b) => (a.data.series_order ?? 0) - (b.data.series_order ?? 0))
+  : [];
+const seriesIndex = seriesPosts.findIndex((candidate) => candidate.id === post.id);
+const seriesPrevious = seriesIndex > 0 ? seriesPosts[seriesIndex - 1] : undefined;
+const seriesNext = seriesIndex >= 0 && seriesIndex < seriesPosts.length - 1 ? seriesPosts[seriesIndex + 1] : undefined;
+const previousPost = seriesPosts.length > 0 ? seriesPrevious : older;
+const nextPost = seriesPosts.length > 0 ? seriesNext : newer;
+const categoryPath = post.data.categories.map(taxonomySlug).join('/');
+const updatedTime = sourceDateIso(post.data.updated ?? post.data.date);
+const modifiedTime = sourceDateIso(post.data.last_verified ?? post.data.updated ?? post.data.date);
+const showUpdated = post.data.updated && formatDate(post.data.updated) !== formatDate(post.data.date);
+const relatedPosts = posts
+  .filter((candidate) => candidate.id !== post.id)
+  .map((candidate) => {
+    const sharedTags = (candidate.data.tags as string[]).filter((tag: string) => (post.data.tags as string[]).includes(tag)).length;
+    const sharedCategories = (candidate.data.categories as string[]).filter((category: string) => (post.data.categories as string[]).includes(category)).length;
+    const sameSeries = post.data.series && candidate.data.series === post.data.series ? 3 : 0;
+    return { candidate, score: sharedTags * 2 + sharedCategories + sameSeries };
+  })
+  .filter(({ score }) => score > 0)
+  .sort((a, b) => b.score - a.score || b.candidate.data.date.getTime() - a.candidate.data.date.getTime())
+  .slice(0, 3)
+  .map(({ candidate }) => candidate);
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  type="article"
+  publishedTime={sourceDateIso(post.data.date)}
+  modifiedTime={modifiedTime}
+  tags={post.data.tags}
+  breadcrumbs={[
+    { name: '首页', path: '/' },
+    ...(post.data.categories.length > 0 ? [{ name: post.data.categories.at(-1) ?? '分类', path: `/categories/${categoryPath}/` }] : []),
+    { name: post.data.title, path: postPath(post) }
+  ]}
+>
+  <article class="article-shell shell">
+    <header class="article-header">
+      <div class="article-kicker">
+        <span>发布 <time datetime={sourceDateIso(post.data.date)}>{formatDate(post.data.date)}</time></span>
+        {post.data.last_verified
+          ? <><span>·</span><span>核验 <time datetime={sourceDateIso(post.data.last_verified)}>{formatDate(post.data.last_verified)}</time></span></>
+          : showUpdated && post.data.updated && <><span>·</span><span>更新 <time datetime={updatedTime}>{formatDate(post.data.updated)}</time></span></>}
+        <span>·</span><span>{readingMinutes(post.body)} 分钟阅读</span>
+        {post.data.categories.length > 0 && <><span>·</span><a href={withBase(`/categories/${categoryPath}/`)}>{post.data.categories.at(-1)}</a></>}
+      </div>
+      <h1>{post.data.title}</h1>
+      <p class="article-description">{post.data.description}</p>
+      <div class="article-tags">
+        {(post.data.tags as string[]).map((tag: string) => <a href={withBase(`/tags/${taxonomySlug(tag)}/`)}>#{tag}</a>)}
+      </div>
+    </header>
+
+    {seriesPosts.length > 0 && (
+      <nav class="series-bar" aria-label="专题系列">
+        <a class="series-bar__title" href={withBase(`/series/${taxonomySlug(post.data.series ?? '')}/`)}>{post.data.series_title ?? '专题系列'} · {seriesPosts.length} 篇</a>
+        <div>
+          {seriesPosts.map((item) => (
+            <a class:list={{ 'is-current': item.id === post.id }} aria-current={item.id === post.id ? 'page' : undefined} href={withBase(postPath(item))} title={item.data.title}>{item.data.series_order}</a>
+          ))}
+        </div>
+      </nav>
+    )}
+
+    <div class="article-layout">
+      <div class="article-content"><Content /></div>
+      <aside class="article-aside">
+        <div class="aside-card"><span>ON THIS PAGE</span><nav data-toc></nav></div>
+      </aside>
+    </div>
+    {relatedPosts.length > 0 && (
+      <section class="related-section" aria-labelledby="related-title">
+        <div class="section-heading">
+          <div><span class="eyebrow">KEEP EXPLORING</span><h2 id="related-title">继续阅读</h2></div>
+        </div>
+        <div class="related-grid">
+          {relatedPosts.map((related) => <PostCard post={related} />)}
+        </div>
+      </section>
+    )}
+    <footer class="article-footer">
+      <span>{previousPost ? <a href={withBase(postPath(previousPost))}>← {previousPost.data.title}</a> : (seriesPosts.length > 0 ? '系列起点' : '已经是最早一篇')}</span>
+      <button type="button" data-copy-url>复制文章链接</button>
+      <span>{nextPost ? <a href={withBase(postPath(nextPost))}>{nextPost.data.title} →</a> : (seriesPosts.length > 0 ? '系列完结' : '已经是最新一篇')}</span>
+    </footer>
+  </article>
+</BaseLayout>

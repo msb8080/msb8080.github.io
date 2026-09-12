@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sortPosts, taxonomySlug, withBase } from '../../lib/site';
+
+const posts = sortPosts(await getCollection('posts'));
+const categories = new Map<string, { name: string; path: string; count: number }>();
+posts.forEach((post) => (post.data.categories as string[]).forEach((name: string, index: number) => {
+  const path = (post.data.categories as string[]).slice(0, index + 1).map(taxonomySlug).join('/');
+  const existing = categories.get(path);
+  categories.set(path, { name, path, count: (existing?.count ?? 0) + 1 });
+}));
+const items = [...categories.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'zh-CN'));
+---
+
+<BaseLayout title="文章分类" description="按知识方向浏览文章。">
+  <section class="taxonomy-shell shell">
+    <header class="listing-header"><span class="eyebrow">KNOWLEDGE MAP</span><h1>文章分类</h1><p>{items.length} 个内容方向，把零散文章组织成可持续更新的知识地图。</p></header>
+    <div class="taxonomy-grid">
+      {items.map((item) => <a href={withBase(`/categories/${item.path}/`)}><span>CATEGORY</span><strong>{item.name}</strong><b>{item.count} 篇 ↗</b></a>)}
+    </div>
+  </section>
+</BaseLayout>
