@@ -4,6 +4,13 @@
   "private": true,
   "scripts": {
     "check": "node --check js/homepage-v2.js && node --check js/homepage-actions.js && node scripts/verify-homepage.mjs",
-    "build:blog": "npm --prefix blog-src run build && rsync -a --delete --exclude='.DS_Store' blog-src/dist/ blog/"
+    "build:blog": "npm --prefix blog-src run build && rsync -a --delete --exclude='.DS_Store' blog-src/dist/ blog/",
+    "astro:check": "astro check",
+    "build:homepage": "astro build --outDir .astro-dist && cp .astro-dist/index.html index.html",
+    "build:site": "npm run build:blog && npm run build:homepage && npm run check"
+  },
+  "devDependencies": {
+    "astro": "^5.15.0",
+    "typescript": "^5.7.2"
   }
 }

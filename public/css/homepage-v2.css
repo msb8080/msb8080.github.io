@@ -40,8 +40,6 @@ button:focus-visible {
    It stays visually centered because it is intentionally excluded from
    the transform-based content reveal animation. */
 .cyber-nav {
-  width: min(1180px, calc(100vw - 40px));
-  margin-inline: auto;
     width: min(calc(100% - 3rem), 1232px);
     min-height: 64px;
     justify-content: space-between;

@@ -21,7 +21,7 @@ const links = [
     </a>
     <nav id="site-menu" class="site-menu" aria-label="主导航" data-site-menu>
       {links.map((link) => (
-        <a class:list={{ active: !link.external && (link.href === '/' ? path === withBase('/') : path.startsWith(withBase(link.href))) }} href={link.external ? 'https://msb8080.github.io/' : withBase(link.href)}>{link.label}</a>
+        <a class:list={{ active: !link.external && (link.href === '/' ? path === withBase('/') : path.startsWith(withBase(link.href))) }} href={link.external ? link.href : withBase(link.href)}>{link.label}</a>
       ))}
     </nav>
     <div class="nav-actions">
